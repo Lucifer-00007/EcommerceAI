@@ -163,7 +163,7 @@ export function useInfiniteProducts(
         search,
         filters,
         sortBy,
-        page: pageParam,
+        page: pageParam as number,
         limit,
         ...rest,
       }),
