@@ -1,10 +1,11 @@
 'use client'
 
 import Link from 'next/link'
-import { ShoppingCart, User, Search, Menu, Moon, Sun } from 'lucide-react'
+import { ShoppingCart, User, Search, Menu, Moon, Sun, Heart } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { useCartStore } from '@/store/cart-store'
+import { useWishlistStore } from '@/store/wishlist-store'
 import { useAuthStore } from '@/store/auth-store'
 import { useTheme } from '@/components/theme-provider'
 import { useState } from 'react'
@@ -14,6 +15,7 @@ export function Header() {
   const router = useRouter()
   const [searchQuery, setSearchQuery] = useState('')
   const totalItems = useCartStore((state) => state.getTotalItems())
+  const wishlistItems = useWishlistStore((state) => state.items)
   const { isAuthenticated, user } = useAuthStore()
   const { theme, toggleTheme } = useTheme()
   
@@ -62,6 +64,17 @@ export function Header() {
           <Button variant="ghost" size="icon" onClick={toggleTheme}>
             {theme === 'light' ? <Moon className="h-5 w-5" /> : <Sun className="h-5 w-5" />}
           </Button>
+          
+          <Link href="/account/wishlist">
+            <Button variant="ghost" size="icon" className="relative">
+              <Heart className="h-5 w-5" />
+              {wishlistItems.length > 0 && (
+                <span className="absolute -top-1 -right-1 h-5 w-5 rounded-full bg-primary text-primary-foreground text-xs flex items-center justify-center">
+                  {wishlistItems.length}
+                </span>
+              )}
+            </Button>
+          </Link>
           
           <Link href="/cart">
             <Button variant="ghost" size="icon" className="relative">

@@ -1,4 +1,4 @@
-import { Product, Category } from '@/types'
+import { Product, Category, Review } from '@/types'
 
 export const MOCK_CATEGORIES: Category[] = [
   { id: '1', name: 'Electronics', slug: 'electronics', image: 'https://images.unsplash.com/photo-1498049794561-7780e7231661?w=400' },
@@ -129,5 +129,53 @@ export const MOCK_PRODUCTS: Product[] = [
     rating: 4.6,
     reviewCount: 178,
     inStock: true,
+  },
+]
+
+export const MOCK_REVIEWS: Review[] = [
+  {
+    id: 'r1',
+    productId: '1',
+    userId: 'u1',
+    userName: 'Sarah Johnson',
+    rating: 5,
+    comment: 'Absolutely love these headphones! The noise cancellation is incredible and the battery lasts forever.',
+    createdAt: '2024-01-15T10:30:00Z',
+  },
+  {
+    id: 'r2',
+    productId: '1',
+    userId: 'u2',
+    userName: 'Mike Chen',
+    rating: 4,
+    comment: 'Great sound quality and comfortable for long sessions. Only wish they came in more colors.',
+    createdAt: '2024-01-10T14:20:00Z',
+  },
+  {
+    id: 'r3',
+    productId: '1',
+    userId: 'u3',
+    userName: 'Emily Davis',
+    rating: 5,
+    comment: 'Best headphones I\'ve ever owned. Worth every penny!',
+    createdAt: '2024-01-05T09:15:00Z',
+  },
+  {
+    id: 'r4',
+    productId: '2',
+    userId: 'u4',
+    userName: 'John Smith',
+    rating: 5,
+    comment: 'This smartwatch has changed my fitness routine. Accurate tracking and great battery life.',
+    createdAt: '2024-01-20T16:45:00Z',
+  },
+  {
+    id: 'r5',
+    productId: '2',
+    userId: 'u5',
+    userName: 'Lisa Anderson',
+    rating: 4,
+    comment: 'Really good watch, but the app could use some improvements.',
+    createdAt: '2024-01-18T11:30:00Z',
   },
 ]

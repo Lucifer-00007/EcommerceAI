@@ -1,10 +1,11 @@
 import Link from 'next/link'
 import Image from 'next/image'
-import { ShoppingCart, Star } from 'lucide-react'
+import { ShoppingCart, Star, Heart } from 'lucide-react'
 import { Product } from '@/types'
 import { formatPrice } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardFooter } from '@/components/ui/card'
+import { useWishlistStore } from '@/store/wishlist-store'
 
 interface ProductCardProps {
   product: Product
@@ -12,6 +13,18 @@ interface ProductCardProps {
 }
 
 export function ProductCard({ product, onAddToCart }: ProductCardProps) {
+  const { addItem, removeItem, isInWishlist } = useWishlistStore()
+  const inWishlist = isInWishlist(product.id)
+  
+  const toggleWishlist = (e: React.MouseEvent) => {
+    e.preventDefault()
+    if (inWishlist) {
+      removeItem(product.id)
+    } else {
+      addItem(product)
+    }
+  }
+  
   return (
     <Card className="group overflow-hidden">
       <Link href={`/products/${product.slug}`}>
@@ -28,6 +41,14 @@ export function ProductCard({ product, onAddToCart }: ProductCardProps) {
               SALE
             </div>
           )}
+          <button
+            onClick={toggleWishlist}
+            className="absolute top-2 left-2 p-2 bg-white/80 hover:bg-white rounded-full transition-colors"
+          >
+            <Heart
+              className={`h-5 w-5 ${inWishlist ? 'fill-red-500 text-red-500' : 'text-gray-600'}`}
+            />
+          </button>
         </div>
       </Link>
       

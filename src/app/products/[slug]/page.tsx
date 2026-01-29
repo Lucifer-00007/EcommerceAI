@@ -1,5 +1,7 @@
 'use client'
 
+export const dynamic = 'force-dynamic'
+
 import { useQuery } from '@tanstack/react-query'
 import { useParams } from 'next/navigation'
 import Image from 'next/image'
@@ -11,6 +13,8 @@ import { formatPrice } from '@/lib/utils'
 import { useCartStore } from '@/store/cart-store'
 import { useToast } from '@/hooks/use-toast'
 import { Skeleton } from '@/components/ui/skeleton'
+import { ReviewsSection } from '@/features/products/reviews-section'
+import { Breadcrumbs } from '@/components/breadcrumbs'
 
 export default function ProductDetailPage() {
   const params = useParams()
@@ -59,7 +63,7 @@ export default function ProductDetailPage() {
       <div className="container py-8">
         <div className="text-center">
           <h2 className="text-2xl font-bold mb-2">Product not found</h2>
-          <p className="text-muted-foreground">The product you're looking for doesn't exist.</p>
+          <p className="text-muted-foreground">The product you&apos;re looking for doesn&apos;t exist.</p>
         </div>
       </div>
     )
@@ -67,6 +71,14 @@ export default function ProductDetailPage() {
   
   return (
     <div className="container py-8">
+      <Breadcrumbs
+        items={[
+          { label: 'Products', href: '/products' },
+          { label: product.category.charAt(0).toUpperCase() + product.category.slice(1), href: `/products?category=${product.category}` },
+          { label: product.name },
+        ]}
+      />
+      
       <div className="grid md:grid-cols-2 gap-8">
         {/* Images */}
         <div className="space-y-4">
@@ -176,6 +188,12 @@ export default function ProductDetailPage() {
           </div>
         </div>
       </div>
+      
+      <ReviewsSection 
+        productId={product.id}
+        rating={product.rating}
+        reviewCount={product.reviewCount}
+      />
     </div>
   )
 }

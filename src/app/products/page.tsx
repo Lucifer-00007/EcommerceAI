@@ -1,19 +1,28 @@
 'use client'
 
 import { useQuery } from '@tanstack/react-query'
-import { useSearchParams } from 'next/navigation'
+import { useSearchParams, useRouter } from 'next/navigation'
 import { ProductCard } from '@/components/product-card'
 import { ProductGridSkeleton } from '@/components/product-skeleton'
+import { Pagination } from '@/components/pagination'
+import { Breadcrumbs } from '@/components/breadcrumbs'
 import { productService } from '@/services/product-service'
 import { ProductFilters } from '@/types'
 import { useCartStore } from '@/store/cart-store'
 import { useToast } from '@/hooks/use-toast'
 import { ProductFiltersComponent } from '@/features/products/product-filters'
 
+export const dynamic = 'force-dynamic'
+
+const PAGE_SIZE = 6
+
 export default function ProductsPage() {
   const searchParams = useSearchParams()
+  const router = useRouter()
   const addItem = useCartStore((state) => state.addItem)
   const { toast } = useToast()
+  
+  const currentPage = Number(searchParams.get('page')) || 1
   
   const filters: ProductFilters = {
     category: searchParams.get('category') || undefined,
@@ -24,8 +33,8 @@ export default function ProductsPage() {
   }
   
   const { data, isLoading, error } = useQuery({
-    queryKey: ['products', filters],
-    queryFn: () => productService.getProducts(filters),
+    queryKey: ['products', filters, currentPage],
+    queryFn: () => productService.getProducts(filters, currentPage, PAGE_SIZE),
   })
   
   const handleAddToCart = (product: any) => {
@@ -35,6 +44,15 @@ export default function ProductsPage() {
       description: `${product.name} has been added to your cart.`,
     })
   }
+  
+  const handlePageChange = (page: number) => {
+    const params = new URLSearchParams(searchParams.toString())
+    params.set('page', page.toString())
+    router.push(`/products?${params.toString()}`)
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+  }
+  
+  const totalPages = data ? Math.ceil(data.total / PAGE_SIZE) : 0
   
   if (error) {
     return (
@@ -49,6 +67,13 @@ export default function ProductsPage() {
   
   return (
     <div className="container py-8">
+      <Breadcrumbs
+        items={[
+          { label: 'Products', href: filters.category ? '/products' : undefined },
+          ...(filters.category ? [{ label: filters.category.charAt(0).toUpperCase() + filters.category.slice(1) }] : []),
+        ]}
+      />
+      
       <div className="flex flex-col lg:flex-row gap-8">
         {/* Filters Sidebar */}
         <aside className="lg:w-64 flex-shrink-0">
@@ -75,15 +100,23 @@ export default function ProductsPage() {
               <p className="text-lg text-muted-foreground">No products found</p>
             </div>
           ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-              {data?.data.map((product) => (
-                <ProductCard
-                  key={product.id}
-                  product={product}
-                  onAddToCart={handleAddToCart}
-                />
-              ))}
-            </div>
+            <>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                {data?.data.map((product) => (
+                  <ProductCard
+                    key={product.id}
+                    product={product}
+                    onAddToCart={handleAddToCart}
+                  />
+                ))}
+              </div>
+              
+              <Pagination
+                currentPage={currentPage}
+                totalPages={totalPages}
+                onPageChange={handlePageChange}
+              />
+            </>
           )}
         </div>
       </div>
