@@ -1,11 +1,12 @@
 'use client'
 
 import Link from 'next/link'
-import { ShoppingCart, User, Search, Menu } from 'lucide-react'
+import { ShoppingCart, User, Search, Menu, Moon, Sun } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { useCartStore } from '@/store/cart-store'
 import { useAuthStore } from '@/store/auth-store'
+import { useTheme } from '@/components/theme-provider'
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 
@@ -14,6 +15,7 @@ export function Header() {
   const [searchQuery, setSearchQuery] = useState('')
   const totalItems = useCartStore((state) => state.getTotalItems())
   const { isAuthenticated, user } = useAuthStore()
+  const { theme, toggleTheme } = useTheme()
   
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault()
@@ -57,6 +59,10 @@ export function Header() {
         </form>
         
         <div className="flex items-center gap-4">
+          <Button variant="ghost" size="icon" onClick={toggleTheme}>
+            {theme === 'light' ? <Moon className="h-5 w-5" /> : <Sun className="h-5 w-5" />}
+          </Button>
+          
           <Link href="/cart">
             <Button variant="ghost" size="icon" className="relative">
               <ShoppingCart className="h-5 w-5" />
