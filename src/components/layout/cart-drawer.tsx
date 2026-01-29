@@ -12,9 +12,7 @@
 import * as React from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { X, ShoppingBag, Trash2, Plus, Minus } from "lucide-react";
-
-import { cn } from "@/lib/utils";
+import { ShoppingBag, Trash2, Plus, Minus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Sheet,
@@ -101,7 +99,6 @@ export function CartDrawer() {
                 {items.map((item) => {
                   const image = item.variant?.images?.[0] || item.product.images[0];
                   const price = item.variant?.price ?? item.product.price;
-                  const itemTotal = price * item.quantity;
 
                   return (
                     <div

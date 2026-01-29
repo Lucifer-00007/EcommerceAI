@@ -16,9 +16,8 @@ import {
   type UseQueryOptions,
 } from "@tanstack/react-query";
 import { useCartStore } from "@/features/cart/store";
-import type { Product, ProductVariant, Cart, CartItem } from "@/types";
+import type { Product, ProductVariant, Cart } from "@/types";
 import { delay } from "@/services/mock-data";
-import { TAX_RATE, FREE_SHIPPING_THRESHOLD, SHIPPING_COST } from "@/lib/constants";
 
 // =============================================================================
 // QUERY KEYS

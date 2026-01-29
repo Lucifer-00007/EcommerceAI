@@ -7,6 +7,7 @@
  * This is a Server Component by default for optimal performance.
  */
 
+import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { APP_CONFIG } from "@/lib/constants";
 
@@ -42,10 +43,10 @@ export default function HomePage() {
             </p>
             <div className="flex flex-col gap-4 sm:flex-row sm:justify-center">
               <Button size="lg" asChild>
-                <a href="/products">Shop Now</a>
+                <Link href="/products">Shop Now</Link>
               </Button>
               <Button size="lg" variant="outline" asChild>
-                <a href="/categories">Browse Categories</a>
+                <Link href="/categories">Browse Categories</Link>
               </Button>
             </div>
           </div>

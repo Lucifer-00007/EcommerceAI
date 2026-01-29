@@ -14,10 +14,7 @@ import type {
   User,
   UserProfile,
   Order,
-  OrderItem,
-  OrderTotals,
   Address,
-  PaymentMethod,
 } from "@/types";
 
 // =============================================================================
@@ -30,11 +27,6 @@ import type {
 export const generateId = (prefix: string): string => {
   return `${prefix}_${Math.random().toString(36).substring(2, 11)}`;
 };
-
-/**
- * Get current timestamp in ISO format
- */
-const now = (): string => new Date().toISOString();
 
 /**
  * Get a past date relative to now

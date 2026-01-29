@@ -17,7 +17,6 @@ import {
   Twitter,
   Instagram,
   Youtube,
-  CreditCard,
   Truck,
   Shield,
   Headphones,
@@ -27,7 +26,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
-import { NAV_LINKS, SOCIAL_LINKS } from "@/lib/constants";
+import { SOCIAL_LINKS } from "@/lib/constants";
 
 /**
  * Footer component with multiple sections

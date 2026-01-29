@@ -1,4 +1,4 @@
-`/**
+/**
  * Product Card Component
  *
  * Displays product information with image, name, price, rating, and quick actions.

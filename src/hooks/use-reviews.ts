@@ -15,7 +15,7 @@ import {
   useQueryClient,
   type UseQueryOptions,
 } from "@tanstack/react-query";
-import type { Review, ReviewInput, Product } from "@/types";
+import type { Review, ReviewInput } from "@/types";
 import {
   mockReviews,
   getProductReviews,
@@ -219,7 +219,7 @@ export function useCreateReview() {
 
   return useMutation<Review, Error, CreateReviewInput>({
     mutationFn: async (input) => {
-      const { productId, rating, title, content, images, orderId, onSuccess } = input;
+      const { productId, rating, title, content, images, orderId } = input;
 
       await delay(500, 1000);
       simulateError(0.05);

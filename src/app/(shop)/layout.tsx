@@ -5,6 +5,7 @@
  * It includes the main header and footer navigation.
  */
 
+import Link from "next/link";
 import { APP_CONFIG } from "@/lib/constants";
 
 /**
@@ -32,28 +33,28 @@ export default function ShopLayout({
       <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
         <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4">
           {/* Logo */}
-          <a href="/" className="text-xl font-bold tracking-tight">
+          <Link href="/" className="text-xl font-bold tracking-tight">
             {APP_CONFIG.name}
-          </a>
+          </Link>
 
           {/* Navigation Placeholder */}
           <nav className="hidden items-center gap-6 md:flex">
-            <a href="/" className="text-sm font-medium text-muted-foreground hover:text-foreground">
+            <Link href="/" className="text-sm font-medium text-muted-foreground hover:text-foreground">
               Home
-            </a>
-            <a href="/products" className="text-sm font-medium text-muted-foreground hover:text-foreground">
+            </Link>
+            <Link href="/products" className="text-sm font-medium text-muted-foreground hover:text-foreground">
               Products
-            </a>
-            <a href="/cart" className="text-sm font-medium text-muted-foreground hover:text-foreground">
+            </Link>
+            <Link href="/cart" className="text-sm font-medium text-muted-foreground hover:text-foreground">
               Cart
-            </a>
+            </Link>
           </nav>
 
           {/* Auth Links Placeholder */}
           <div className="flex items-center gap-4">
-            <a href="/login" className="text-sm font-medium text-muted-foreground hover:text-foreground">
+            <Link href="/login" className="text-sm font-medium text-muted-foreground hover:text-foreground">
               Sign In
-            </a>
+            </Link>
           </div>
         </div>
       </header>

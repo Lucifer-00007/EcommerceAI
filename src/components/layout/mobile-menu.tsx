@@ -54,7 +54,7 @@ export interface MobileMenuProps {
 export function MobileMenu({ onNavigate }: MobileMenuProps) {
   const pathname = usePathname();
   const { data: categories, isLoading: categoriesLoading } = useCategories();
-  const { data: user, isLoading: userLoading } = useCurrentUser();
+  const { data: user } = useCurrentUser();
 
   const isAuthenticated = !!user;
 

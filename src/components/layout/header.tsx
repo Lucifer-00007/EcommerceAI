@@ -24,7 +24,6 @@ import {
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Input } from "@/components/ui/input";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { useCartStore } from "@/features/cart/store";
 import { useCurrentUser } from "@/hooks/use-auth";
@@ -51,7 +50,7 @@ export function Header() {
   const [isSearchOpen, setIsSearchOpen] = React.useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = React.useState(false);
   const cartStore = useCartStore();
-  const { data: user, isLoading: isUserLoading } = useCurrentUser();
+  const { data: user } = useCurrentUser();
 
   const itemCount = cartStore.getItemCount();
   const isAuthenticated = !!user;

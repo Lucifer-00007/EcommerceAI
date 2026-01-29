@@ -17,7 +17,6 @@ import type {
 } from "@/types";
 import {
   mockProducts,
-  mockCategories,
   categoriesWithHierarchy,
   delay,
   simulateError,
