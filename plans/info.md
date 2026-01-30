@@ -1,0 +1,1 @@
+- Implement ./plans/main-plan.md following the best practice. keep all the code inside ./src/ while the configs like package.json, tsconfig, etc. in the root.
