@@ -167,9 +167,9 @@ export const STORAGE_KEYS = {
  */
 export const MOCK_API_DELAY = {
   /** Minimum delay in milliseconds */
-  MIN_DELAY: 500,
+  MIN_DELAY: 0,
   /** Maximum delay in milliseconds */
-  MAX_DELAY: 1500,
+  MAX_DELAY: 100,
 } as const;
 
 /**
