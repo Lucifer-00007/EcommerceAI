@@ -193,8 +193,10 @@ export default async function HomePage() {
                   className="bg-white text-primary hover:bg-white/90"
                   asChild
                 >
-                  Shop Now
-                  <ArrowRight className="ml-2 h-4 w-4" />
+                  <Link href="/deals">
+                    Shop Now
+                    <ArrowRight className="ml-2 h-4 w-4" />
+                  </Link>
                 </Button>
               </div>
               <div className="absolute right-0 top-0 h-full w-1/2 bg-white/10" />
@@ -222,8 +224,10 @@ export default async function HomePage() {
                   className="bg-white text-orange-600 hover:bg-white/90"
                   asChild
                 >
-                  Explore
-                  <ArrowRight className="ml-2 h-4 w-4" />
+                  <Link href="/products?category=Electronics">
+                    Explore
+                    <ArrowRight className="ml-2 h-4 w-4" />
+                  </Link>
                 </Button>
               </div>
               <div className="absolute right-0 top-0 h-full w-1/2 bg-white/10" />
