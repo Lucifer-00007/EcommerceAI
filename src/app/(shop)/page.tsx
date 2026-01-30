@@ -172,10 +172,7 @@ export default async function HomePage() {
         <div className="container-custom">
           <div className="grid gap-6 md:grid-cols-2">
             {/* Promotion Banner 1 */}
-            <Link
-              href="/deals"
-              className="group relative overflow-hidden rounded-2xl bg-gradient-to-br from-primary to-purple-600 p-8 text-primary-foreground transition-transform hover:scale-[1.02]"
-            >
+            <div className="group relative overflow-hidden rounded-2xl bg-gradient-to-br from-primary to-purple-600 p-8 text-primary-foreground transition-transform hover:scale-[1.02]">
               <div className="relative z-10 space-y-4">
                 <span className="inline-block rounded-full bg-white/20 px-3 py-1 text-sm font-medium">
                   Limited Time
@@ -200,13 +197,10 @@ export default async function HomePage() {
                 </Button>
               </div>
               <div className="absolute right-0 top-0 h-full w-1/2 bg-white/10" />
-            </Link>
+            </div>
 
             {/* Promotion Banner 2 */}
-            <Link
-              href="/products?category=Electronics"
-              className="group relative overflow-hidden rounded-2xl bg-gradient-to-br from-orange-500 to-red-500 p-8 text-white transition-transform hover:scale-[1.02]"
-            >
+            <div className="group relative overflow-hidden rounded-2xl bg-gradient-to-br from-orange-500 to-red-500 p-8 text-white transition-transform hover:scale-[1.02]">
               <div className="relative z-10 space-y-4">
                 <span className="inline-block rounded-full bg-white/20 px-3 py-1 text-sm font-medium">
                   New Arrivals
@@ -231,7 +225,7 @@ export default async function HomePage() {
                 </Button>
               </div>
               <div className="absolute right-0 top-0 h-full w-1/2 bg-white/10" />
-            </Link>
+            </div>
           </div>
         </div>
       </section>
