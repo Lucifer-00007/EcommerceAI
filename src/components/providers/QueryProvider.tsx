@@ -124,23 +124,7 @@ export function QueryProvider({ children }: QueryProviderProps) {
     <QueryClientContext.Provider value={queryClient}>
       <QueryClientProvider client={queryClient}>
         {children}
-        {/* React Query DevTools - only in development */}
-        {process.env.NODE_ENV === 'development' && (
-          <React.Suspense fallback={null}>
-            {/* Dynamic import to avoid bundling in production */}
-            <ReactQueryDevtools />
-          </React.Suspense>
-        )}
       </QueryClientProvider>
     </QueryClientContext.Provider>
   )
-}
-
-/**
- * Lazy-loaded React Query DevTools
- * Only loaded in development mode
- */
-function ReactQueryDevtools() {
-  const { ReactQueryDevtools: Devtools } = require('@tanstack/react-query-devtools')
-  return <Devtools initialIsOpen={false} />
 }

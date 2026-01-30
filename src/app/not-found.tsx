@@ -9,6 +9,8 @@
  * - Search functionality
  */
 
+'use client'
+
 import Link from 'next/link'
 import { Search, Home, ArrowLeft, Package } from 'lucide-react'
 import { Button } from '@/components/ui/button'
