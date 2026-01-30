@@ -8,9 +8,9 @@ import type {
   RegisterCredentials,
 } from '@/types/user.types';
 import { UserRole } from '@/types/user.types';
-import { apiClient, authUtils } from '@/lib/api-client';
-import { API_ENDPOINTS, MOCK_API_DELAY, STORAGE_KEYS } from '@/lib/constants';
-import { MOCK_USERS, mockDelay, getUserByEmail } from '@/lib/mock-data';
+import { authUtils } from '@/lib/api-client';
+import { MOCK_API_DELAY, STORAGE_KEYS } from '@/lib/constants';
+import { mockDelay, getUserByEmail } from '@/lib/mock-data';
 
 /**
  * Login with email and password

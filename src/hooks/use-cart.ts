@@ -1,7 +1,7 @@
 // use-cart hook
 // Custom hook for cart-related operations
 
-import { useCallback, useMemo } from 'react';
+import { useCallback } from 'react';
 import { useCartStore, cartSelectors } from '@/features/cart/store';
 import type { CartItem } from '@/types/cart.types';
 

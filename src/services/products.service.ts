@@ -8,11 +8,10 @@ import type {
   ProductListResponse,
   ProductReview,
 } from '@/types/product.types';
-import { apiClient } from '@/lib/api-client';
-import { API_ENDPOINTS, PAGINATION, MOCK_API_DELAY } from '@/lib/constants';
+
+import { MOCK_API_DELAY } from '@/lib/constants';
 import {
   MOCK_PRODUCTS,
-  MOCK_REVIEWS,
   mockDelay,
   getProductById as getMockProductById,
   getProductsByCategory as getMockProductsByCategory,

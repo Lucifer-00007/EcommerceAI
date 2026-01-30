@@ -2,9 +2,9 @@
 // Handles shopping cart API calls
 
 import type { CartResponse, CartItem } from '@/types/cart.types';
-import { apiClient } from '@/lib/api-client';
-import { API_ENDPOINTS, MOCK_API_DELAY, STORAGE_KEYS } from '@/lib/constants';
-import { MOCK_PRODUCTS, MOCK_CART_ITEMS, mockDelay, getProductById } from '@/lib/mock-data';
+
+import { MOCK_API_DELAY, STORAGE_KEYS } from '@/lib/constants';
+import { MOCK_CART_ITEMS, mockDelay, getProductById } from '@/lib/mock-data';
 
 /**
  * In-memory cart storage for mock purposes

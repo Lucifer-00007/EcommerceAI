@@ -7,7 +7,6 @@ import { ArrowRight, Sparkles, Truck, Shield, HeadphonesIcon, Star } from 'lucid
 import { Button } from '@/components/ui/button';
 import ProductCard from '@/components/features/products/product-card';
 import { getFeaturedProducts, getCategories } from '@/services/products.service';
-import type { Product } from '@/types/product.types';
 
 /**
  * Home page component

@@ -4,7 +4,7 @@
 import type { Product, ProductReview } from '@/types/product.types';
 import { ProductCategory } from '@/types/product.types';
 import type { User, UserRole } from '@/types/user.types';
-import type { Order, OrderStatus, OrderItem, ShippingAddress, PaymentMethod } from '@/types/api.types';
+import type { Order, OrderStatus } from '@/types/api.types';
 import type { CartItem } from '@/types/cart.types';
 
 /**

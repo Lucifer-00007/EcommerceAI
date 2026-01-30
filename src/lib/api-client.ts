@@ -79,7 +79,7 @@ export const loadingManager = new LoadingManager();
 function createApiError(
   message: string,
   code: string,
-  status: HttpStatus,
+  _status: HttpStatus,
   details?: Record<string, unknown>,
 ): ApiError {
   const isDevelopment = typeof window !== 'undefined' && (window as any).__DEV__ !== false;

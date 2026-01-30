@@ -7,11 +7,10 @@ import type {
   OrderSummary,
 } from '@/types/api.types';
 import { OrderStatus } from '@/types/api.types';
-import { apiClient } from '@/lib/api-client';
-import { API_ENDPOINTS, MOCK_API_DELAY } from '@/lib/constants';
+
+import { MOCK_API_DELAY } from '@/lib/constants';
 import {
   MOCK_ORDERS,
-  MOCK_PRODUCTS,
   mockDelay,
   getOrdersByUserId,
   getProductById,
