@@ -110,13 +110,13 @@
   --accent: oklch(0.97 0 0);
   --accent-foreground: oklch(0.205 0 0);
   --muted: oklch(0.97 0 0);
-  --muted-foreground: oklch(0.556 0 0);
+  --muted-foreground: oklch(0.45 0 0);
   
   /* Semantic Colors */
   --destructive: oklch(0.577 0.245 27.325);
   --success: oklch(0.6 0.15 145);
   --success-foreground: oklch(0.985 0 0);
-  --warning: oklch(0.75 0.15 80);
+  --warning: oklch(0.60 0.14 75);
   --warning-foreground: oklch(0.145 0 0);
   --info: oklch(0.6 0.1 250);
   --info-foreground: oklch(0.985 0 0);
@@ -182,7 +182,7 @@
   /* Border & Input */
   --border: oklch(1 0 0 / 10%);
   --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.556 0 0);
+  --ring: oklch(0.65 0 0);
   
   /* Chart Palette */
   --chart-1: oklch(0.488 0.243 264.376);
@@ -199,7 +199,53 @@
   --sidebar-accent: oklch(0.269 0 0);
   --sidebar-accent-foreground: oklch(0.985 0 0);
   --sidebar-border: oklch(1 0 0 / 10%);
-  --sidebar-ring: oklch(0.556 0 0);
+  --sidebar-ring: oklch(0.65 0 0);
+}
+
+/**
+ * Typography CSS Variables
+ * WCAG-compliant font sizes and line heights
+ */
+:root {
+  /* Font Size Scale */
+  --font-size-xs: 0.75rem;
+  --font-size-sm: 0.875rem;
+  --font-size-base: 1rem;
+  --font-size-lg: 1.125rem;
+  --font-size-xl: 1.25rem;
+  --font-size-2xl: 1.5rem;
+  --font-size-3xl: 1.875rem;
+  --font-size-4xl: 2.25rem;
+  
+  /* Line Heights */
+  --line-height-tight: 1.25;
+  --line-height-normal: 1.5;
+  --line-height-relaxed: 1.625;
+  
+  /* Font Weights */
+  --font-weight-normal: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+  
+  /* Letter Spacing */
+  --letter-spacing-tight: -0.025em;
+  --letter-spacing-normal: 0;
+  --letter-spacing-wide: 0.025em;
+}
+
+/**
+ * Reduced Motion Support
+ * Respects user preferences for motion (WCAG 2.2.2)
+ */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }
 
 /**

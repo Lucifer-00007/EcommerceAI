@@ -107,7 +107,7 @@ export function StarRating({
         onMouseEnter={() => handleMouseEnter(index)}
         onMouseLeave={handleMouseLeave}
         className={cn(
-          "relative transition-colors",
+          "relative transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 rounded-sm",
           interactive && "cursor-pointer hover:scale-110",
           !interactive && "cursor-default"
         )}
@@ -118,9 +118,9 @@ export function StarRating({
         <Star
           className={cn(
             sizeClasses[size],
-            "text-muted-foreground/30",
+            "text-muted-foreground",
             filled && "hidden",
-            !filled && !halfFilled && "fill-muted-foreground/30"
+            !filled && !halfFilled && "fill-muted-foreground"
           )}
         />
 
@@ -129,7 +129,7 @@ export function StarRating({
           <Star
             className={cn(
               sizeClasses[size],
-              "fill-yellow-400 text-yellow-400"
+              "fill-warning text-warning"
             )}
           />
         )}
@@ -137,7 +137,7 @@ export function StarRating({
         {/* Half filled star */}
         {halfFilled && (
           <div className="relative">
-            <Star className={cn(sizeClasses[size], "text-muted-foreground/30")} />
+            <Star className={cn(sizeClasses[size], "text-muted-foreground")} />
             <div
               className="absolute inset-0 overflow-hidden"
               style={{ width: "50%" }}
@@ -145,7 +145,7 @@ export function StarRating({
               <Star
                 className={cn(
                   sizeClasses[size],
-                  "fill-yellow-400 text-yellow-400"
+                  "fill-warning text-warning"
                 )}
               />
             </div>

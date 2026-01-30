@@ -88,7 +88,7 @@ export function Price({
       {isOnSale && showSavings && savingsPercent > 0 && (
         <Badge
           variant="secondary"
-          className="bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-100"
+          className="bg-success/20 text-success hover:bg-success/30"
         >
           Save {savingsPercent}%
         </Badge>

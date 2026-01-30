@@ -116,12 +116,12 @@ export function ProductCard({
             onClick={handleWishlist}
             aria-label={isWishlisted ? "Remove from wishlist" : "Add to wishlist"}
           >
-            <Heart
-              className={cn(
-                "h-4 w-4 transition-colors",
-                isWishlisted ? "fill-red-500 text-red-500" : "text-muted-foreground"
-              )}
-            />
+          <Heart
+            className={cn(
+              "h-4 w-4 transition-colors",
+              isWishlisted ? "fill-destructive text-destructive" : "text-muted-foreground"
+            )}
+          />
           </Button>
         </div>
 
@@ -131,7 +131,7 @@ export function ProductCard({
             {product.name}
           </h3>
           <div className="flex items-center gap-1">
-            <Star className="h-3 w-3 fill-yellow-400 text-yellow-400" />
+            <Star className="h-3 w-3 fill-warning text-warning" />
             <span className="text-xs text-muted-foreground">
               {product.rating.toFixed(1)} ({product.reviewCount})
             </span>
@@ -190,7 +190,7 @@ export function ProductCard({
           <Heart
             className={cn(
               "h-4 w-4 transition-colors",
-              isWishlisted ? "fill-red-500 text-red-500" : "text-muted-foreground"
+              isWishlisted ? "fill-destructive text-destructive" : "text-muted-foreground"
             )}
           />
         </Button>
