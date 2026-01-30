@@ -220,7 +220,7 @@ ionic.config.json
 # Cordova
 config.xml
 res/
-hooks/
+# hooks/
 
 # Electron
 electron/

@@ -1,3 +1,5 @@
+'use client';
+
 // Shop layout component
 // Layout for shop pages with header and footer
 

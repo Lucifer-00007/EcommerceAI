@@ -1,9 +1,10 @@
 'use client';
 
 // Providers component
-// Wraps the application with necessary providers (QueryClient, etc.)
+// Wraps the application with necessary providers (QueryClient, ThemeProvider, etc.)
 
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { ThemeProvider } from '@/components/providers/theme-provider';
 import { useState, type ReactNode } from 'react';
 
 /**
@@ -16,7 +17,7 @@ interface ProvidersProps {
 
 /**
  * Providers component
- * Wraps the application with TanStack Query provider
+ * Wraps the application with TanStack Query and Theme providers
  */
 export function Providers({ children }: ProvidersProps) {
   const [queryClient] = useState(
@@ -34,6 +35,8 @@ export function Providers({ children }: ProvidersProps) {
   );
 
   return (
-    <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
+    <QueryClientProvider client={queryClient}>
+      <ThemeProvider>{children}</ThemeProvider>
+    </QueryClientProvider>
   );
 }

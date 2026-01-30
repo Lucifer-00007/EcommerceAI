@@ -6,6 +6,7 @@
 import { Moon, Sun } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useTheme } from '@/components/providers/theme-provider';
+import { useEffect, useState } from 'react';
 
 /**
  * Theme Toggle component props
@@ -29,7 +30,29 @@ export function ThemeToggle({
   variant = 'ghost',
   size = 'icon',
 }: ThemeToggleProps) {
+  const [mounted, setMounted] = useState(false);
   const { theme, setTheme, resolvedTheme } = useTheme();
+
+  // Prevent hydration mismatch by only rendering after mount
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  // Don't render until mounted to avoid SSR issues
+  if (!mounted) {
+    return (
+      <Button
+        variant={variant}
+        size={size}
+        className={className}
+        aria-label="Toggle theme"
+        disabled
+      >
+        <Sun className="h-5 w-5" />
+        <span className="sr-only">Toggle theme</span>
+      </Button>
+    );
+  }
 
   /**
    * Toggle theme function

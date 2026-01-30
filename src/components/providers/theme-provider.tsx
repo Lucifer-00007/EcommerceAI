@@ -109,11 +109,6 @@ export function ThemeProvider({
     setThemeState(newTheme);
   };
 
-  // Prevent flash of incorrect theme
-  if (!mounted) {
-    return <>{children}</>;
-  }
-
   const value: ThemeProviderContext = {
     theme,
     setTheme,
