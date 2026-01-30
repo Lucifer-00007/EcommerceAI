@@ -8,6 +8,7 @@ import { useState } from 'react';
 import { Search, ShoppingCart, User, Menu, X, Heart } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { ThemeToggle } from '@/components/ui/theme-toggle';
 import { useCartTotalItems } from '@/hooks/use-cart';
 import MobileNav from './mobile-nav';
 
@@ -89,6 +90,9 @@ export default function Header() {
 
             {/* Right Actions */}
             <div className="flex items-center space-x-2">
+              {/* Theme Toggle */}
+              <ThemeToggle />
+
               {/* Wishlist */}
               <Link href="/wishlist">
                 <Button variant="ghost" size="icon" className="relative">
