@@ -1,13 +1,14 @@
 import { NextResponse, type NextRequest } from "next/server";
 
-import { products, reviews } from "@/services/mock/db";
+import { reviews } from "@/services/mock/db";
+import { getCatalogProducts } from "@/services/admin/catalog-store";
 
 export async function GET(
   _request: NextRequest,
   { params }: { params: Promise<{ slug: string }> },
 ) {
   const { slug } = await params;
-  const product = products.find((p) => p.slug === slug);
+  const product = getCatalogProducts().find((p) => p.slug === slug);
 
   if (!product) {
     return NextResponse.json({ message: "Product not found" }, { status: 404 });
@@ -17,4 +18,3 @@ export async function GET(
 
   return NextResponse.json({ product, reviews: productReviews });
 }
-

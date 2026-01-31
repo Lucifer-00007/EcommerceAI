@@ -3,14 +3,19 @@ import Link from "next/link";
 
 import { Container } from "@/components/layout/container";
 import { EmptyState } from "@/components/common/empty-state";
+import { NewsletterForm } from "@/components/marketing/newsletter-form";
+import { TestimonialGrid } from "@/components/marketing/testimonial-grid";
 import { ProductGrid } from "@/components/product/product-grid";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { routes } from "@/lib/routes";
-import { categories, products } from "@/services/mock/db";
+import { categories } from "@/services/mock/db";
+import { getCatalogProducts } from "@/services/admin/catalog-store";
 
 export default function Home() {
-  const featured = products.filter((p) => p.featured).slice(0, 6);
+  const featured = getCatalogProducts()
+    .filter((p) => p.featured)
+    .slice(0, 6);
 
   return (
     <div className="space-y-14 py-10">
@@ -52,6 +57,23 @@ export default function Home() {
                 </CardContent>
               </Card>
             ))}
+          </div>
+        </section>
+      </Container>
+
+      <Container>
+        <section className="rounded-2xl border bg-card p-6">
+          <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+            <div className="space-y-1">
+              <p className="text-sm text-muted-foreground">Trusted by teams building quickly</p>
+              <p className="text-lg font-semibold tracking-tight">Design tokens • Typed APIs • Fast UX</p>
+            </div>
+            <div className="grid grid-cols-2 gap-3 text-sm text-muted-foreground sm:grid-cols-4">
+              <div className="rounded-lg bg-muted px-3 py-2 text-center">Acme</div>
+              <div className="rounded-lg bg-muted px-3 py-2 text-center">Northwind</div>
+              <div className="rounded-lg bg-muted px-3 py-2 text-center">Umbrella</div>
+              <div className="rounded-lg bg-muted px-3 py-2 text-center">Globex</div>
+            </div>
           </div>
         </section>
       </Container>
@@ -124,6 +146,87 @@ export default function Home() {
               <p className="text-sm text-muted-foreground">Keyboard-friendly, WCAG-aligned UI.</p>
             </CardContent>
           </Card>
+        </section>
+      </Container>
+
+      <Container>
+        <section className="space-y-4">
+          <div className="space-y-1">
+            <h2 className="text-xl font-semibold tracking-tight">What customers say</h2>
+            <p className="text-sm text-muted-foreground">A few highlights from early users.</p>
+          </div>
+          <TestimonialGrid />
+        </section>
+      </Container>
+
+      <Container>
+        <section className="rounded-2xl border bg-card p-6 md:p-8">
+          <div className="grid gap-6 md:grid-cols-2 md:items-center">
+            <div className="space-y-2">
+              <h2 className="text-xl font-semibold tracking-tight">Get product drops and updates</h2>
+              <p className="text-sm text-muted-foreground">
+                Join the newsletter. No spam, unsubscribe anytime.
+              </p>
+            </div>
+            <NewsletterForm />
+          </div>
+        </section>
+      </Container>
+
+      <Container>
+        <section className="space-y-4">
+          <div className="space-y-1">
+            <h2 className="text-xl font-semibold tracking-tight">Frequently asked</h2>
+            <p className="text-sm text-muted-foreground">Quick answers before you checkout.</p>
+          </div>
+
+          <div className="grid gap-4 md:grid-cols-3">
+            <Card>
+              <CardContent className="space-y-2 p-6">
+                <p className="font-medium">Do you support refunds?</p>
+                <p className="text-sm text-muted-foreground">
+                  This demo includes policy pages and a contact form for support workflows.
+                </p>
+              </CardContent>
+            </Card>
+            <Card>
+              <CardContent className="space-y-2 p-6">
+                <p className="font-medium">How is shipping calculated?</p>
+                <p className="text-sm text-muted-foreground">
+                  Shipping is mocked at checkout, but the UI is structured for real integrations.
+                </p>
+              </CardContent>
+            </Card>
+            <Card>
+              <CardContent className="space-y-2 p-6">
+                <p className="font-medium">Can I manage products?</p>
+                <p className="text-sm text-muted-foreground">
+                  An admin console provides product CRUD and basic site settings.
+                </p>
+              </CardContent>
+            </Card>
+          </div>
+        </section>
+      </Container>
+
+      <Container>
+        <section className="rounded-2xl border bg-card p-6 md:p-8">
+          <div className="grid gap-4 md:grid-cols-2 md:items-center">
+            <div className="space-y-2">
+              <h2 className="text-xl font-semibold tracking-tight">Ready to explore?</h2>
+              <p className="text-sm text-muted-foreground">
+                Browse products, add to cart, and walk through checkout in minutes.
+              </p>
+            </div>
+            <div className="flex flex-col gap-3 sm:flex-row md:justify-end">
+              <Button asChild>
+                <Link href={routes.products}>Shop now</Link>
+              </Button>
+              <Button asChild variant="secondary">
+                <Link href={routes.contact}>Contact</Link>
+              </Button>
+            </div>
+          </div>
         </section>
       </Container>
     </div>

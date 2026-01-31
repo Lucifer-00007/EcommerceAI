@@ -1,6 +1,7 @@
 import { NextResponse, type NextRequest } from "next/server";
 
-import { categories, products } from "@/services/mock/db";
+import { categories } from "@/services/mock/db";
+import { getCatalogProducts } from "@/services/admin/catalog-store";
 
 function toNumber(value: string | null) {
   if (!value) return undefined;
@@ -43,6 +44,7 @@ export async function GET(request: NextRequest) {
   const pageSize = clamp(toNumber(url.searchParams.get("pageSize")) ?? 12, 6, 48);
   const page = clamp(toNumber(url.searchParams.get("page")) ?? 1, 1, 10_000);
 
+  const products = getCatalogProducts();
   let filtered = products.slice();
 
   if (categoryId) filtered = filtered.filter((p) => p.categoryId === categoryId);
@@ -108,4 +110,3 @@ export async function GET(request: NextRequest) {
     totalPages,
   });
 }
-
