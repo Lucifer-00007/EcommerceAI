@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="800" viewBox="0 0 800 800">
+  <rect width="800" height="800" fill="#052e16" />
+  <rect x="250" y="240" width="260" height="320" rx="40" fill="#16a34a" opacity="0.9" />
+  <path d="M510 300h60c40 0 70 30 70 70s-30 70-70 70h-60" stroke="#bbf7d0" stroke-width="26" fill="none" stroke-linecap="round" />
+  <rect x="250" y="240" width="260" height="60" rx="30" fill="#166534" />
+  <text x="400" y="700" text-anchor="middle" font-family="system-ui, -apple-system, Segoe UI, Roboto" font-size="36" fill="#ecfdf5">Ceramic Mug</text>
+</svg>
+
