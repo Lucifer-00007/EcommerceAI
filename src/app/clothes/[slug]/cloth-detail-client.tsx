@@ -4,8 +4,8 @@ import type { Product } from "@/types/ecommerce";
 
 import Image from "next/image";
 import Link from "next/link";
-import { useMemo, useState } from "react";
-import { Minus, Plus, ShoppingBag, Star } from "lucide-react";
+import { useEffect, useMemo, useState } from "react";
+import { ChevronDown, Minus, Plus, Search, ShoppingBag, Star } from "lucide-react";
 import { toast } from "sonner";
 
 import { FavoriteButton } from "@/components/product/favorite-button";
@@ -15,6 +15,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Label } from "@/components/ui/label";
 import { routes } from "@/lib/routes";
 import { useCartStore } from "@/features/cart/store";
+import { getClothImages } from "@/features/clothes/images";
 import { formatPrice } from "@/utils/format";
 import {
   clothColors,
@@ -23,6 +24,12 @@ import {
   getAvailableColors,
   getAvailableSizes,
 } from "@/features/clothes/utils";
+import {
+  decrementInventory,
+  getInventoryCount,
+  subscribeInventory,
+  type ClothVariantKey,
+} from "@/features/clothes/inventory";
 
 export function ClothDetailClient({
   product,
@@ -33,16 +40,11 @@ export function ClothDetailClient({
 }) {
   const addItem = useCartStore((s) => s.addItem);
 
-  const gallery = useMemo(() => {
-    const base = product.images[0];
-    return Array.from({ length: 4 }).map((_, idx) => ({
-      src: base.src,
-      alt: `${base.alt}${idx ? ` (${idx + 1})` : ""}`,
-    }));
-  }, [product.images]);
+  const gallery = useMemo(() => getClothImages(product), [product]);
 
   const [imageIndex, setImageIndex] = useState(0);
   const [quantity, setQuantity] = useState(1);
+  const [zoomed, setZoomed] = useState(false);
 
   const availableSizes = useMemo(() => getAvailableSizes(product), [product]);
   const availableColors = useMemo(() => getAvailableColors(product), [product]);
@@ -54,7 +56,45 @@ export function ClothDetailClient({
   });
 
   const clothType = deriveClothType(product);
-  const canAdd = Boolean(size && availableSizes.has(size) && color && availableColors.has(color));
+  const selectedVariant: ClothVariantKey | null =
+    size && color ? { productId: product.id, size, color } : null;
+
+  const [inventoryCount, setInventoryCount] = useState<number | null>(null);
+
+  useEffect(() => {
+    if (!selectedVariant) {
+      setInventoryCount(null);
+      return;
+    }
+    setInventoryCount(getInventoryCount(selectedVariant));
+    const key = `${selectedVariant.productId}:${selectedVariant.size}:${selectedVariant.color}`;
+    return subscribeInventory((u) => {
+      if (u.key === key) setInventoryCount(u.count);
+    });
+  }, [selectedVariant]);
+
+  useEffect(() => {
+    if (!color || !size) return;
+    if (!availableColors.has(color) || !availableSizes.has(size)) return;
+    const count = getInventoryCount({ productId: product.id, size, color });
+    if (count > 0) return;
+    const next = clothSizes.find((s) => {
+      if (!availableSizes.has(s)) return false;
+      return getInventoryCount({ productId: product.id, size: s, color }) > 0;
+    });
+    if (next) setSize(next);
+  }, [availableColors, availableSizes, color, product.id, size]);
+
+  const isInStock = inventoryCount !== null && inventoryCount > 0;
+  const isLowStock = inventoryCount !== null && inventoryCount > 0 && inventoryCount <= 3;
+
+  const canAdd = Boolean(
+    selectedVariant &&
+      availableSizes.has(selectedVariant.size) &&
+      availableColors.has(selectedVariant.color) &&
+      isInStock &&
+      quantity <= (inventoryCount ?? 0),
+  );
 
   return (
     <div className="w-full">
@@ -73,17 +113,23 @@ export function ClothDetailClient({
               </Link>
             </div>
           </li>
-          <li aria-current="page">
+          <li>
             <div className="flex items-center">
               <span className="mx-2 text-muted-foreground/60">/</span>
               <span className="font-medium text-foreground">{clothType}</span>
+            </div>
+          </li>
+          <li aria-current="page">
+            <div className="flex items-center">
+              <span className="mx-2 text-muted-foreground/60">/</span>
+              <span className="line-clamp-1 font-medium text-foreground">{product.name}</span>
             </div>
           </li>
         </ol>
       </nav>
 
       <div className="grid grid-cols-1 gap-8 pb-16 lg:grid-cols-12 lg:gap-12">
-        <div className="lg:col-span-7 flex flex-col gap-4">
+        <div className="flex flex-col gap-4 lg:col-span-7">
           <Dialog>
             <DialogTrigger asChild>
               <div className="group relative aspect-[4/5] w-full cursor-zoom-in overflow-hidden rounded-xl bg-secondary">
@@ -102,25 +148,37 @@ export function ClothDetailClient({
                     </span>
                   </div>
                 ) : null}
+                <div className="absolute right-4 top-4 rounded-md bg-card/90 p-2 text-muted-foreground shadow-sm ring-1 ring-inset ring-border">
+                  <Search className="h-4 w-4" />
+                </div>
               </div>
             </DialogTrigger>
             <DialogContent className="max-w-4xl">
               <DialogHeader>
                 <DialogTitle>{product.name}</DialogTitle>
               </DialogHeader>
-              <div className="relative aspect-[4/3] w-full overflow-hidden rounded-xl bg-secondary">
+              <button
+                type="button"
+                className="relative aspect-[4/3] w-full overflow-hidden rounded-xl bg-secondary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40"
+                onClick={() => setZoomed((z) => !z)}
+                aria-label={zoomed ? "Zoom out" : "Zoom in"}
+              >
                 <Image
                   src={gallery[imageIndex]?.src ?? product.images[0].src}
                   alt={gallery[imageIndex]?.alt ?? product.images[0].alt}
                   fill
-                  className="object-contain"
+                  className={
+                    zoomed
+                      ? "object-contain scale-150 transition-transform duration-300"
+                      : "object-contain transition-transform duration-300"
+                  }
                   sizes="(max-width: 1024px) 100vw, 900px"
                 />
-              </div>
+              </button>
             </DialogContent>
           </Dialog>
 
-          <div className="grid grid-cols-4 gap-4">
+          <div className="flex gap-4 overflow-x-auto pb-2 md:grid md:grid-cols-4 md:overflow-visible">
             {gallery.map((img, idx) => {
               const active = idx === imageIndex;
               return (
@@ -128,7 +186,7 @@ export function ClothDetailClient({
                   key={idx}
                   type="button"
                   onClick={() => setImageIndex(idx)}
-                  className="relative aspect-square overflow-hidden rounded-lg bg-secondary ring-offset-2 transition-all focus:outline-none focus:ring-2 focus:ring-primary"
+                  className="relative aspect-square w-24 shrink-0 overflow-hidden rounded-lg bg-secondary ring-offset-2 transition-all focus:outline-none focus:ring-2 focus:ring-primary md:w-auto"
                   style={{
                     boxShadow: active ? "0 0 0 2px var(--color-primary)" : undefined,
                   }}
@@ -194,7 +252,7 @@ export function ClothDetailClient({
                 </div>
               </div>
 
-              <div>
+              <div className="space-y-3">
                 <div className="mb-3 flex items-center justify-between">
                   <Label className="text-sm font-medium text-foreground">Size</Label>
                   <Link href={routes.faq} className="text-sm text-primary hover:underline">
@@ -203,7 +261,11 @@ export function ClothDetailClient({
                 </div>
                 <div className="grid grid-cols-5 gap-2">
                   {clothSizes.map((s) => {
-                    const disabled = !availableSizes.has(s);
+                    const variantCount =
+                      color && availableColors.has(color)
+                        ? getInventoryCount({ productId: product.id, size: s, color })
+                        : null;
+                    const disabled = !availableSizes.has(s) || (typeof variantCount === "number" && variantCount <= 0);
                     const active = size === s;
                     return (
                       <Button
@@ -219,6 +281,21 @@ export function ClothDetailClient({
                       </Button>
                     );
                   })}
+                </div>
+                <div role="status" className="text-sm font-medium text-muted-foreground" aria-live="polite">
+                  {selectedVariant ? (
+                    inventoryCount === null ? null : isInStock ? (
+                      isLowStock ? (
+                        <span className="text-foreground">Low stock: {inventoryCount} left</span>
+                      ) : (
+                        <span className="text-foreground">In stock</span>
+                      )
+                    ) : (
+                      <span className="text-destructive">Out of stock</span>
+                    )
+                  ) : (
+                    <span>Select color and size</span>
+                  )}
                 </div>
               </div>
             </div>
@@ -243,7 +320,12 @@ export function ClothDetailClient({
                 <button
                   type="button"
                   className="flex h-full w-10 items-center justify-center rounded-r-lg text-muted-foreground hover:bg-secondary hover:text-foreground"
-                  onClick={() => setQuantity((q) => q + 1)}
+                  onClick={() =>
+                    setQuantity((q) => {
+                      if (inventoryCount === null) return q + 1;
+                      return Math.min(q + 1, Math.max(1, inventoryCount));
+                    })
+                  }
                   aria-label="Increase quantity"
                 >
                   <Plus className="h-4 w-4" />
@@ -255,11 +337,21 @@ export function ClothDetailClient({
                 className="h-12 flex-1 rounded-lg font-semibold"
                 disabled={!canAdd}
                 onClick={() => {
-                  if (!canAdd) {
+                  if (!selectedVariant) {
                     toast.error("Select color and size");
                     return;
                   }
+                  const current = getInventoryCount(selectedVariant);
+                  if (current <= 0) {
+                    toast.error("This variant is out of stock");
+                    return;
+                  }
+                  if (quantity > current) {
+                    toast.error(`Only ${current} left in stock`);
+                    return;
+                  }
                   addItem(product.id, quantity);
+                  decrementInventory(selectedVariant, quantity);
                   toast.success("Added to cart");
                 }}
               >
@@ -276,9 +368,7 @@ export function ClothDetailClient({
               <details className="group cursor-pointer border-b py-4">
                 <summary className="flex items-center justify-between font-medium text-foreground hover:text-primary">
                   <span>Description</span>
-                  <span className="text-muted-foreground transition-transform group-open:rotate-180">
-                    ▼
-                  </span>
+                  <ChevronDown className="h-4 w-4 text-muted-foreground transition-transform group-open:rotate-180" />
                 </summary>
                 <div className="mt-4 space-y-2 text-sm leading-relaxed text-muted-foreground">
                   <p>{product.description}</p>
@@ -292,9 +382,7 @@ export function ClothDetailClient({
               <details className="group cursor-pointer border-b py-4">
                 <summary className="flex items-center justify-between font-medium text-foreground hover:text-primary">
                   <span>Fabric &amp; Care</span>
-                  <span className="text-muted-foreground transition-transform group-open:rotate-180">
-                    ▼
-                  </span>
+                  <ChevronDown className="h-4 w-4 text-muted-foreground transition-transform group-open:rotate-180" />
                 </summary>
                 <div className="mt-4 text-sm leading-relaxed text-muted-foreground">
                   <p>
@@ -306,9 +394,7 @@ export function ClothDetailClient({
               <details className="group cursor-pointer py-4">
                 <summary className="flex items-center justify-between font-medium text-foreground hover:text-primary">
                   <span>Shipping &amp; Returns</span>
-                  <span className="text-muted-foreground transition-transform group-open:rotate-180">
-                    ▼
-                  </span>
+                  <ChevronDown className="h-4 w-4 text-muted-foreground transition-transform group-open:rotate-180" />
                 </summary>
                 <div className="mt-4 text-sm leading-relaxed text-muted-foreground">
                   <p>

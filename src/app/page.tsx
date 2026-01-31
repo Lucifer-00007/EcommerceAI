@@ -1,15 +1,30 @@
 import type { ReactNode } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import dynamic from "next/dynamic";
 import { Armchair, Boxes, Laptop, Shirt, ChevronLeft, ChevronRight, PlayCircle } from "lucide-react";
 
 import { Container } from "@/components/layout/container";
 import { NewsletterForm } from "@/components/marketing/newsletter-form";
+import { Reveal } from "@/components/common/reveal";
+import { StyleInspiration } from "@/components/marketing/style-inspiration";
+import { TestimonialGrid } from "@/components/marketing/testimonial-grid";
+import { TrendingSocial } from "@/components/marketing/trending-social";
 import { ProductGrid } from "@/components/product/product-grid";
 import { Button } from "@/components/ui/button";
 import { routes } from "@/lib/routes";
 import { categories } from "@/services/mock/db";
 import { getCatalogProducts } from "@/services/admin/catalog-store";
+
+const FeaturedCollections = dynamic(
+  () => import("@/components/marketing/featured-collections").then((m) => m.FeaturedCollections),
+  { loading: () => <div className="h-48 rounded-2xl bg-muted" /> },
+);
+
+const SizeGuideSection = dynamic(
+  () => import("@/components/marketing/size-guide-section").then((m) => m.SizeGuideSection),
+  { loading: () => <div className="mx-auto w-full max-w-[1440px] px-6 py-16"><div className="h-64 rounded-2xl bg-muted" /></div> },
+);
 
 export default function Home() {
   const products = getCatalogProducts();
@@ -76,12 +91,15 @@ export default function Home() {
 
       <section className="border-y bg-card py-12">
         <Container>
-          <div className="mb-8 flex items-center justify-between gap-4">
+          <Reveal className="mb-8 flex items-center justify-between gap-4">
             <h2 className="text-2xl font-bold tracking-tight text-foreground">Browse by Category</h2>
-            <Link href={routes.products} className="flex items-center gap-1 text-sm font-semibold text-primary hover:opacity-90">
+            <Link
+              href={routes.products}
+              className="flex items-center gap-1 text-sm font-semibold text-primary hover:opacity-90"
+            >
               View all
             </Link>
-          </div>
+          </Reveal>
           <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-6">
             {categories.map((category) => (
               <Link
@@ -100,6 +118,12 @@ export default function Home() {
           </div>
         </Container>
       </section>
+
+      <FeaturedCollections products={products} />
+
+      <StyleInspiration products={products} />
+
+      <TrendingSocial products={products} />
 
       <section className="bg-background py-16">
         <Container>
@@ -143,13 +167,27 @@ export default function Home() {
         </Container>
       </section>
 
+      <section className="bg-card py-16">
+        <Container>
+          <Reveal className="mb-10 flex flex-col justify-between gap-4 md:flex-row md:items-end">
+            <div>
+              <h2 className="text-3xl font-bold tracking-tight text-foreground">What Customers Say</h2>
+              <p className="mt-2 text-muted-foreground">Feedback from verified purchasers.</p>
+            </div>
+          </Reveal>
+          <TestimonialGrid />
+        </Container>
+      </section>
+
+      <SizeGuideSection />
+
       <section className="bg-primary/5 py-16">
         <Container className="text-center">
           <h2 className="text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
-            Subscribe to our newsletter
+            Get style drops and early access
           </h2>
           <p className="mx-auto mt-4 max-w-xl text-lg text-muted-foreground">
-            Get the latest updates on new products and upcoming sales.
+            Join the list for new arrivals, exclusive collections, and limited-time offers.
           </p>
           <div className="mt-8">
             <NewsletterForm />

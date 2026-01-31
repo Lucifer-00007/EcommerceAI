@@ -4,6 +4,7 @@ import { Star } from "lucide-react";
 
 import { AddToCartButton } from "@/components/cart/add-to-cart-button";
 import { FavoriteButton } from "@/components/product/favorite-button";
+import { getClothImages } from "@/features/clothes/images";
 import { routes } from "@/lib/routes";
 import { categories } from "@/services/mock/db";
 import type { Product } from "@/types/ecommerce";
@@ -12,14 +13,16 @@ import { formatPrice } from "@/utils/format";
 export function ProductCard({ product, hrefBase }: { product: Product; hrefBase?: string }) {
   const categoryName = categories.find((c) => c.id === product.categoryId)?.name ?? "Product";
   const base = hrefBase ?? routes.products;
+  const primaryImage =
+    product.categoryId === "cat_apparel" ? getClothImages(product)[0] ?? product.images[0] : product.images[0];
 
   return (
     <div className="group relative flex flex-col overflow-hidden rounded-xl border bg-card shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-lg">
       <div className="relative aspect-[4/5] w-full overflow-hidden bg-secondary">
         <Link href={`${base}/${product.slug}`} className="absolute inset-0">
           <Image
-            src={product.images[0].src}
-            alt={product.images[0].alt}
+            src={primaryImage?.src ?? product.images[0].src}
+            alt={primaryImage?.alt ?? product.images[0].alt}
             fill
             sizes="(max-width: 768px) 50vw, (max-width: 1280px) 25vw, 320px"
             className="object-cover transition-transform duration-500 group-hover:scale-105"
