@@ -9,7 +9,6 @@ import { Reveal } from "@/components/common/reveal";
 import { StyleInspiration } from "@/components/marketing/style-inspiration";
 import { TestimonialGrid } from "@/components/marketing/testimonial-grid";
 import { TrendingSocial } from "@/components/marketing/trending-social";
-import { TrendingNews } from "@/components/marketing/trending-news";
 import { Button } from "@/components/ui/button";
 import { routes } from "@/lib/routes";
 import { getCatalogProducts } from "@/services/admin/catalog-store";
@@ -57,8 +56,8 @@ export default function Home() {
                 </Button>
                 <Button
                   asChild
-                  variant="ghost"
-                  className="h-12 rounded-full px-6 text-sm font-semibold text-foreground hover:bg-secondary"
+                  variant="secondary"
+                  className="h-12 rounded-full px-6 text-sm font-bold text-secondary-foreground border border-transparent hover:border-primary/20 transition-all"
                 >
                   <Link href={routes.clothes}>
                     What&apos;s new <ArrowRight className="ml-2 h-4 w-4" />
@@ -126,8 +125,6 @@ export default function Home() {
       <StyleInspiration products={products} />
 
       <TrendingSocial products={products} />
-
-      <TrendingNews />
 
       <section className="bg-card py-20 border-t">
         <Container>

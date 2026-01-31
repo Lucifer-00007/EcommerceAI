@@ -2,6 +2,7 @@ import { NextResponse, type NextRequest } from "next/server";
 
 import { categories } from "@/services/mock/db";
 import { getCatalogProducts } from "@/services/admin/catalog-store";
+import { getAvailableColors, getAvailableSizes } from "@/features/clothes/utils";
 
 function toNumber(value: string | null) {
   if (!value) return undefined;
@@ -39,6 +40,8 @@ export async function GET(request: NextRequest) {
   const minPrice = toNumber(url.searchParams.get("minPrice"));
   const maxPrice = toNumber(url.searchParams.get("maxPrice"));
   const ratingMin = toNumber(url.searchParams.get("ratingMin"));
+  const colors = url.searchParams.get("colors")?.split(",").filter(Boolean);
+  const sizes = url.searchParams.get("sizes")?.split(",").filter(Boolean);
   const sort = toSortKey(url.searchParams.get("sort"));
 
   const pageSize = clamp(toNumber(url.searchParams.get("pageSize")) ?? 12, 6, 48);
@@ -55,6 +58,26 @@ export async function GET(request: NextRequest) {
     filtered = filtered.filter((p) => p.price.amount <= maxPrice);
   if (typeof ratingMin === "number")
     filtered = filtered.filter((p) => p.rating >= ratingMin);
+
+  if (colors?.length) {
+    filtered = filtered.filter((p) => {
+      // Only apparel items have colors in our mock logic
+      if (p.categoryId !== "cat_apparel") return false;
+      const available = getAvailableColors(p);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      return colors.some((c) => available.has(c as any));
+    });
+  }
+
+  if (sizes?.length) {
+    filtered = filtered.filter((p) => {
+      // Only apparel items have sizes in our mock logic
+      if (p.categoryId !== "cat_apparel") return false;
+      const available = getAvailableSizes(p);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      return sizes.some((s) => available.has(s as any));
+    });
+  }
 
   if (q) {
     const qLower = q.toLowerCase();

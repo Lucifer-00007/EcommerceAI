@@ -13,6 +13,8 @@ export function AccountNav() {
   const items = [
     { href: routes.accountProfile, label: "Profile" },
     { href: routes.accountOrders, label: "Orders" },
+    { href: "/account/saved-items", label: "Saved Items" },
+    { href: "/account/addresses", label: "Address Book" },
   ];
 
   return (

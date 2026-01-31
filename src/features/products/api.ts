@@ -29,6 +29,8 @@ export type ProductsQuery = {
   minPrice?: number;
   maxPrice?: number;
   ratingMin?: number;
+  colors?: string[];
+  sizes?: string[];
   sort?: "relevance" | "newest" | "price_asc" | "price_desc" | "rating_desc";
   page?: number;
   pageSize?: number;
@@ -45,6 +47,8 @@ export async function getProducts(query: ProductsQuery) {
   if (typeof query.minPrice === "number") params.set("minPrice", String(query.minPrice));
   if (typeof query.maxPrice === "number") params.set("maxPrice", String(query.maxPrice));
   if (typeof query.ratingMin === "number") params.set("ratingMin", String(query.ratingMin));
+  if (query.colors?.length) params.set("colors", query.colors.join(","));
+  if (query.sizes?.length) params.set("sizes", query.sizes.join(","));
   if (query.sort) params.set("sort", query.sort);
   if (typeof query.page === "number") params.set("page", String(query.page));
   if (typeof query.pageSize === "number") params.set("pageSize", String(query.pageSize));

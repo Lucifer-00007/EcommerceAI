@@ -1,18 +1,22 @@
 "use client";
 
 import Link from "next/link";
+import { useState } from "react";
+import { Ruler } from "lucide-react";
 
 import { Reveal } from "@/components/common/reveal";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { routes } from "@/lib/routes";
 
 const rows = [
-  { size: "XS", chest: "32–34", waist: "26–28" },
-  { size: "S", chest: "35–37", waist: "29–31" },
-  { size: "M", chest: "38–40", waist: "32–34" },
-  { size: "L", chest: "41–43", waist: "35–37" },
-  { size: "XL", chest: "44–46", waist: "38–40" },
+  { size: "XS", chestMin: 32, chestMax: 34, waistMin: 26, waistMax: 28 },
+  { size: "S", chestMin: 35, chestMax: 37, waistMin: 29, waistMax: 31 },
+  { size: "M", chestMin: 38, chestMax: 40, waistMin: 32, waistMax: 34 },
+  { size: "L", chestMin: 41, chestMax: 43, waistMin: 35, waistMax: 37 },
+  { size: "XL", chestMin: 44, chestMax: 46, waistMin: 38, waistMax: 40 },
 ];
 
 export function SizeGuideSection() {
@@ -32,19 +36,62 @@ export function SizeGuideSection() {
         </Reveal>
 
         <Reveal>
-          <div className="rounded-2xl border bg-card p-6 shadow-sm">
-            <Tabs defaultValue="mens">
-              <TabsList className="bg-secondary">
-                <TabsTrigger value="mens">Men’s</TabsTrigger>
-                <TabsTrigger value="womens">Women’s</TabsTrigger>
-              </TabsList>
-              <TabsContent value="mens" className="pt-6">
-                <SizeTable />
-              </TabsContent>
-              <TabsContent value="womens" className="pt-6">
-                <SizeTable />
-              </TabsContent>
-            </Tabs>
+          <div className="grid gap-8 lg:grid-cols-2">
+            <div className="rounded-2xl border bg-card p-6 shadow-sm">
+              <Tabs defaultValue="chart">
+                <TabsList className="bg-secondary">
+                  <TabsTrigger value="chart">Size Chart</TabsTrigger>
+                  <TabsTrigger value="calculator">Calculator</TabsTrigger>
+                </TabsList>
+                <TabsContent value="chart" className="pt-6">
+                  <Tabs defaultValue="mens">
+                    <TabsList className="bg-secondary/50 w-full justify-start rounded-none border-b bg-transparent p-0">
+                      <TabsTrigger value="mens" className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:shadow-none">Men’s</TabsTrigger>
+                      <TabsTrigger value="womens" className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:shadow-none">Women’s</TabsTrigger>
+                    </TabsList>
+                    <TabsContent value="mens" className="pt-4">
+                      <SizeTable />
+                    </TabsContent>
+                    <TabsContent value="womens" className="pt-4">
+                      <SizeTable />
+                    </TabsContent>
+                  </Tabs>
+                </TabsContent>
+                <TabsContent value="calculator" className="pt-6">
+                  <SizeCalculator />
+                </TabsContent>
+              </Tabs>
+            </div>
+
+            <div className="flex flex-col justify-center rounded-2xl border bg-card p-6 shadow-sm">
+               <div className="flex items-center gap-2 mb-4 text-primary">
+                 <Ruler className="h-5 w-5" />
+                 <h3 className="font-semibold">How to Measure</h3>
+               </div>
+               <div className="space-y-6">
+                 <div className="flex gap-4">
+                   <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-primary/10 text-xs font-bold text-primary">1</div>
+                   <div>
+                     <h4 className="font-medium text-foreground">Chest</h4>
+                     <p className="text-sm text-muted-foreground">Measure around the fullest part of your chest, keeping the tape horizontal.</p>
+                   </div>
+                 </div>
+                 <div className="flex gap-4">
+                   <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-primary/10 text-xs font-bold text-primary">2</div>
+                   <div>
+                     <h4 className="font-medium text-foreground">Waist</h4>
+                     <p className="text-sm text-muted-foreground">Measure around the narrowest part (typically where your body bends side to side).</p>
+                   </div>
+                 </div>
+                 <div className="flex gap-4">
+                   <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-primary/10 text-xs font-bold text-primary">3</div>
+                   <div>
+                     <h4 className="font-medium text-foreground">Hips</h4>
+                     <p className="text-sm text-muted-foreground">Measure around the fullest part of your hips.</p>
+                   </div>
+                 </div>
+               </div>
+            </div>
           </div>
         </Reveal>
       </div>
@@ -63,10 +110,58 @@ function SizeTable() {
       {rows.map((r) => (
         <div key={r.size} className="grid grid-cols-3 px-4 py-3 text-sm text-foreground odd:bg-card even:bg-background">
           <div className="font-semibold">{r.size}</div>
-          <div className="text-muted-foreground">{r.chest}</div>
-          <div className="text-muted-foreground">{r.waist}</div>
+          <div className="text-muted-foreground">{r.chestMin}–{r.chestMax}</div>
+          <div className="text-muted-foreground">{r.waistMin}–{r.waistMax}</div>
         </div>
       ))}
+    </div>
+  );
+}
+
+function SizeCalculator() {
+  const [chest, setChest] = useState("");
+  const [waist, setWaist] = useState("");
+  const [result, setResult] = useState<string | null>(null);
+
+  const calculate = () => {
+    const c = parseFloat(chest);
+    const w = parseFloat(waist);
+    if (isNaN(c) || isNaN(w)) {
+      setResult("Please enter valid numbers.");
+      return;
+    }
+
+    const match = rows.find(r => 
+      (c >= r.chestMin && c <= r.chestMax) || 
+      (w >= r.waistMin && w <= r.waistMax)
+    );
+
+    if (match) {
+      setResult(`We recommend size ${match.size}`);
+    } else {
+      setResult("Based on your measurements, please check our detailed fit guide or contact support.");
+    }
+  };
+
+  return (
+    <div className="space-y-4">
+      <p className="text-sm text-muted-foreground">Enter your measurements in inches to get a recommendation.</p>
+      <div className="grid gap-4 sm:grid-cols-2">
+        <div className="space-y-2">
+          <Label htmlFor="chest">Chest (in)</Label>
+          <Input id="chest" placeholder="e.g. 40" value={chest} onChange={(e) => setChest(e.target.value)} />
+        </div>
+        <div className="space-y-2">
+          <Label htmlFor="waist">Waist (in)</Label>
+          <Input id="waist" placeholder="e.g. 32" value={waist} onChange={(e) => setWaist(e.target.value)} />
+        </div>
+      </div>
+      <Button onClick={calculate} className="w-full">Calculate My Size</Button>
+      {result && (
+        <div className="rounded-lg bg-secondary p-4 text-center text-sm font-medium animate-in fade-in slide-in-from-top-2">
+          {result}
+        </div>
+      )}
     </div>
   );
 }
