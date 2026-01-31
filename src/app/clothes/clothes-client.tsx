@@ -102,7 +102,11 @@ function FilterSidebar({
       <div className={contentClassName}>
         <div className="mb-6 flex items-center justify-between">
           <h3 className="font-semibold text-foreground">Filters</h3>
-          <button type="button" className="text-xs font-medium text-primary hover:underline" onClick={onClear}>
+          <button
+            type="button"
+            className="rounded-md border border-[color:var(--control-border)] bg-card px-2 py-1 text-xs font-semibold text-primary shadow-sm hover:border-[color:var(--control-border-hover)] hover:bg-secondary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40"
+            onClick={onClear}
+          >
             Clear all
           </button>
         </div>
@@ -355,7 +359,7 @@ export function ClothesClient() {
               value={sort ?? "relevance"}
               onValueChange={(value) => updateParams({ sort: value === "relevance" ? undefined : value })}
             >
-              <SelectTrigger className="h-9 w-[180px] border-0 bg-transparent px-0 font-semibold text-foreground shadow-none focus:ring-0">
+              <SelectTrigger className="h-9 w-[180px] rounded-lg border border-[color:var(--control-border)] bg-card/60 px-3 font-semibold text-foreground shadow-none hover:border-[color:var(--control-border-hover)] focus-visible:border-primary focus-visible:ring-2 focus-visible:ring-primary/40">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>

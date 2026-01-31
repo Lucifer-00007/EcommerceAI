@@ -66,6 +66,8 @@
   --border: #e2e8f0;
   --input: #e2e8f0;
   --ring: #137fec;
+  --control-border: #64748b;
+  --control-border-hover: #475569;
   --chart-1: oklch(0.646 0.222 41.116);
   --chart-2: oklch(0.6 0.118 184.704);
   --chart-3: oklch(0.398 0.07 227.392);
@@ -100,6 +102,8 @@
   --border: rgba(226, 232, 240, 0.12);
   --input: rgba(226, 232, 240, 0.18);
   --ring: #137fec;
+  --control-border: #94a3b8;
+  --control-border-hover: #cbd5e1;
   --chart-1: oklch(0.488 0.243 264.376);
   --chart-2: oklch(0.696 0.17 162.48);
   --chart-3: oklch(0.769 0.188 70.08);
