@@ -1,8 +1,8 @@
 "use client";
 
-import Image from "next/image";
 import { useQuery } from "@tanstack/react-query";
 
+import { ImageWithFallback } from "@/components/ui/image-with-fallback";
 import { AddToCartButton } from "@/components/cart/add-to-cart-button";
 import { EmptyState } from "@/components/common/empty-state";
 import { RatingStars } from "@/components/product/rating-stars";
@@ -49,7 +49,7 @@ export function ProductDetailClient({ slug }: { slug: string }) {
         <Card className="overflow-hidden">
           <CardContent className="p-0">
             <div className="relative aspect-square bg-muted">
-              <Image
+              <ImageWithFallback
                 src={product.images[0].src}
                 alt={product.images[0].alt}
                 fill

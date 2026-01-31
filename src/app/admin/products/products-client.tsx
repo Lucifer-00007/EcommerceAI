@@ -6,8 +6,8 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm, useWatch } from "react-hook-form";
 import { toast } from "sonner";
-import Image from "next/image";
 
+import { ImageWithFallback } from "@/components/ui/image-with-fallback";
 import { EmptyState } from "@/components/common/empty-state";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -263,7 +263,7 @@ export function AdminProductsClient() {
                 <div className="space-y-2">
                   <Label>Preview</Label>
                   <div className="relative h-20 w-20 overflow-hidden rounded-lg bg-muted">
-                    <Image
+                    <ImageWithFallback
                       src={imageSrc || "/products/everyday-tee.svg"}
                       alt={name || "Preview"}
                       fill
@@ -311,7 +311,7 @@ export function AdminProductsClient() {
               <CardContent className="flex flex-col gap-4 p-4 sm:flex-row sm:items-center sm:justify-between">
                 <div className="flex items-center gap-4">
                   <div className="relative h-16 w-16 overflow-hidden rounded-lg bg-muted">
-                    <Image src={p.images[0].src} alt={p.images[0].alt} fill className="object-cover" sizes="64px" />
+                    <ImageWithFallback src={p.images[0].src} alt={p.images[0].alt} fill className="object-cover" sizes="64px" />
                   </div>
                   <div>
                     <p className="font-medium">{p.name}</p>

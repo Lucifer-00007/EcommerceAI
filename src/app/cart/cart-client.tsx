@@ -1,11 +1,11 @@
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
 import { useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Minus, Plus, Trash2 } from "lucide-react";
 
+import { ImageWithFallback } from "@/components/ui/image-with-fallback";
 import { EmptyState } from "@/components/common/empty-state";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -83,7 +83,7 @@ export function CartClient() {
                   <CardContent className="flex flex-col gap-4 p-4 sm:flex-row sm:items-center">
                     <div className="flex items-center gap-4">
                       <div className="relative h-20 w-20 overflow-hidden rounded-lg bg-muted">
-                        <Image
+                        <ImageWithFallback
                           src={product.images[0].src}
                           alt={product.images[0].alt}
                           fill

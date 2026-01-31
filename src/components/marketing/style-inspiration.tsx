@@ -1,8 +1,8 @@
 import type { Product } from "@/types/ecommerce";
 
-import Image from "next/image";
 import Link from "next/link";
 
+import { ImageWithFallback } from "@/components/ui/image-with-fallback";
 import { Button } from "@/components/ui/button";
 import { routes } from "@/lib/routes";
 import { getClothImages } from "@/features/clothes/images";
@@ -30,7 +30,7 @@ export function StyleInspiration({ products }: { products: Product[] }) {
         <div className="grid grid-cols-1 gap-8 lg:grid-cols-12">
           <div className="lg:col-span-7">
             <div className="relative aspect-[4/3] overflow-hidden rounded-2xl bg-secondary">
-              <Image
+              <ImageWithFallback
                 src={tileImages[0]?.src ?? "/products/category-apparel.svg"}
                 alt={tileImages[0]?.alt ?? "Style inspiration"}
                 fill
@@ -60,7 +60,7 @@ export function StyleInspiration({ products }: { products: Product[] }) {
                     className="flex items-center gap-4 rounded-xl border bg-card p-3 transition-colors hover:bg-secondary"
                   >
                     <div className="relative h-16 w-16 overflow-hidden rounded-lg bg-secondary">
-                      <Image
+                      <ImageWithFallback
                         src={getClothImages(p)[0]?.src ?? p.images[0].src}
                         alt={getClothImages(p)[0]?.alt ?? p.images[0].alt}
                         fill
@@ -80,7 +80,7 @@ export function StyleInspiration({ products }: { products: Product[] }) {
             <div className="grid grid-cols-2 gap-4">
               {[tileImages[1], tileImages[2]].map((img, idx) => (
                 <div key={idx} className="relative aspect-square overflow-hidden rounded-2xl bg-secondary">
-                  <Image
+                  <ImageWithFallback
                     src={img?.src ?? tileImages[0]?.src ?? "/products/category-apparel.svg"}
                     alt={img?.alt ?? "Inspiration photo"}
                     fill

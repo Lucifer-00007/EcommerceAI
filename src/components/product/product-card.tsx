@@ -1,7 +1,7 @@
-import Image from "next/image";
 import Link from "next/link";
 import { Star } from "lucide-react";
 
+import { ImageWithFallback } from "@/components/ui/image-with-fallback";
 import { AddToCartButton } from "@/components/cart/add-to-cart-button";
 import { FavoriteButton } from "@/components/product/favorite-button";
 import { getClothImages } from "@/features/clothes/images";
@@ -20,7 +20,7 @@ export function ProductCard({ product, hrefBase }: { product: Product; hrefBase?
     <div className="group relative flex flex-col overflow-hidden rounded-xl border bg-card shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-lg">
       <div className="relative aspect-[4/5] w-full overflow-hidden bg-secondary">
         <Link href={`${base}/${product.slug}`} className="absolute inset-0">
-          <Image
+          <ImageWithFallback
             src={primaryImage?.src ?? product.images[0].src}
             alt={primaryImage?.alt ?? product.images[0].alt}
             fill

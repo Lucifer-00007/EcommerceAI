@@ -2,8 +2,8 @@
 
 import type { Product } from "@/types/ecommerce";
 
-import Image from "next/image";
 import Link from "next/link";
+import { ImageWithFallback } from "@/components/ui/image-with-fallback";
 import { useMemo, useState, useSyncExternalStore } from "react";
 import { ChevronDown, Minus, Plus, Search, ShoppingBag, Star } from "lucide-react";
 import { toast } from "sonner";
@@ -135,7 +135,7 @@ export function ClothDetailClient({
           <Dialog>
             <DialogTrigger asChild>
               <div className="group relative aspect-[4/5] w-full cursor-zoom-in overflow-hidden rounded-xl bg-secondary">
-                <Image
+                <ImageWithFallback
                   src={gallery[imageIndex]?.src ?? product.images[0].src}
                   alt={gallery[imageIndex]?.alt ?? product.images[0].alt}
                   fill
@@ -165,7 +165,7 @@ export function ClothDetailClient({
                 onClick={() => setZoomed((z) => !z)}
                 aria-label={zoomed ? "Zoom out" : "Zoom in"}
               >
-                <Image
+                <ImageWithFallback
                   src={gallery[imageIndex]?.src ?? product.images[0].src}
                   alt={gallery[imageIndex]?.alt ?? product.images[0].alt}
                   fill
@@ -194,7 +194,7 @@ export function ClothDetailClient({
                   }}
                   aria-label={`View image ${idx + 1}`}
                 >
-                  <Image
+                  <ImageWithFallback
                     src={img.src}
                     alt={img.alt}
                     fill
