@@ -28,29 +28,29 @@ export function Header() {
   }
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+    <header className="sticky top-0 z-50 w-full border-b border-border/60 bg-background/90 shadow-sm backdrop-blur supports-[backdrop-filter]:bg-background/70">
       <div className="container mx-auto px-4">
-        <div className="flex h-16 items-center justify-between">
+        <div className="flex h-16 items-center justify-between gap-4">
           {/* Logo */}
           <Link href="/" className="flex items-center space-x-2">
-            <div className="h-8 w-8 rounded-lg bg-primary flex items-center justify-center">
+            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary">
               <span className="text-primary-foreground font-bold text-sm">EA</span>
             </div>
             <span className="font-bold text-xl">EcommerceAI</span>
           </Link>
 
           {/* Desktop Navigation */}
-          <nav className="hidden md:flex items-center space-x-6">
-            <Link href="/" className="text-sm font-medium hover:text-primary transition-colors">
+          <nav className="hidden md:flex items-center space-x-6 text-sm font-medium">
+            <Link href="/" className="text-foreground/80 hover:text-foreground transition-colors">
               Home
             </Link>
-            <Link href="/products" className="text-sm font-medium hover:text-primary transition-colors">
+            <Link href="/products" className="text-foreground/80 hover:text-foreground transition-colors">
               Products
             </Link>
-            <Link href="/categories" className="text-sm font-medium hover:text-primary transition-colors">
+            <Link href="/categories" className="text-foreground/80 hover:text-foreground transition-colors">
               Categories
             </Link>
-            <Link href="/deals" className="text-sm font-medium hover:text-primary transition-colors">
+            <Link href="/deals" className="text-foreground/80 hover:text-foreground transition-colors">
               Deals
             </Link>
           </nav>
@@ -64,19 +64,19 @@ export function Header() {
                 placeholder="Search products..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-10 pr-4"
+                className="pl-10 pr-4 bg-background/80"
               />
             </div>
           </form>
 
           {/* Right Side Actions */}
-          <div className="flex items-center space-x-4">
+          <div className="flex items-center space-x-3">
             {/* Theme Toggle */}
             <ThemeToggle />
 
             {/* Cart */}
             <Link href="/cart" className="relative">
-              <Button variant="ghost" size="icon">
+              <Button variant="ghost" size="icon" aria-label="Open cart">
                 <ShoppingCart className="h-5 w-5" />
                 {cartItemsCount > 0 && (
                   <Badge 
@@ -92,13 +92,13 @@ export function Header() {
             {/* User Account */}
             {isAuthenticated ? (
               <Link href="/account">
-                <Button variant="ghost" size="icon">
+                <Button variant="ghost" size="icon" aria-label="Account">
                   <User className="h-5 w-5" />
                 </Button>
               </Link>
             ) : (
               <Link href="/login">
-                <Button variant="ghost" size="sm">
+                <Button variant="ghost" size="sm" className="px-3">
                   Login
                 </Button>
               </Link>
@@ -109,6 +109,7 @@ export function Header() {
               variant="ghost"
               size="icon"
               className="md:hidden"
+              aria-label="Toggle menu"
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
             >
               {isMobileMenuOpen ? (

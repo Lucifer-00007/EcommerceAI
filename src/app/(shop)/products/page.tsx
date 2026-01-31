@@ -96,11 +96,11 @@ export default function ProductsPage() {
   }).length
 
   return (
-    <div className="container mx-auto px-4 py-8">
+    <div className="container mx-auto px-4 py-10">
       {/* Header */}
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold mb-4">Products</h1>
-        <div className="flex flex-col lg:flex-row gap-4 items-start lg:items-center justify-between">
+      <div className="mb-8 space-y-3">
+        <h1 className="text-3xl font-bold">Products</h1>
+        <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
           <p className="text-muted-foreground">
             {productsData?.pagination.total 
               ? `Showing ${productsData.data.length} of ${productsData.pagination.total} products`
@@ -108,8 +108,10 @@ export default function ProductsPage() {
           </p>
           
           {/* Sort Dropdown */}
-          <div className="flex items-center gap-2">
-            <Label htmlFor="sort">Sort by:</Label>
+          <div className="flex items-center gap-3">
+            <Label htmlFor="sort" className="text-sm text-muted-foreground">
+              Sort by:
+            </Label>
             <select
               id="sort"
               value={`${sort.field}-${sort.direction}`}
@@ -120,7 +122,7 @@ export default function ProductsPage() {
                   direction: direction as SortOption['direction']
                 })
               }}
-              className="border rounded-md px-3 py-2 text-sm"
+              className="rounded-md border border-border/60 bg-background/80 px-3 py-2 text-sm shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
             >
               <option value="name-asc">Name (A-Z)</option>
               <option value="name-desc">Name (Z-A)</option>
@@ -133,11 +135,11 @@ export default function ProductsPage() {
         </div>
       </div>
 
-      <div className="flex flex-col lg:flex-row gap-8">
+      <div className="flex flex-col gap-8 lg:flex-row">
         {/* Filters Sidebar */}
-        <div className={`${isFilterOpen ? 'block' : 'hidden'} lg:block lg:w-64`}>
-          <Card>
-            <CardContent className="p-6">
+        <div className={`${isFilterOpen ? 'block' : 'hidden'} lg:block lg:w-72`}>
+          <Card className="border-border/60 bg-card/95 lg:sticky lg:top-24">
+            <CardContent className="space-y-6 p-6">
               <div className="flex items-center justify-between mb-6">
                 <h2 className="text-lg font-semibold">Filters</h2>
                 <Button
@@ -151,7 +153,7 @@ export default function ProductsPage() {
               </div>
 
               {/* Search */}
-              <div className="mb-6">
+              <div>
                 <Label htmlFor="search">Search</Label>
                 <Input
                   id="search"
@@ -159,17 +161,17 @@ export default function ProductsPage() {
                   placeholder="Search products..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="mt-2"
+                  className="mt-2 bg-background/80"
                 />
               </div>
 
               {/* Category Filter */}
-              <div className="mb-6">
+              <div>
                 <Label>Category</Label>
                 <select
                   value={filters.category}
                   onChange={(e) => handleFilterChange('category', e.target.value)}
-                  className="w-full mt-2 border rounded-md px-3 py-2 text-sm"
+                  className="mt-2 w-full rounded-md border border-border/60 bg-background/80 px-3 py-2 text-sm shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                 >
                   <option value="">All Categories</option>
                   {categories?.map((category) => (
@@ -181,7 +183,7 @@ export default function ProductsPage() {
               </div>
 
               {/* Price Range */}
-              <div className="mb-6">
+              <div>
                 <Label>Price Range</Label>
                 <div className="mt-2 space-y-2">
                   <div className="flex items-center gap-2">
@@ -190,7 +192,7 @@ export default function ProductsPage() {
                       placeholder="Min"
                       value={filters.priceRange[0]}
                       onChange={(e) => handleFilterChange('priceRange', [parseInt(e.target.value) || 0, filters.priceRange[1]])}
-                      className="flex-1"
+                      className="flex-1 bg-background/80"
                     />
                     <span>-</span>
                     <Input
@@ -198,14 +200,14 @@ export default function ProductsPage() {
                       placeholder="Max"
                       value={filters.priceRange[1]}
                       onChange={(e) => handleFilterChange('priceRange', [filters.priceRange[0], parseInt(e.target.value) || 1000])}
-                      className="flex-1"
+                      className="flex-1 bg-background/80"
                     />
                   </div>
                 </div>
               </div>
 
               {/* Rating Filter */}
-              <div className="mb-6">
+              <div>
                 <Label>Minimum Rating</Label>
                 <div className="mt-2 space-y-2">
                   {[4, 3, 2, 1].map((rating) => (

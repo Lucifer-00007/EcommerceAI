@@ -11,16 +11,20 @@ export function ThemeToggle() {
 
   return (
     <Button
-      variant="ghost"
-      size="icon"
+      variant="outline"
+      size="sm"
       onClick={() => setTheme(isDark ? 'light' : 'dark')}
       aria-label={isDark ? 'Switch to light mode' : 'Switch to dark mode'}
+      className="gap-2 rounded-full border-border/60 bg-background/80 px-3 shadow-sm hover:bg-muted/70"
     >
       {isDark ? (
-        <Sun className="h-5 w-5" />
+        <Sun className="h-4 w-4" />
       ) : (
-        <Moon className="h-5 w-5" />
+        <Moon className="h-4 w-4" />
       )}
+      <span className="hidden sm:inline text-xs font-medium">
+        {isDark ? 'Light' : 'Dark'}
+      </span>
     </Button>
   )
 }

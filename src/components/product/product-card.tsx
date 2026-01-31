@@ -29,12 +29,17 @@ export function ProductCard({ product, className }: ProductCardProps) {
     : 0
 
   return (
-    <Card className={cn("group overflow-hidden transition-all duration-200 hover:shadow-lg", className)}>
+    <Card
+      className={cn(
+        "group overflow-hidden border-border/60 bg-card/95 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lg focus-within:ring-2 focus-within:ring-primary/30",
+        className
+      )}
+    >
       <CardContent className="p-0">
         <Link href={`/products/${product.id}`}>
           <div className="relative">
             {/* Product Image */}
-            <div className="relative aspect-square overflow-hidden bg-gray-100">
+            <div className="relative aspect-square overflow-hidden bg-muted/50">
               <Image
                 src={product.images[0]}
                 alt={product.name}
@@ -62,7 +67,7 @@ export function ProductCard({ product, className }: ProductCardProps) {
                 <Button
                   size="icon"
                   variant="secondary"
-                  className="h-8 w-8 rounded-full"
+                  className="h-8 w-8 rounded-full shadow-sm"
                   onClick={(e) => {
                     e.preventDefault()
                     e.stopPropagation()
@@ -82,7 +87,7 @@ export function ProductCard({ product, className }: ProductCardProps) {
               <p className="text-xs text-muted-foreground">{product.brand}</p>
               
               {/* Product Name */}
-              <h3 className="line-clamp-2 text-sm font-medium leading-tight">
+              <h3 className="line-clamp-2 text-sm font-semibold leading-tight">
                 {product.name}
               </h3>
               
@@ -108,7 +113,7 @@ export function ProductCard({ product, className }: ProductCardProps) {
               
               {/* Price */}
               <div className="flex items-center gap-2">
-                <span className="text-lg font-bold">
+                <span className="text-lg font-bold text-foreground">
                   ${product.price.toFixed(2)}
                 </span>
                 {product.originalPrice && (
