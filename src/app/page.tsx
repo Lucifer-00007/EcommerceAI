@@ -16,18 +16,18 @@ export default function Home() {
   return (
     <div className="space-y-16">
       {/* Hero Section */}
-      <section className="relative bg-gradient-to-r from-primary/10 to-secondary/10 py-20">
+      <section className="relative overflow-hidden bg-gradient-to-br from-primary/20 via-primary/5 to-secondary/20 dark:from-primary/10 dark:via-background dark:to-secondary/10 py-24 md:py-32">
         <div className="container mx-auto px-4">
-          <div className="max-w-3xl mx-auto text-center space-y-6">
-            <h1 className="text-4xl md:text-6xl font-bold tracking-tight">
+          <div className="max-w-3xl mx-auto text-center space-y-8">
+            <h1 className="text-4xl md:text-6xl font-bold tracking-tight text-balance">
               Discover Amazing Products
-              <span className="text-primary"> at Great Prices</span>
+              <span className="text-primary block md:inline"> at Great Prices</span>
             </h1>
-            <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
+            <p className="text-xl text-muted-foreground max-w-2xl mx-auto text-balance">
               Shop the latest trends in electronics, fashion, and more. Quality guaranteed, fast delivery.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button size="lg" asChild>
+              <Button size="lg" asChild className="shadow-lg hover:shadow-xl transition-shadow">
                 <Link href="/products">
                   Shop Now
                   <ArrowRight className="ml-2 h-4 w-4" />
@@ -44,35 +44,35 @@ export default function Home() {
       </section>
 
       {/* Features Section */}
-      <section className="py-12 bg-muted/30">
+      <section className="py-16 bg-muted/30 dark:bg-muted/20">
         <div className="container mx-auto px-4">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-            <div className="text-center space-y-3">
-              <div className="mx-auto w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center">
-                <Truck className="h-6 w-6 text-primary" />
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+            <div className="text-center space-y-3 group">
+              <div className="mx-auto w-14 h-14 bg-primary/10 dark:bg-primary/20 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform">
+                <Truck className="h-7 w-7 text-primary" />
               </div>
-              <h3 className="font-semibold">Free Shipping</h3>
+              <h3 className="font-semibold text-lg">Free Shipping</h3>
               <p className="text-sm text-muted-foreground">On orders over $100</p>
             </div>
-            <div className="text-center space-y-3">
-              <div className="mx-auto w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center">
-                <Shield className="h-6 w-6 text-primary" />
+            <div className="text-center space-y-3 group">
+              <div className="mx-auto w-14 h-14 bg-primary/10 dark:bg-primary/20 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform">
+                <Shield className="h-7 w-7 text-primary" />
               </div>
-              <h3 className="font-semibold">Secure Payment</h3>
+              <h3 className="font-semibold text-lg">Secure Payment</h3>
               <p className="text-sm text-muted-foreground">100% secure transactions</p>
             </div>
-            <div className="text-center space-y-3">
-              <div className="mx-auto w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center">
-                <RefreshCw className="h-6 w-6 text-primary" />
+            <div className="text-center space-y-3 group">
+              <div className="mx-auto w-14 h-14 bg-primary/10 dark:bg-primary/20 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform">
+                <RefreshCw className="h-7 w-7 text-primary" />
               </div>
-              <h3 className="font-semibold">Easy Returns</h3>
+              <h3 className="font-semibold text-lg">Easy Returns</h3>
               <p className="text-sm text-muted-foreground">30-day return policy</p>
             </div>
-            <div className="text-center space-y-3">
-              <div className="mx-auto w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center">
-                <Star className="h-6 w-6 text-primary" />
+            <div className="text-center space-y-3 group">
+              <div className="mx-auto w-14 h-14 bg-primary/10 dark:bg-primary/20 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform">
+                <Star className="h-7 w-7 text-primary" />
               </div>
-              <h3 className="font-semibold">Best Quality</h3>
+              <h3 className="font-semibold text-lg">Best Quality</h3>
               <p className="text-sm text-muted-foreground">Premium products only</p>
             </div>
           </div>
@@ -80,11 +80,11 @@ export default function Home() {
       </section>
 
       {/* Featured Products Section */}
-      <section className="py-16">
+      <section className="py-20">
         <div className="container mx-auto px-4">
           <div className="text-center space-y-4 mb-12">
-            <h2 className="text-3xl font-bold">Featured Products</h2>
-            <p className="text-muted-foreground max-w-2xl mx-auto">
+            <h2 className="text-3xl md:text-4xl font-bold">Featured Products</h2>
+            <p className="text-muted-foreground max-w-2xl mx-auto text-balance">
               Check out our hand-picked selection of premium products
             </p>
           </div>
@@ -113,11 +113,11 @@ export default function Home() {
       </section>
 
       {/* Categories Section */}
-      <section className="py-16 bg-muted/30">
+      <section className="py-20 bg-muted/30 dark:bg-muted/20">
         <div className="container mx-auto px-4">
           <div className="text-center space-y-4 mb-12">
-            <h2 className="text-3xl font-bold">Shop by Category</h2>
-            <p className="text-muted-foreground max-w-2xl mx-auto">
+            <h2 className="text-3xl md:text-4xl font-bold">Shop by Category</h2>
+            <p className="text-muted-foreground max-w-2xl mx-auto text-balance">
               Browse our wide selection of products by category
             </p>
           </div>
@@ -166,13 +166,13 @@ export default function Home() {
       </section>
 
       {/* CTA Section */}
-      <section className="py-20 bg-primary text-primary-foreground">
-        <div className="container mx-auto px-4 text-center space-y-6">
-          <h2 className="text-3xl font-bold">Ready to Start Shopping?</h2>
-          <p className="text-xl max-w-2xl mx-auto opacity-90">
+      <section className="py-24 bg-gradient-to-br from-primary to-primary/90 dark:from-primary/90 dark:to-primary text-primary-foreground">
+        <div className="container mx-auto px-4 text-center space-y-8">
+          <h2 className="text-3xl md:text-4xl font-bold text-balance">Ready to Start Shopping?</h2>
+          <p className="text-xl max-w-2xl mx-auto opacity-90 text-balance">
             Join thousands of satisfied customers who trust us for quality products and excellent service.
           </p>
-          <Button size="lg" variant="secondary" asChild>
+          <Button size="lg" variant="secondary" asChild className="shadow-lg hover:shadow-xl transition-shadow">
             <Link href="/products">
               Start Shopping Now
               <ArrowRight className="ml-2 h-4 w-4" />

@@ -8,6 +8,7 @@ import { Input } from '@/components/ui/input'
 import { Badge } from '@/components/ui/badge'
 import { useCartStore } from '@/stores/cart-store'
 import { useAuthStore } from '@/stores/auth-store'
+import { ThemeToggle } from '@/components/theme/theme-toggle'
 
 export function Header() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
@@ -70,6 +71,9 @@ export function Header() {
 
           {/* Right Side Actions */}
           <div className="flex items-center space-x-4">
+            {/* Theme Toggle */}
+            <ThemeToggle />
+
             {/* Cart */}
             <Link href="/cart" className="relative">
               <Button variant="ghost" size="icon">
@@ -136,34 +140,38 @@ export function Header() {
 
               {/* Mobile Navigation */}
               <nav className="flex flex-col space-y-2 px-4">
-                <Link 
-                  href="/" 
-                  className="text-sm font-medium hover:text-primary transition-colors py-2"
-                  onClick={() => setIsMobileMenuOpen(false)}
-                >
-                  Home
-                </Link>
-                <Link 
-                  href="/products" 
-                  className="text-sm font-medium hover:text-primary transition-colors py-2"
-                  onClick={() => setIsMobileMenuOpen(false)}
-                >
-                  Products
-                </Link>
-                <Link 
-                  href="/categories" 
-                  className="text-sm font-medium hover:text-primary transition-colors py-2"
-                  onClick={() => setIsMobileMenuOpen(false)}
-                >
-                  Categories
-                </Link>
-                <Link 
-                  href="/deals" 
-                  className="text-sm font-medium hover:text-primary transition-colors py-2"
-                  onClick={() => setIsMobileMenuOpen(false)}
-                >
-                  Deals
-                </Link>
+                <div onClick={() => setIsMobileMenuOpen(false)}>
+                  <Link 
+                    href="/" 
+                    className="text-sm font-medium hover:text-primary transition-colors py-2 block"
+                  >
+                    Home
+                  </Link>
+                </div>
+                <div onClick={() => setIsMobileMenuOpen(false)}>
+                  <Link 
+                    href="/products" 
+                    className="text-sm font-medium hover:text-primary transition-colors py-2 block"
+                  >
+                    Products
+                  </Link>
+                </div>
+                <div onClick={() => setIsMobileMenuOpen(false)}>
+                  <Link 
+                    href="/categories" 
+                    className="text-sm font-medium hover:text-primary transition-colors py-2 block"
+                  >
+                    Categories
+                  </Link>
+                </div>
+                <div onClick={() => setIsMobileMenuOpen(false)}>
+                  <Link 
+                    href="/deals" 
+                    className="text-sm font-medium hover:text-primary transition-colors py-2 block"
+                  >
+                    Deals
+                  </Link>
+                </div>
               </nav>
             </div>
           </div>
