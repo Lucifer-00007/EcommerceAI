@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo } from "react";
+import { useMemo, useState, useEffect } from "react";
 import { useSearchParams } from "next/navigation";
 
 export type ExperimentVariant = "A" | "B";
@@ -23,19 +23,31 @@ export function useExperimentVariant(experimentKey: string): ExperimentVariant {
     [forced],
   );
 
-  return useMemo(() => {
-    if (normalizedForced) return normalizedForced;
-    if (typeof window === "undefined") return "A";
+  // Initialize with "A" (or forced value) to ensure Server and Client match on first render.
+  const [variant, setVariant] = useState<ExperimentVariant>(normalizedForced ?? "A");
+
+  useEffect(() => {
+    // If we have a forced value from URL, we don't need to check storage
+    if (normalizedForced) return;
+
     try {
-      const stored = window.localStorage.getItem(storageKey(experimentKey)) as ExperimentVariant | null;
-      if (stored === "A" || stored === "B") return stored;
+      const storageK = storageKey(experimentKey);
+      const stored = window.localStorage.getItem(storageK) as ExperimentVariant | null;
+      if (stored === "A" || stored === "B") {
+        // eslint-disable-next-line react-hooks/set-state-in-effect
+        setVariant(stored);
+        return;
+      }
       const next = chooseVariant(`${experimentKey}:${window.location.pathname}`);
-      window.localStorage.setItem(storageKey(experimentKey), next);
-      return next;
+      window.localStorage.setItem(storageK, next);
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setVariant(next);
     } catch {
-      return "A";
+      // Ignore errors (e.g. storage quota, security)
     }
   }, [experimentKey, normalizedForced]);
+
+  return variant;
 }
 
 export function Experiment({

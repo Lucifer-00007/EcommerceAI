@@ -1,8 +1,7 @@
-import type { ReactNode } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import dynamic from "next/dynamic";
-import { Armchair, Boxes, Laptop, Shirt, ChevronLeft, ChevronRight, PlayCircle } from "lucide-react";
+import { ArrowRight, Boxes, Footprints, Shirt, Star } from "lucide-react";
 
 import { Container } from "@/components/layout/container";
 import { NewsletterForm } from "@/components/marketing/newsletter-form";
@@ -10,10 +9,9 @@ import { Reveal } from "@/components/common/reveal";
 import { StyleInspiration } from "@/components/marketing/style-inspiration";
 import { TestimonialGrid } from "@/components/marketing/testimonial-grid";
 import { TrendingSocial } from "@/components/marketing/trending-social";
-import { ProductGrid } from "@/components/product/product-grid";
+import { TrendingNews } from "@/components/marketing/trending-news";
 import { Button } from "@/components/ui/button";
 import { routes } from "@/lib/routes";
-import { categories } from "@/services/mock/db";
 import { getCatalogProducts } from "@/services/admin/catalog-store";
 
 const FeaturedCollections = dynamic(
@@ -29,14 +27,14 @@ const SizeGuideSection = dynamic(
 export default function Home() {
   const products = getCatalogProducts();
   const featured = products.filter((p) => p.featured);
-  const heroProduct = featured[0] ?? products[0];
+  const heroProduct = featured.find(p => p.name.includes("Tee")) ?? products[0];
 
-  const iconByCategorySlug: Record<string, ReactNode> = {
-    apparel: <Shirt className="h-5 w-5" />,
-    electronics: <Laptop className="h-5 w-5" />,
-    home: <Armchair className="h-5 w-5" />,
-    accessories: <Boxes className="h-5 w-5" />,
-  };
+  const categories = [
+    { id: "apparel", name: "Apparel", icon: <Shirt className="h-6 w-6" />, href: `${routes.products}?category=cat_apparel` },
+    { id: "accessories", name: "Accessories", icon: <Boxes className="h-6 w-6" />, href: `${routes.products}?category=cat_accessories` },
+    { id: "shoes", name: "Shoes", icon: <Footprints className="h-6 w-6" />, href: `${routes.products}?category=cat_shoes` },
+    { id: "bestsellers", name: "Best Sellers", icon: <Star className="h-6 w-6" />, href: `${routes.products}?sort=rating` },
+  ];
 
   return (
     <div>
@@ -47,41 +45,45 @@ export default function Home() {
               <div className="inline-flex w-fit items-center rounded-full bg-primary/10 px-3 py-1 text-xs font-medium text-primary ring-1 ring-inset ring-primary/15">
                 New Arrivals
               </div>
-              <h1 className="text-4xl font-black tracking-tight text-foreground sm:text-6xl lg:text-5xl xl:text-6xl">
-                Summer Collection <span className="text-primary">2024</span>
+              <h1 className="text-5xl font-black tracking-tight text-foreground sm:text-6xl lg:text-7xl">
+                Summer Collection <br /><span className="text-primary">2024</span>
               </h1>
-              <p className="text-lg leading-8 text-muted-foreground">
-                Minimalist styles for the modern home. Discover our latest arrivals designed for
-                comfort, elegance, and everyday living.
+              <p className="text-lg leading-8 text-muted-foreground max-w-md">
+                All-weather materials that endure. Discover our latest items included designed for comfort, elegance, and everyday living.
               </p>
               <div className="mt-2 flex items-center gap-4">
-                <Button asChild className="h-12 rounded-lg px-8 text-sm font-semibold">
+                <Button asChild className="h-12 rounded-full px-8 text-sm font-bold shadow-lg shadow-primary/20">
                   <Link href={routes.products}>Explore Collection</Link>
                 </Button>
                 <Button
                   asChild
                   variant="ghost"
-                  className="h-12 rounded-lg px-6 text-sm font-semibold text-foreground hover:bg-secondary"
+                  className="h-12 rounded-full px-6 text-sm font-semibold text-foreground hover:bg-secondary"
                 >
-                  <Link href={routes.about}>
-                    Watch Video <PlayCircle className="ml-2 h-5 w-5" />
+                  <Link href={routes.clothes}>
+                    What&apos;s new <ArrowRight className="ml-2 h-4 w-4" />
                   </Link>
                 </Button>
               </div>
             </div>
 
-            <div className="relative lg:col-span-1">
-              <div className="relative aspect-[4/3] w-full overflow-hidden rounded-2xl bg-secondary shadow-xl lg:aspect-square">
-                <div className="absolute inset-0 bg-gradient-to-tr from-black/5 to-transparent mix-blend-multiply" />
+            <div className="relative lg:col-span-1 lg:translate-x-12">
+              <div className="relative aspect-[4/5] w-full max-w-md mx-auto lg:mx-0 overflow-hidden rounded-3xl bg-[#111] shadow-2xl ring-1 ring-white/10 lg:aspect-square">
+                <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent z-10" />
                 {heroProduct ? (
-                  <Image
-                    src={heroProduct.images[0].src}
-                    alt={heroProduct.images[0].alt}
-                    fill
-                    className="object-cover"
-                    sizes="(max-width: 1024px) 100vw, 50vw"
-                    priority
-                  />
+                  <>
+                    <Image
+                      src={heroProduct.images[0].src}
+                      alt={heroProduct.images[0].alt}
+                      fill
+                      className="object-contain p-12"
+                      sizes="(max-width: 1024px) 100vw, 50vw"
+                      priority
+                    />
+                    <div className="absolute bottom-8 left-0 right-0 z-20 text-center">
+                       <h3 className="text-2xl font-bold text-white">{heroProduct.name}</h3>
+                    </div>
+                  </>
                 ) : null}
               </div>
             </div>
@@ -89,28 +91,28 @@ export default function Home() {
         </Container>
       </section>
 
-      <section className="border-y bg-card py-12">
+      <section className="py-12 bg-background">
         <Container>
-          <Reveal className="mb-8 flex items-center justify-between gap-4">
-            <h2 className="text-2xl font-bold tracking-tight text-foreground">Browse by Category</h2>
+          <div className="flex items-center justify-between mb-8">
+            <h2 className="text-xl font-bold tracking-tight text-foreground">Browse by Category</h2>
             <Link
               href={routes.products}
-              className="flex items-center gap-1 text-sm font-semibold text-primary hover:opacity-90"
+              className="text-sm font-medium text-primary hover:underline"
             >
               View all
             </Link>
-          </Reveal>
-          <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-6">
+          </div>
+          <div className="flex flex-wrap gap-4 md:gap-8 justify-between lg:justify-start">
             {categories.map((category) => (
               <Link
                 key={category.id}
-                href={`${routes.products}?category=${encodeURIComponent(category.slug)}`}
-                className="group flex flex-col items-center justify-center gap-3 rounded-xl border bg-secondary p-6 transition-all duration-300 hover:border-primary/50 hover:bg-primary/5"
+                href={category.href}
+                className="group flex flex-1 min-w-[140px] flex-col items-center justify-center gap-4 rounded-xl border bg-card p-8 transition-all duration-300 hover:border-primary/50 hover:shadow-md"
               >
-                <div className="flex h-12 w-12 items-center justify-center rounded-full bg-card text-muted-foreground shadow-sm transition-transform group-hover:scale-110 group-hover:text-primary">
-                  {iconByCategorySlug[category.slug] ?? <Boxes className="h-5 w-5" />}
+                <div className="flex h-16 w-16 items-center justify-center rounded-full bg-secondary text-muted-foreground transition-all duration-300 group-hover:scale-110 group-hover:bg-primary group-hover:text-primary-foreground">
+                  {category.icon}
                 </div>
-                <span className="text-sm font-medium text-foreground transition-colors group-hover:text-primary">
+                <span className="font-semibold text-foreground group-hover:text-primary">
                   {category.name}
                 </span>
               </Link>
@@ -125,55 +127,13 @@ export default function Home() {
 
       <TrendingSocial products={products} />
 
-      <section className="bg-background py-16">
-        <Container>
-          <div className="mb-10 flex flex-col justify-between gap-4 md:flex-row md:items-end">
-            <div>
-              <h2 className="text-3xl font-bold tracking-tight text-foreground">Trending Now</h2>
-              <p className="mt-2 text-muted-foreground">Handpicked items popular this week.</p>
-            </div>
-            <div className="flex gap-2">
-              <Button
-                type="button"
-                variant="outline"
-                size="icon"
-                className="rounded-lg bg-card text-muted-foreground"
-                aria-label="Previous"
-                disabled
-              >
-                <ChevronLeft className="h-5 w-5" />
-              </Button>
-              <Button
-                type="button"
-                variant="outline"
-                size="icon"
-                className="rounded-lg bg-card text-muted-foreground"
-                aria-label="Next"
-                disabled
-              >
-                <ChevronRight className="h-5 w-5" />
-              </Button>
-            </div>
-          </div>
+      <TrendingNews />
 
-          <div className="space-y-12">
-            <ProductGrid products={(featured.length ? featured : products).slice(0, 4)} />
-            <div className="flex justify-center">
-              <Button asChild variant="outline" className="h-12 rounded-lg bg-card px-6 text-sm font-semibold text-foreground">
-                <Link href={routes.products}>Load More Products</Link>
-              </Button>
-            </div>
-          </div>
-        </Container>
-      </section>
-
-      <section className="bg-card py-16">
+      <section className="bg-card py-20 border-t">
         <Container>
-          <Reveal className="mb-10 flex flex-col justify-between gap-4 md:flex-row md:items-end">
-            <div>
-              <h2 className="text-3xl font-bold tracking-tight text-foreground">What Customers Say</h2>
-              <p className="mt-2 text-muted-foreground">Feedback from verified purchasers.</p>
-            </div>
+          <Reveal className="mb-12">
+             <h2 className="text-3xl font-bold tracking-tight text-foreground mb-2">What Customers Say</h2>
+             <p className="text-muted-foreground">Feedback from verified purchasers.</p>
           </Reveal>
           <TestimonialGrid />
         </Container>
@@ -181,15 +141,15 @@ export default function Home() {
 
       <SizeGuideSection />
 
-      <section className="bg-primary/5 py-16">
+      <section className="bg-primary/5 py-24">
         <Container className="text-center">
-          <h2 className="text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
+          <h2 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
             Get style drops and early access
           </h2>
           <p className="mx-auto mt-4 max-w-xl text-lg text-muted-foreground">
             Join the list for new arrivals, exclusive collections, and limited-time offers.
           </p>
-          <div className="mt-8">
+          <div className="mt-10">
             <NewsletterForm />
           </div>
         </Container>

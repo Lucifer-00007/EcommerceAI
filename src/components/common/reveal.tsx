@@ -7,9 +7,11 @@ import { cn } from "@/lib/utils";
 export function Reveal({
   children,
   className,
+  style,
 }: {
   children: React.ReactNode;
   className?: string;
+  style?: React.CSSProperties;
 }) {
   const ref = useRef<HTMLDivElement | null>(null);
   const [visible, setVisible] = useState(
@@ -43,6 +45,7 @@ export function Reveal({
         visible ? "translate-y-0 opacity-100" : "translate-y-3 opacity-0",
         className,
       )}
+      style={style}
     >
       {children}
     </div>
