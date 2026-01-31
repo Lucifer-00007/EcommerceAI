@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useState, useTransition } from "react";
+import { useCallback, useMemo, useState, useTransition } from "react";
 import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useQuery } from "@tanstack/react-query";
@@ -72,6 +72,7 @@ function FilterSidebar({
   setSelectedColors,
   priceRange,
   setPriceRange,
+  onPriceCommit,
   onClear,
   mode,
 }: {
@@ -84,6 +85,7 @@ function FilterSidebar({
   setSelectedColors: (next: Set<ClothColor["key"]>) => void;
   priceRange: [number, number];
   setPriceRange: (next: [number, number]) => void;
+  onPriceCommit: (next: [number, number]) => void;
   onClear: () => void;
   mode: "desktop" | "mobile";
 }) {
@@ -136,9 +138,14 @@ function FilterSidebar({
             <Slider
               value={[priceRange[0], priceRange[1]]}
               min={0}
-              max={500}
+              max={250}
               step={5}
               onValueChange={(v) => setPriceRange([v[0] ?? 0, v[1] ?? 0])}
+              onValueCommit={(v) => {
+                const next: [number, number] = [v[0] ?? 0, v[1] ?? 0];
+                setPriceRange(next);
+                onPriceCommit(next);
+              }}
             />
           </div>
           <div className="flex items-center justify-between gap-4">
@@ -149,6 +156,7 @@ function FilterSidebar({
                 inputMode="numeric"
                 value={priceRange[0]}
                 onChange={(e) => setPriceRange([Number(e.target.value || 0), priceRange[1]])}
+                onBlur={() => onPriceCommit(priceRange)}
                 className="h-7 w-full border-0 bg-transparent p-0 text-right text-sm font-medium text-foreground shadow-none focus-visible:ring-0"
                 aria-label="Min price"
               />
@@ -161,6 +169,7 @@ function FilterSidebar({
                 inputMode="numeric"
                 value={priceRange[1]}
                 onChange={(e) => setPriceRange([priceRange[0], Number(e.target.value || 0)])}
+                onBlur={() => onPriceCommit(priceRange)}
                 className="h-7 w-full border-0 bg-transparent p-0 text-right text-sm font-medium text-foreground shadow-none focus-visible:ring-0"
                 aria-label="Max price"
               />
@@ -263,8 +272,8 @@ export function ClothesClient() {
       category: "apparel",
       sort,
       page,
-      minPrice: priceRange[0] || undefined,
-      maxPrice: priceRange[1] || undefined,
+      minPrice: priceRange[0] > 0 ? priceRange[0] : undefined,
+      maxPrice: priceRange[1] < 250 ? priceRange[1] : undefined,
       pageSize: 12,
     }),
     [debouncedQ, page, priceRange, sort],
@@ -311,13 +320,15 @@ export function ClothesClient() {
     setPriceRange([0, 250]);
     startTransition(() => router.replace(`${pathname}?${params.toString()}`));
   }
-
-  useEffect(() => {
-    updateParams({
-      minPrice: String(priceRange[0]),
-      maxPrice: String(priceRange[1]),
-    });
-  }, [priceRange, updateParams]);
+  const onPriceCommit = useCallback(
+    (next: [number, number]) => {
+      updateParams({
+        minPrice: next[0] > 0 ? String(next[0]) : undefined,
+        maxPrice: next[1] < 250 ? String(next[1]) : undefined,
+      });
+    },
+    [updateParams],
+  );
 
   return (
     <div className="w-full">
@@ -379,6 +390,7 @@ export function ClothesClient() {
                   setSelectedColors={(next) => updateParams({ colors: formatCsv(next) || undefined })}
                   priceRange={priceRange}
                   setPriceRange={setPriceRange}
+                  onPriceCommit={onPriceCommit}
                   onClear={clearAll}
                 mode="mobile"
                 />
@@ -399,6 +411,7 @@ export function ClothesClient() {
           setSelectedColors={(next) => updateParams({ colors: formatCsv(next) || undefined })}
           priceRange={priceRange}
           setPriceRange={setPriceRange}
+          onPriceCommit={onPriceCommit}
           onClear={clearAll}
           mode="desktop"
         />
