@@ -2,12 +2,13 @@
 
 import Link from "next/link";
 import { useMemo } from "react";
-import { ShoppingCart, User } from "lucide-react";
+import { Heart, Menu, ShoppingBag, ShoppingCart, User } from "lucide-react";
 import { toast } from "sonner";
 
 import { ThemeToggle } from "@/components/theme/theme-toggle";
 import { Button } from "@/components/ui/button";
 import { Container } from "@/components/layout/container";
+import { HeaderSearch } from "@/components/layout/header-search";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -15,19 +16,10 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import {
-  NavigationMenu,
-  NavigationMenuContent,
-  NavigationMenuItem,
-  NavigationMenuLink,
-  NavigationMenuList,
-  NavigationMenuTrigger,
-} from "@/components/ui/navigation-menu";
 import { routes } from "@/lib/routes";
 import { useCartStore } from "@/features/cart/store";
 import { useAuthStore } from "@/features/auth/store";
 import { isAdminUser } from "@/features/auth/is-admin";
-import { categories } from "@/services/mock/db";
 
 export function SiteHeader() {
   const items = useCartStore((s) => s.items);
@@ -42,76 +34,35 @@ export function SiteHeader() {
   const isAdmin = isAdminUser(user);
 
   return (
-    <header className="border-b">
+    <header className="sticky top-0 z-50 w-full border-b bg-card/80 backdrop-blur-md">
       <Container className="flex h-16 items-center justify-between gap-4">
-        <div className="flex items-center gap-6">
-          <Link href={routes.home} className="font-semibold tracking-tight">
-            EcommerceAI
+        <div className="flex items-center gap-2">
+          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-primary-foreground">
+            <ShoppingBag className="h-4 w-4" />
+          </div>
+          <Link href={routes.home} className="hidden text-xl font-bold tracking-tight sm:block">
+            Lumina
           </Link>
-
-          <NavigationMenu className="hidden md:flex">
-            <NavigationMenuList>
-              <NavigationMenuItem>
-                <NavigationMenuTrigger>Shop</NavigationMenuTrigger>
-                <NavigationMenuContent>
-                  <div className="grid gap-1 p-2 md:w-[360px]">
-                    <NavigationMenuLink asChild className="rounded-md px-3 py-2 text-sm hover:bg-accent hover:text-accent-foreground">
-                      <Link href={routes.products}>All products</Link>
-                    </NavigationMenuLink>
-                    <div className="grid grid-cols-2 gap-1">
-                      {categories.map((c) => (
-                        <NavigationMenuLink
-                          key={c.id}
-                          asChild
-                          className="rounded-md px-3 py-2 text-sm text-muted-foreground hover:bg-accent hover:text-accent-foreground"
-                        >
-                          <Link href={`${routes.products}?category=${encodeURIComponent(c.slug)}`}>
-                            {c.name}
-                          </Link>
-                        </NavigationMenuLink>
-                      ))}
-                    </div>
-                  </div>
-                </NavigationMenuContent>
-              </NavigationMenuItem>
-
-              <NavigationMenuItem>
-                <NavigationMenuTrigger>Company</NavigationMenuTrigger>
-                <NavigationMenuContent>
-                  <div className="grid gap-1 p-2 md:w-[260px]">
-                    <NavigationMenuLink asChild className="rounded-md px-3 py-2 text-sm hover:bg-accent hover:text-accent-foreground">
-                      <Link href={routes.about}>About</Link>
-                    </NavigationMenuLink>
-                    <NavigationMenuLink asChild className="rounded-md px-3 py-2 text-sm hover:bg-accent hover:text-accent-foreground">
-                      <Link href={routes.contact}>Contact</Link>
-                    </NavigationMenuLink>
-                    <NavigationMenuLink asChild className="rounded-md px-3 py-2 text-sm hover:bg-accent hover:text-accent-foreground">
-                      <Link href={routes.faq}>FAQ</Link>
-                    </NavigationMenuLink>
-                  </div>
-                </NavigationMenuContent>
-              </NavigationMenuItem>
-            </NavigationMenuList>
-          </NavigationMenu>
         </div>
 
-        <div className="flex items-center gap-2">
-          <ThemeToggle />
+        <HeaderSearch className="hidden max-w-md flex-1 md:flex md:px-8" />
 
-          <Button asChild variant="ghost" size="icon" aria-label="Open cart">
-            <Link href={routes.cart} className="relative">
-              <ShoppingCart className="h-5 w-5" />
-              {itemCount > 0 ? (
-                <span className="absolute -right-2 -top-2 inline-flex h-5 min-w-5 items-center justify-center rounded-full bg-primary px-1 text-[11px] font-medium text-primary-foreground">
-                  {itemCount}
-                </span>
-              ) : null}
+        <div className="flex items-center gap-1 sm:gap-2">
+          <nav className="hidden items-center gap-6 text-sm font-medium text-muted-foreground lg:flex">
+            <Link href={routes.home} className="hover:text-primary">
+              Home
             </Link>
-          </Button>
+            <Link href={routes.products} className="hover:text-primary">
+              Shop
+            </Link>
+            <Link href={routes.about} className="hover:text-primary">
+              About
+            </Link>
+          </nav>
 
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="ghost" size="icon" aria-label="Account">
+              <Button variant="ghost" size="icon" aria-label="Account" className="rounded-full">
                 <User className="h-5 w-5" />
               </Button>
             </DropdownMenuTrigger>
@@ -138,12 +89,12 @@ export function SiteHeader() {
                       try {
                         await logout();
                         toast.success("Signed out");
-                      } catch {
-                        toast.error("Sign out failed");
+                      } catch (e) {
+                        toast.error((e as Error)?.message ?? "Sign out failed");
                       }
                     }}
                   >
-                    Logout
+                    Sign out
                   </DropdownMenuItem>
                 </>
               ) : (
@@ -158,7 +109,46 @@ export function SiteHeader() {
               )}
             </DropdownMenuContent>
           </DropdownMenu>
+
+          <Button
+            type="button"
+            variant="ghost"
+            size="icon"
+            aria-label="Favorites"
+            className="rounded-full text-muted-foreground hover:text-primary"
+            onClick={() => toast("Favorites are not implemented in this demo.")}
+          >
+            <Heart className="h-5 w-5" />
+          </Button>
+
+          <Button asChild variant="ghost" size="icon" aria-label="Open cart" className="rounded-full">
+            <Link href={routes.cart} className="relative">
+              <ShoppingCart className="h-5 w-5 text-muted-foreground" />
+              {itemCount > 0 ? (
+                <span className="absolute right-1 top-1 inline-flex h-2 w-2">
+                  <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-primary opacity-75" />
+                  <span className="relative inline-flex h-2 w-2 rounded-full bg-primary" />
+                </span>
+              ) : null}
+            </Link>
+          </Button>
+
+          <ThemeToggle />
+
+          <Button
+            type="button"
+            variant="ghost"
+            size="icon"
+            aria-label="Menu"
+            className="rounded-full md:hidden"
+          >
+            <Menu className="h-5 w-5" />
+          </Button>
         </div>
+      </Container>
+
+      <Container className="pb-3 md:hidden">
+        <HeaderSearch />
       </Container>
     </header>
   );

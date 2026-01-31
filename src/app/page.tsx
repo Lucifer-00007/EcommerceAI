@@ -1,234 +1,161 @@
+import type { ReactNode } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { Armchair, Boxes, Laptop, Shirt, ChevronLeft, ChevronRight, PlayCircle } from "lucide-react";
 
 import { Container } from "@/components/layout/container";
-import { EmptyState } from "@/components/common/empty-state";
 import { NewsletterForm } from "@/components/marketing/newsletter-form";
-import { TestimonialGrid } from "@/components/marketing/testimonial-grid";
 import { ProductGrid } from "@/components/product/product-grid";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
 import { routes } from "@/lib/routes";
 import { categories } from "@/services/mock/db";
 import { getCatalogProducts } from "@/services/admin/catalog-store";
 
 export default function Home() {
-  const featured = getCatalogProducts()
-    .filter((p) => p.featured)
-    .slice(0, 6);
+  const products = getCatalogProducts();
+  const featured = products.filter((p) => p.featured);
+  const heroProduct = featured[0] ?? products[0];
+
+  const iconByCategorySlug: Record<string, ReactNode> = {
+    apparel: <Shirt className="h-5 w-5" />,
+    electronics: <Laptop className="h-5 w-5" />,
+    home: <Armchair className="h-5 w-5" />,
+    accessories: <Boxes className="h-5 w-5" />,
+  };
 
   return (
-    <div className="space-y-14 py-10">
-      <Container>
-        <section className="grid gap-8 md:grid-cols-2 md:items-center">
-          <div className="space-y-4">
-            <h1 className="text-3xl font-semibold tracking-tight md:text-5xl">
-              Modern essentials for everyday life
-            </h1>
-            <p className="text-muted-foreground">
-              A production-ready storefront frontend built with Next.js App Router, Tailwind, and
-              shadcn/ui.
-            </p>
-            <div className="flex flex-col gap-3 sm:flex-row">
-              <Button asChild>
-                <Link href={routes.products}>Shop products</Link>
-              </Button>
-              <Button asChild variant="secondary">
-                <Link href={routes.cart}>View cart</Link>
-              </Button>
-            </div>
-          </div>
-
-          <div className="grid grid-cols-2 gap-3">
-            {featured.slice(0, 4).map((p) => (
-              <Card key={p.id} className="overflow-hidden">
-                <CardContent className="p-0">
-                  <Link href={`${routes.products}/${p.slug}`} className="block">
-                    <div className="relative aspect-square bg-muted">
-                      <Image
-                        src={p.images[0].src}
-                        alt={p.images[0].alt}
-                        fill
-                        className="object-cover"
-                        sizes="(max-width: 768px) 50vw, 25vw"
-                      />
-                    </div>
-                  </Link>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-        </section>
-      </Container>
-
-      <Container>
-        <section className="rounded-2xl border bg-card p-6">
-          <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-            <div className="space-y-1">
-              <p className="text-sm text-muted-foreground">Trusted by teams building quickly</p>
-              <p className="text-lg font-semibold tracking-tight">Design tokens • Typed APIs • Fast UX</p>
-            </div>
-            <div className="grid grid-cols-2 gap-3 text-sm text-muted-foreground sm:grid-cols-4">
-              <div className="rounded-lg bg-muted px-3 py-2 text-center">Acme</div>
-              <div className="rounded-lg bg-muted px-3 py-2 text-center">Northwind</div>
-              <div className="rounded-lg bg-muted px-3 py-2 text-center">Umbrella</div>
-              <div className="rounded-lg bg-muted px-3 py-2 text-center">Globex</div>
-            </div>
-          </div>
-        </section>
-      </Container>
-
-      <Container>
-        <section className="space-y-4">
-          <div className="flex items-end justify-between gap-4">
-            <h2 className="text-xl font-semibold tracking-tight">Featured products</h2>
-            <Button asChild variant="ghost">
-              <Link href={routes.products}>Browse all</Link>
-            </Button>
-          </div>
-          {featured.length ? (
-            <ProductGrid products={featured} />
-          ) : (
-            <EmptyState title="No featured products" description="Try again later." />
-          )}
-        </section>
-      </Container>
-
-      <Container>
-        <section className="space-y-4">
-          <h2 className="text-xl font-semibold tracking-tight">Categories</h2>
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-            {categories.map((category) => (
-              <Card key={category.id} className="overflow-hidden">
-                <CardContent className="p-0">
-                  <Link
-                    href={`${routes.products}?category=${encodeURIComponent(category.slug)}`}
-                    className="block"
-                  >
-                    <div className="relative aspect-[4/3] bg-muted">
-                      <Image
-                        src={category.imageSrc}
-                        alt={category.name}
-                        fill
-                        className="object-cover"
-                        sizes="(max-width: 768px) 100vw, 25vw"
-                      />
-                    </div>
-                    <div className="p-4">
-                      <p className="font-medium">{category.name}</p>
-                      <p className="text-sm text-muted-foreground">Shop now</p>
-                    </div>
-                  </Link>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-        </section>
-      </Container>
-
-      <Container>
-        <section className="grid gap-4 md:grid-cols-3">
-          <Card>
-            <CardContent className="space-y-2 p-6">
-              <p className="font-medium">Fast shipping</p>
-              <p className="text-sm text-muted-foreground">Mocked checkout flow with validation.</p>
-            </CardContent>
-          </Card>
-          <Card>
-            <CardContent className="space-y-2 p-6">
-              <p className="font-medium">Secure UX</p>
-              <p className="text-sm text-muted-foreground">Defensive UI states and typed API.</p>
-            </CardContent>
-          </Card>
-          <Card>
-            <CardContent className="space-y-2 p-6">
-              <p className="font-medium">Accessible components</p>
-              <p className="text-sm text-muted-foreground">Keyboard-friendly, WCAG-aligned UI.</p>
-            </CardContent>
-          </Card>
-        </section>
-      </Container>
-
-      <Container>
-        <section className="space-y-4">
-          <div className="space-y-1">
-            <h2 className="text-xl font-semibold tracking-tight">What customers say</h2>
-            <p className="text-sm text-muted-foreground">A few highlights from early users.</p>
-          </div>
-          <TestimonialGrid />
-        </section>
-      </Container>
-
-      <Container>
-        <section className="rounded-2xl border bg-card p-6 md:p-8">
-          <div className="grid gap-6 md:grid-cols-2 md:items-center">
-            <div className="space-y-2">
-              <h2 className="text-xl font-semibold tracking-tight">Get product drops and updates</h2>
-              <p className="text-sm text-muted-foreground">
-                Join the newsletter. No spam, unsubscribe anytime.
+    <div>
+      <section className="relative overflow-hidden bg-card">
+        <Container className="py-12 lg:py-20">
+          <div className="grid grid-cols-1 items-center gap-12 lg:grid-cols-2 lg:gap-8">
+            <div className="flex max-w-2xl flex-col gap-6">
+              <div className="inline-flex w-fit items-center rounded-full bg-primary/10 px-3 py-1 text-xs font-medium text-primary ring-1 ring-inset ring-primary/15">
+                New Arrivals
+              </div>
+              <h1 className="text-4xl font-black tracking-tight text-foreground sm:text-6xl lg:text-5xl xl:text-6xl">
+                Summer Collection <span className="text-primary">2024</span>
+              </h1>
+              <p className="text-lg leading-8 text-muted-foreground">
+                Minimalist styles for the modern home. Discover our latest arrivals designed for
+                comfort, elegance, and everyday living.
               </p>
+              <div className="mt-2 flex items-center gap-4">
+                <Button asChild className="h-12 rounded-lg px-8 text-sm font-semibold">
+                  <Link href={routes.products}>Explore Collection</Link>
+                </Button>
+                <Button
+                  asChild
+                  variant="ghost"
+                  className="h-12 rounded-lg px-6 text-sm font-semibold text-foreground hover:bg-secondary"
+                >
+                  <Link href={routes.about}>
+                    Watch Video <PlayCircle className="ml-2 h-5 w-5" />
+                  </Link>
+                </Button>
+              </div>
             </div>
+
+            <div className="relative lg:col-span-1">
+              <div className="relative aspect-[4/3] w-full overflow-hidden rounded-2xl bg-secondary shadow-xl lg:aspect-square">
+                <div className="absolute inset-0 bg-gradient-to-tr from-black/5 to-transparent mix-blend-multiply" />
+                {heroProduct ? (
+                  <Image
+                    src={heroProduct.images[0].src}
+                    alt={heroProduct.images[0].alt}
+                    fill
+                    className="object-cover"
+                    sizes="(max-width: 1024px) 100vw, 50vw"
+                    priority
+                  />
+                ) : null}
+              </div>
+            </div>
+          </div>
+        </Container>
+      </section>
+
+      <section className="border-y bg-card py-12">
+        <Container>
+          <div className="mb-8 flex items-center justify-between gap-4">
+            <h2 className="text-2xl font-bold tracking-tight text-foreground">Browse by Category</h2>
+            <Link href={routes.products} className="flex items-center gap-1 text-sm font-semibold text-primary hover:opacity-90">
+              View all
+            </Link>
+          </div>
+          <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-6">
+            {categories.map((category) => (
+              <Link
+                key={category.id}
+                href={`${routes.products}?category=${encodeURIComponent(category.slug)}`}
+                className="group flex flex-col items-center justify-center gap-3 rounded-xl border bg-secondary p-6 transition-all duration-300 hover:border-primary/50 hover:bg-primary/5"
+              >
+                <div className="flex h-12 w-12 items-center justify-center rounded-full bg-card text-muted-foreground shadow-sm transition-transform group-hover:scale-110 group-hover:text-primary">
+                  {iconByCategorySlug[category.slug] ?? <Boxes className="h-5 w-5" />}
+                </div>
+                <span className="text-sm font-medium text-foreground transition-colors group-hover:text-primary">
+                  {category.name}
+                </span>
+              </Link>
+            ))}
+          </div>
+        </Container>
+      </section>
+
+      <section className="bg-background py-16">
+        <Container>
+          <div className="mb-10 flex flex-col justify-between gap-4 md:flex-row md:items-end">
+            <div>
+              <h2 className="text-3xl font-bold tracking-tight text-foreground">Trending Now</h2>
+              <p className="mt-2 text-muted-foreground">Handpicked items popular this week.</p>
+            </div>
+            <div className="flex gap-2">
+              <Button
+                type="button"
+                variant="outline"
+                size="icon"
+                className="rounded-lg bg-card text-muted-foreground"
+                aria-label="Previous"
+                disabled
+              >
+                <ChevronLeft className="h-5 w-5" />
+              </Button>
+              <Button
+                type="button"
+                variant="outline"
+                size="icon"
+                className="rounded-lg bg-card text-muted-foreground"
+                aria-label="Next"
+                disabled
+              >
+                <ChevronRight className="h-5 w-5" />
+              </Button>
+            </div>
+          </div>
+
+          <div className="space-y-12">
+            <ProductGrid products={(featured.length ? featured : products).slice(0, 4)} />
+            <div className="flex justify-center">
+              <Button asChild variant="outline" className="h-12 rounded-lg bg-card px-6 text-sm font-semibold text-foreground">
+                <Link href={routes.products}>Load More Products</Link>
+              </Button>
+            </div>
+          </div>
+        </Container>
+      </section>
+
+      <section className="bg-primary/5 py-16">
+        <Container className="text-center">
+          <h2 className="text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
+            Subscribe to our newsletter
+          </h2>
+          <p className="mx-auto mt-4 max-w-xl text-lg text-muted-foreground">
+            Get the latest updates on new products and upcoming sales.
+          </p>
+          <div className="mt-8">
             <NewsletterForm />
           </div>
-        </section>
-      </Container>
-
-      <Container>
-        <section className="space-y-4">
-          <div className="space-y-1">
-            <h2 className="text-xl font-semibold tracking-tight">Frequently asked</h2>
-            <p className="text-sm text-muted-foreground">Quick answers before you checkout.</p>
-          </div>
-
-          <div className="grid gap-4 md:grid-cols-3">
-            <Card>
-              <CardContent className="space-y-2 p-6">
-                <p className="font-medium">Do you support refunds?</p>
-                <p className="text-sm text-muted-foreground">
-                  This demo includes policy pages and a contact form for support workflows.
-                </p>
-              </CardContent>
-            </Card>
-            <Card>
-              <CardContent className="space-y-2 p-6">
-                <p className="font-medium">How is shipping calculated?</p>
-                <p className="text-sm text-muted-foreground">
-                  Shipping is mocked at checkout, but the UI is structured for real integrations.
-                </p>
-              </CardContent>
-            </Card>
-            <Card>
-              <CardContent className="space-y-2 p-6">
-                <p className="font-medium">Can I manage products?</p>
-                <p className="text-sm text-muted-foreground">
-                  An admin console provides product CRUD and basic site settings.
-                </p>
-              </CardContent>
-            </Card>
-          </div>
-        </section>
-      </Container>
-
-      <Container>
-        <section className="rounded-2xl border bg-card p-6 md:p-8">
-          <div className="grid gap-4 md:grid-cols-2 md:items-center">
-            <div className="space-y-2">
-              <h2 className="text-xl font-semibold tracking-tight">Ready to explore?</h2>
-              <p className="text-sm text-muted-foreground">
-                Browse products, add to cart, and walk through checkout in minutes.
-              </p>
-            </div>
-            <div className="flex flex-col gap-3 sm:flex-row md:justify-end">
-              <Button asChild>
-                <Link href={routes.products}>Shop now</Link>
-              </Button>
-              <Button asChild variant="secondary">
-                <Link href={routes.contact}>Contact</Link>
-              </Button>
-            </div>
-          </div>
-        </section>
-      </Container>
+        </Container>
+      </section>
     </div>
   );
 }

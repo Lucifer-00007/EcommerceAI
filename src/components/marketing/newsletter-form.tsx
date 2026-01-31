@@ -5,14 +5,15 @@ import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { cn } from "@/lib/utils";
 
-export function NewsletterForm() {
+export function NewsletterForm({ className }: { className?: string }) {
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
 
   return (
     <form
-      className="flex w-full flex-col gap-3 sm:flex-row"
+      className={cn("mx-auto flex w-full max-w-md gap-x-4", className)}
       onSubmit={async (e) => {
         e.preventDefault();
         setLoading(true);
@@ -27,15 +28,15 @@ export function NewsletterForm() {
     >
       <Input
         type="email"
-        placeholder="you@example.com"
+        placeholder="Enter your email"
         value={email}
         onChange={(e) => setEmail(e.target.value)}
         required
+        className="h-10 rounded-lg border-0 bg-card px-3.5 shadow-sm ring-1 ring-inset ring-border placeholder:text-muted-foreground focus-visible:ring-2 focus-visible:ring-primary"
       />
-      <Button type="submit" disabled={loading}>
+      <Button type="submit" disabled={loading} className="h-10 rounded-lg px-3.5">
         Subscribe
       </Button>
     </form>
   );
 }
-
