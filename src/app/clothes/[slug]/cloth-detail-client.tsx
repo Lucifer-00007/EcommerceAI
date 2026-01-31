@@ -4,7 +4,7 @@ import type { Product } from "@/types/ecommerce";
 
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState, useSyncExternalStore } from "react";
 import { ChevronDown, Minus, Plus, Search, ShoppingBag, Star } from "lucide-react";
 import { toast } from "sonner";
 
@@ -49,41 +49,43 @@ export function ClothDetailClient({
   const availableSizes = useMemo(() => getAvailableSizes(product), [product]);
   const availableColors = useMemo(() => getAvailableColors(product), [product]);
 
-  const [size, setSize] = useState<(typeof clothSizes)[number] | null>("M");
-  const [color, setColor] = useState<(typeof clothColors)[number]["key"] | null>(() => {
+  const initialColor = useMemo<(typeof clothColors)[number]["key"] | null>(() => {
     const first = clothColors.find((c) => availableColors.has(c.key));
     return first?.key ?? null;
-  });
+  }, [availableColors]);
+
+  const initialSize = useMemo<(typeof clothSizes)[number] | null>(() => {
+    if (!initialColor) return "M";
+    const preferred = clothSizes.find(
+      (s) => availableSizes.has(s) && getInventoryCount({ productId: product.id, size: s, color: initialColor }) > 0,
+    );
+    return preferred ?? "M";
+  }, [availableSizes, initialColor, product.id]);
+
+  const [color, setColor] = useState<(typeof clothColors)[number]["key"] | null>(() => initialColor);
+  const [size, setSize] = useState<(typeof clothSizes)[number] | null>(() => initialSize);
 
   const clothType = deriveClothType(product);
-  const selectedVariant: ClothVariantKey | null =
-    size && color ? { productId: product.id, size, color } : null;
+  const selectedVariant = useMemo<ClothVariantKey | null>(() => {
+    if (!size || !color) return null;
+    return { productId: product.id, size, color };
+  }, [color, product.id, size]);
 
-  const [inventoryCount, setInventoryCount] = useState<number | null>(null);
-
-  useEffect(() => {
-    if (!selectedVariant) {
-      setInventoryCount(null);
-      return;
-    }
-    setInventoryCount(getInventoryCount(selectedVariant));
-    const key = `${selectedVariant.productId}:${selectedVariant.size}:${selectedVariant.color}`;
-    return subscribeInventory((u) => {
-      if (u.key === key) setInventoryCount(u.count);
-    });
+  const selectedVariantKey = useMemo(() => {
+    if (!selectedVariant) return null;
+    return `${selectedVariant.productId}:${selectedVariant.size}:${selectedVariant.color}`;
   }, [selectedVariant]);
 
-  useEffect(() => {
-    if (!color || !size) return;
-    if (!availableColors.has(color) || !availableSizes.has(size)) return;
-    const count = getInventoryCount({ productId: product.id, size, color });
-    if (count > 0) return;
-    const next = clothSizes.find((s) => {
-      if (!availableSizes.has(s)) return false;
-      return getInventoryCount({ productId: product.id, size: s, color }) > 0;
-    });
-    if (next) setSize(next);
-  }, [availableColors, availableSizes, color, product.id, size]);
+  const inventoryCount = useSyncExternalStore(
+    (onStoreChange) => {
+      if (!selectedVariantKey) return () => {};
+      return subscribeInventory((u) => {
+        if (u.key === selectedVariantKey) onStoreChange();
+      });
+    },
+    () => (selectedVariant ? getInventoryCount(selectedVariant) : null),
+    () => null,
+  );
 
   const isInStock = inventoryCount !== null && inventoryCount > 0;
   const isLowStock = inventoryCount !== null && inventoryCount > 0 && inventoryCount <= 3;
@@ -245,7 +247,19 @@ export function ClothDetailClient({
                           backgroundColor: c.value,
                           boxShadow: active ? "0 0 0 2px var(--color-primary)" : undefined,
                         }}
-                        onClick={() => setColor(c.key)}
+                        onClick={() => {
+                          setColor(c.key);
+                          if (!size) return;
+                          if (!availableSizes.has(size)) return;
+                          const keep = getInventoryCount({ productId: product.id, size, color: c.key }) > 0;
+                          if (keep) return;
+                          const next = clothSizes.find(
+                            (s) =>
+                              availableSizes.has(s) &&
+                              getInventoryCount({ productId: product.id, size: s, color: c.key }) > 0,
+                          );
+                          if (next) setSize(next);
+                        }}
                       />
                     );
                   })}
