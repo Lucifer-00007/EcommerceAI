@@ -26,7 +26,7 @@ export function ImageWithFallback({
 
   const handleError = (e: React.SyntheticEvent<HTMLImageElement, Event>) => {
     setError(true);
-    console.error(`[ImageWithFallback] Failed to load image: ${src}`);
+    console.warn(`[ImageWithFallback] Failed to load image: ${src}`);
     if (onError) {
       onError(e);
     }
