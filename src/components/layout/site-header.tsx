@@ -55,6 +55,9 @@ export function SiteHeader() {
             <Link href={routes.products} className="hover:text-primary">
               Shop
             </Link>
+            <Link href={routes.clothes} className="hover:text-primary">
+              Clothes
+            </Link>
             <Link href={routes.about} className="hover:text-primary">
               About
             </Link>

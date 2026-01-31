@@ -9,13 +9,14 @@ import { categories } from "@/services/mock/db";
 import type { Product } from "@/types/ecommerce";
 import { formatPrice } from "@/utils/format";
 
-export function ProductCard({ product }: { product: Product }) {
+export function ProductCard({ product, hrefBase }: { product: Product; hrefBase?: string }) {
   const categoryName = categories.find((c) => c.id === product.categoryId)?.name ?? "Product";
+  const base = hrefBase ?? routes.products;
 
   return (
     <div className="group relative flex flex-col overflow-hidden rounded-xl border bg-card shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-lg">
       <div className="relative aspect-[4/5] w-full overflow-hidden bg-secondary">
-        <Link href={`${routes.products}/${product.slug}`} className="absolute inset-0">
+        <Link href={`${base}/${product.slug}`} className="absolute inset-0">
           <Image
             src={product.images[0].src}
             alt={product.images[0].alt}
@@ -31,7 +32,7 @@ export function ProductCard({ product }: { product: Product }) {
 
       <div className="flex flex-1 flex-col p-4">
         <h3 className="text-base font-medium text-foreground">
-          <Link href={`${routes.products}/${product.slug}`} className="hover:underline">
+          <Link href={`${base}/${product.slug}`} className="hover:underline">
             {product.name}
           </Link>
         </h3>
