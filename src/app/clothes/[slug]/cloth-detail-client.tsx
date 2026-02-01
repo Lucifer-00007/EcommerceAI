@@ -220,17 +220,25 @@ export function ClothDetailClient({
                   <span>({product.reviewCount} reviews)</span>
                 </div>
               </div>
-              <div className="flex items-end justify-between gap-4">
+              <div className="flex items-end gap-3">
                 <p className="text-3xl font-bold text-foreground">
                   {formatPrice(product.price.amount, product.price.currency)}
                 </p>
+                <p className="mb-1 text-lg text-muted-foreground line-through">
+                   {formatPrice(product.price.amount * 1.2, product.price.currency)}
+                </p>
+                <span className="mb-1 inline-flex items-center rounded-md bg-green-50 px-2 py-1 text-xs font-medium text-green-700 ring-1 ring-inset ring-green-600/20">
+                  Save 20%
+                </span>
               </div>
             </div>
 
             <div className="space-y-6">
               <div>
                 <div className="mb-3 flex items-center justify-between">
-                  <Label className="text-sm font-medium text-foreground">Color</Label>
+                  <Label className="text-sm font-medium text-foreground">
+                    Color: <span className="text-muted-foreground">{clothColors.find(c => c.key === color)?.name ?? "Select"}</span>
+                  </Label>
                 </div>
                 <div className="flex gap-3">
                   {clothColors.map((c) => {
@@ -268,7 +276,9 @@ export function ClothDetailClient({
 
               <div className="space-y-3">
                 <div className="mb-3 flex items-center justify-between">
-                  <Label className="text-sm font-medium text-foreground">Size</Label>
+                  <Label className="text-sm font-medium text-foreground">
+                    Size: <span className="text-muted-foreground">{size ?? "Select"}</span>
+                  </Label>
                   <Link href={routes.faq} className="text-sm text-primary hover:underline">
                     Size Guide
                   </Link>
@@ -348,7 +358,7 @@ export function ClothDetailClient({
 
               <Button
                 type="button"
-                className="h-12 flex-1 rounded-lg font-semibold"
+                className="h-12 flex-1 rounded-lg font-semibold bg-primary text-primary-foreground hover:bg-primary/90"
                 disabled={!canAdd}
                 onClick={() => {
                   if (!selectedVariant) {
@@ -419,6 +429,77 @@ export function ClothDetailClient({
             </div>
           </div>
         </div>
+      </div>
+
+      <div className="py-12 border-t">
+         <h2 className="text-2xl font-bold tracking-tight text-foreground mb-8">Customer Reviews</h2>
+         <div className="grid gap-12 lg:grid-cols-12">
+            <div className="lg:col-span-4 space-y-8">
+               <div className="flex items-end gap-4">
+                  <span className="text-6xl font-bold text-foreground">4.8</span>
+                  <div className="mb-2">
+                     <div className="flex text-yellow-400 mb-1">
+                        {[1,2,3,4,5].map(i => <Star key={i} className="w-5 h-5 fill-current" />)}
+                     </div>
+                     <p className="text-sm text-muted-foreground">Based on 124 reviews</p>
+                  </div>
+               </div>
+               
+               <div className="space-y-3">
+                  {[
+                     { l: '5', p: 80 },
+                     { l: '4', p: 12 },
+                     { l: '3', p: 5 },
+                     { l: '2', p: 1 },
+                     { l: '1', p: 2 },
+                  ].map((r) => (
+                     <div key={r.l} className="flex items-center gap-3 text-sm">
+                        <span className="w-2 font-medium">{r.l}</span>
+                        <div className="flex-1 h-2 rounded-full bg-secondary overflow-hidden">
+                           <div className="h-full bg-primary" style={{ width: `${r.p}%` }} />
+                        </div>
+                        <span className="w-8 text-right text-muted-foreground">{r.p}%</span>
+                     </div>
+                  ))}
+               </div>
+
+               <Button variant="outline" className="w-full h-12 rounded-lg font-medium">
+                  Write a Review
+               </Button>
+            </div>
+
+            <div className="lg:col-span-8 space-y-8">
+               {[
+                  { name: "Sarah J.", date: "2 days ago", title: "Great fit, perfect for hiking", body: "I bought this for a trip to the Rockies and it didn't disappoint. It packs down incredibly small but kept me warm in 40 degree weather. The charcoal color looks even better in person." },
+                  { name: "Mike K.", date: "1 week ago", title: "Good jacket, slightly tight sleeves", body: "Quality is top notch as expected. My only gripe is that the sleeves are a bit tighter than other jackets I've bought here in size M. If you plan to layer heavily, maybe size up." },
+                  { name: "Alex L.", date: "2 weeks ago", title: "Best purchase this winter", body: "Absolutely love it. It's so light you forget you're wearing it, but it blocks the wind perfectly." }
+               ].map((review, i) => (
+                  <div key={i} className="border-b pb-8 last:border-0 last:pb-0">
+                     <div className="flex items-center gap-3 mb-4">
+                        <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold">
+                           {review.name[0]}
+                        </div>
+                        <div>
+                           <h4 className="font-semibold text-foreground">{review.name}</h4>
+                           <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                              <div className="flex text-yellow-400">
+                                 {[1,2,3,4,5].map(s => <Star key={s} className="w-3 h-3 fill-current" />)}
+                              </div>
+                              <span>{review.date}</span>
+                           </div>
+                        </div>
+                     </div>
+                     <h5 className="font-medium text-foreground mb-2">{review.title}</h5>
+                     <p className="text-muted-foreground leading-relaxed text-sm">
+                        {review.body}
+                     </p>
+                  </div>
+               ))}
+               <Button variant="ghost" className="text-primary hover:text-primary/80 hover:bg-transparent p-0 h-auto font-medium">
+                  View all 124 reviews
+               </Button>
+            </div>
+         </div>
       </div>
 
       {related.length ? (

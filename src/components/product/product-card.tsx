@@ -17,8 +17,8 @@ export function ProductCard({ product, hrefBase }: { product: Product; hrefBase?
     product.categoryId === "cat_apparel" ? getClothImages(product)[0] ?? product.images[0] : product.images[0];
 
   return (
-    <div className="group relative flex flex-col overflow-hidden rounded-xl border bg-card shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-lg">
-      <div className="relative aspect-[4/5] w-full overflow-hidden bg-secondary">
+    <div className="group relative flex flex-col">
+      <div className="relative aspect-[3/4] w-full overflow-hidden rounded-lg bg-secondary">
         <Link href={`${base}/${product.slug}`} className="absolute inset-0">
           <ImageWithFallback
             src={primaryImage?.src ?? product.images[0].src}
@@ -28,32 +28,36 @@ export function ProductCard({ product, hrefBase }: { product: Product; hrefBase?
             className="object-cover transition-transform duration-500 group-hover:scale-105"
           />
         </Link>
-        <div className="absolute right-3 top-3">
-          <FavoriteButton productId={product.id} className="translate-y-2" />
+        <div className="absolute right-3 top-3 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
+          <FavoriteButton productId={product.id} className="h-9 w-9 rounded-full bg-white/90 shadow-sm hover:bg-white" />
         </div>
       </div>
 
-      <div className="flex flex-1 flex-col p-4">
-        <h3 className="text-base font-medium text-foreground">
-          <Link href={`${base}/${product.slug}`} className="hover:underline">
-            {product.name}
-          </Link>
-        </h3>
-        <p className="mt-1 text-sm text-muted-foreground">{categoryName}</p>
-
-        <div className="mt-4 flex flex-1 items-end justify-between gap-3">
-          <p className="text-lg font-bold text-foreground">
-            {formatPrice(product.price.amount, product.price.currency)}
-          </p>
-          <div className="flex items-center rounded-full bg-secondary px-2 py-1 text-xs font-medium text-muted-foreground">
+      <div className="flex flex-1 flex-col pt-4">
+        <div className="flex items-start justify-between gap-4">
+          <div>
+            <h3 className="text-base font-medium text-foreground">
+              <Link href={`${base}/${product.slug}`} className="hover:underline">
+                {product.name}
+              </Link>
+            </h3>
+            <p className="mt-1 text-sm text-muted-foreground">{categoryName}</p>
+          </div>
+          <div className="flex items-center rounded-full bg-secondary/50 px-2 py-1 text-xs font-medium">
             <Star className="mr-1 h-3.5 w-3.5 fill-yellow-400 text-yellow-400" />
             {product.rating.toFixed(1)}
           </div>
         </div>
 
+        <div className="mt-2 flex items-center justify-between">
+          <p className="text-lg font-bold text-foreground">
+            {formatPrice(product.price.amount, product.price.currency)}
+          </p>
+        </div>
+
         <AddToCartButton
           productId={product.id}
-          className="mt-4 h-10 w-full rounded-lg border border-primary bg-transparent font-semibold text-primary hover:bg-primary hover:text-primary-foreground"
+          className="mt-4 h-10 w-full rounded-full border-primary bg-background font-semibold text-primary transition-colors hover:bg-primary hover:text-primary-foreground md:opacity-0 md:group-hover:opacity-100"
           variant="outline"
         />
       </div>
