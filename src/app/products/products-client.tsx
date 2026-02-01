@@ -147,7 +147,7 @@ export function ProductsClient() {
   return (
     <div className="w-full">
       {/* --- Render: Header --- */}
-      <div className="mb-8 space-y-6">
+      <div className="mb-4 space-y-6">
         <div className="text-center mb-12">
           <div className="inline-flex w-fit items-center rounded-full bg-primary/10 px-3 py-1 text-xs font-medium text-primary ring-1 ring-inset ring-primary/15">
             What are you looking for ?
