@@ -208,7 +208,7 @@ export function ProductsClient() {
                 value={q}
                 onChange={(e) => updateParams({ q: e.target.value })}
                 placeholder="Search products..."
-                className="h-12 w-full max-w-sm rounded-full border-border bg-background pl-6 shadow-sm focus-visible:ring-primary"
+                className="h-10 w-full max-w-lg rounded-2xl border-border bg-background pl-6 shadow-sm"
               />
             </div>
             <div className="hidden items-center gap-2 sm:flex">

@@ -421,7 +421,7 @@ export function ClothesClient() {
                 value={q}
                 onChange={(e) => updateParams({ q: e.target.value })}
                 placeholder="Search clothing..."
-                className="h-12 w-full max-w-lg rounded-2xl border-border bg-background pl-6 shadow-sm focus-visible:ring-primary"
+                className="h-10 w-full max-w-lg rounded-2xl border-border bg-background pl-6 shadow-sm"
               />
             </div>
 
