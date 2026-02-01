@@ -45,14 +45,26 @@ export function SizeGuideSection() {
                 </TabsList>
                 <TabsContent value="chart" className="pt-6">
                   <Tabs defaultValue="mens">
-                    <TabsList className="bg-secondary/50 w-full justify-start rounded-none border-b bg-transparent p-0">
-                      <TabsTrigger value="mens" className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:shadow-none">Men’s</TabsTrigger>
-                      <TabsTrigger value="womens" className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:shadow-none">Women’s</TabsTrigger>
-                    </TabsList>
-                    <TabsContent value="mens" className="pt-4">
+                    <div className="flex justify-center mb-6">
+                      <TabsList className="bg-secondary/50 p-1 rounded-lg inline-flex">
+                        <TabsTrigger 
+                          value="mens" 
+                          className="rounded-md px-6 py-2 text-sm font-medium transition-all data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm text-muted-foreground hover:text-foreground"
+                        >
+                          Men’s
+                        </TabsTrigger>
+                        <TabsTrigger 
+                          value="womens" 
+                          className="rounded-md px-6 py-2 text-sm font-medium transition-all data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm text-muted-foreground hover:text-foreground"
+                        >
+                          Women’s
+                        </TabsTrigger>
+                      </TabsList>
+                    </div>
+                    <TabsContent value="mens" className="animate-in fade-in slide-in-from-bottom-2 duration-300">
                       <SizeTable />
                     </TabsContent>
-                    <TabsContent value="womens" className="pt-4">
+                    <TabsContent value="womens" className="animate-in fade-in slide-in-from-bottom-2 duration-300">
                       <SizeTable />
                     </TabsContent>
                   </Tabs>
@@ -66,7 +78,7 @@ export function SizeGuideSection() {
             <div className="flex flex-col justify-center rounded-2xl border bg-card p-6 shadow-sm">
                <div className="flex items-center gap-2 mb-4 text-primary">
                  <Ruler className="h-5 w-5" />
-                 <h3 className="font-semibold">How to Measure</h3>
+                 <h3 className="font-semibold">How to Measure ?</h3>
                </div>
                <div className="space-y-6">
                  <div className="flex gap-4">
