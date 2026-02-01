@@ -76,32 +76,26 @@ export function SizeGuideSection() {
             </div>
 
             <div className="flex flex-col justify-center rounded-2xl border bg-card p-6 shadow-sm">
-               <div className="flex items-center gap-2 mb-4 text-primary">
+               <div className="flex items-center gap-2 mb-6 text-primary">
                  <Ruler className="h-5 w-5" />
-                 <h3 className="font-semibold">How to Measure ?</h3>
+                 <h3 className="font-semibold text-lg">How to Measure</h3>
                </div>
-               <div className="space-y-6">
-                 <div className="flex gap-4">
-                   <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-primary/10 text-xs font-bold text-primary">1</div>
-                   <div>
-                     <h4 className="font-medium text-foreground">Chest</h4>
-                     <p className="text-sm text-muted-foreground">Measure around the fullest part of your chest, keeping the tape horizontal.</p>
+               <div className="space-y-4">
+                 {[
+                   { id: 1, title: "Chest", desc: "Measure around the fullest part of your chest, keeping the tape horizontal." },
+                   { id: 2, title: "Waist", desc: "Measure around the narrowest part (typically where your body bends side to side)." },
+                   { id: 3, title: "Hips", desc: "Measure around the fullest part of your hips." },
+                 ].map((step) => (
+                   <div key={step.id} className="group flex gap-4 rounded-xl border bg-secondary/20 p-4 transition-colors hover:border-primary/20 hover:bg-secondary/40">
+                     <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-primary/10 text-sm font-bold text-primary group-hover:bg-primary group-hover:text-primary-foreground transition-colors">
+                       {step.id}
+                     </div>
+                     <div>
+                       <h4 className="font-medium text-foreground">{step.title}</h4>
+                       <p className="text-sm text-muted-foreground leading-relaxed">{step.desc}</p>
+                     </div>
                    </div>
-                 </div>
-                 <div className="flex gap-4">
-                   <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-primary/10 text-xs font-bold text-primary">2</div>
-                   <div>
-                     <h4 className="font-medium text-foreground">Waist</h4>
-                     <p className="text-sm text-muted-foreground">Measure around the narrowest part (typically where your body bends side to side).</p>
-                   </div>
-                 </div>
-                 <div className="flex gap-4">
-                   <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-primary/10 text-xs font-bold text-primary">3</div>
-                   <div>
-                     <h4 className="font-medium text-foreground">Hips</h4>
-                     <p className="text-sm text-muted-foreground">Measure around the fullest part of your hips.</p>
-                   </div>
-                 </div>
+                 ))}
                </div>
             </div>
           </div>
