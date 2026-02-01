@@ -17,7 +17,7 @@ export function ProductCard({ product, hrefBase }: { product: Product; hrefBase?
     product.categoryId === "cat_apparel" ? getClothImages(product)[0] ?? product.images[0] : product.images[0];
 
   return (
-    <div className="group relative flex flex-col">
+    <div className="group relative flex flex-col rounded-xl border bg-card p-3 shadow-sm transition-shadow hover:shadow-md">
       <div className="relative aspect-[3/4] w-full overflow-hidden rounded-lg bg-secondary">
         <Link href={`${base}/${product.slug}`} className="absolute inset-0">
           <ImageWithFallback
@@ -55,11 +55,13 @@ export function ProductCard({ product, hrefBase }: { product: Product; hrefBase?
           </p>
         </div>
 
-        <AddToCartButton
-          productId={product.id}
-          className="mt-4 h-10 w-full rounded-full border-primary bg-background font-semibold text-primary transition-colors hover:bg-primary hover:text-primary-foreground md:opacity-0 md:group-hover:opacity-100"
-          variant="outline"
-        />
+        <div className="mt-4 h-10">
+           <AddToCartButton
+            productId={product.id}
+            className="h-full w-full rounded-full border-primary bg-background font-semibold text-primary transition-all hover:bg-primary hover:text-primary-foreground opacity-0 group-hover:opacity-100 duration-300"
+            variant="outline"
+          />
+        </div>
       </div>
     </div>
   );
