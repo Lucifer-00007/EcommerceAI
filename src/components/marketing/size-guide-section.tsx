@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useState } from "react";
-import { Ruler } from "lucide-react";
+import { Ruler, RefreshCcw, History, Shirt } from "lucide-react";
 
 import { Reveal } from "@/components/common/reveal";
 import { Button } from "@/components/ui/button";
@@ -20,6 +20,9 @@ const rows = [
 ];
 
 export function SizeGuideSection() {
+  const [activeTab, setActiveTab] = useState("chart");
+  const [gender, setGender] = useState("mens");
+
   return (
     <section className="bg-background py-16">
       <div className="mx-auto w-full max-w-[1440px] px-6">
@@ -38,14 +41,15 @@ export function SizeGuideSection() {
         <Reveal>
           <div className="grid gap-8 lg:grid-cols-2">
             <div className="rounded-2xl border bg-card p-6 shadow-sm">
-              <Tabs defaultValue="chart">
-                <TabsList className="bg-secondary">
-                  <TabsTrigger value="chart">Size Chart</TabsTrigger>
-                  <TabsTrigger value="calculator">Calculator</TabsTrigger>
-                </TabsList>
-                <TabsContent value="chart" className="pt-6">
-                  <Tabs defaultValue="mens">
-                    <div className="flex justify-center mb-6">
+              <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+                <div className="flex flex-col sm:flex-row items-center justify-between gap-4 mb-6">
+                  <TabsList className="bg-secondary">
+                    <TabsTrigger value="chart">Size Chart</TabsTrigger>
+                    <TabsTrigger value="calculator">Calculator</TabsTrigger>
+                  </TabsList>
+
+                  {activeTab === "chart" && (
+                    <Tabs value={gender} onValueChange={setGender}>
                       <TabsList className="bg-secondary/50 p-1 rounded-lg inline-flex">
                         <TabsTrigger 
                           value="mens" 
@@ -60,16 +64,16 @@ export function SizeGuideSection() {
                           Women’s
                         </TabsTrigger>
                       </TabsList>
-                    </div>
-                    <TabsContent value="mens" className="animate-in fade-in slide-in-from-bottom-2 duration-300">
-                      <SizeTable />
-                    </TabsContent>
-                    <TabsContent value="womens" className="animate-in fade-in slide-in-from-bottom-2 duration-300">
-                      <SizeTable />
-                    </TabsContent>
-                  </Tabs>
+                    </Tabs>
+                  )}
+                </div>
+
+                <TabsContent value="chart" className="mt-0">
+                  <div className="animate-in fade-in slide-in-from-bottom-2 duration-300" key={gender}>
+                    <SizeTable />
+                  </div>
                 </TabsContent>
-                <TabsContent value="calculator" className="pt-6">
+                <TabsContent value="calculator" className="mt-0">
                   <SizeCalculator />
                 </TabsContent>
               </Tabs>
@@ -128,6 +132,8 @@ function SizeCalculator() {
   const [chest, setChest] = useState("");
   const [waist, setWaist] = useState("");
   const [result, setResult] = useState<string | null>(null);
+  const [fitPreference, setFitPreference] = useState<"slim" | "regular" | "loose">("regular");
+  const [history, setHistory] = useState<{ size: string; date: string }[]>([]);
 
   const calculate = () => {
     const c = parseFloat(chest);
@@ -143,29 +149,112 @@ function SizeCalculator() {
     );
 
     if (match) {
-      setResult(`We recommend size ${match.size}`);
+      const size = match.size;
+      setResult(`We recommend size ${size} (${fitPreference} fit)`);
+      setHistory(prev => [{ size, date: new Date().toLocaleTimeString() }, ...prev].slice(0, 3));
     } else {
       setResult("Based on your measurements, please check our detailed fit guide or contact support.");
     }
   };
 
+  const reset = () => {
+    setChest("");
+    setWaist("");
+    setResult(null);
+  };
+
   return (
-    <div className="space-y-4">
-      <p className="text-sm text-muted-foreground">Enter your measurements in inches to get a recommendation.</p>
-      <div className="grid gap-4 sm:grid-cols-2">
-        <div className="space-y-2">
-          <Label htmlFor="chest">Chest (in)</Label>
-          <Input id="chest" placeholder="e.g. 40" value={chest} onChange={(e) => setChest(e.target.value)} />
+    <div className="flex flex-col gap-6 h-full">
+      <div className="flex items-center justify-between">
+        <p className="text-sm text-muted-foreground">Enter your measurements in inches.</p>
+        {result && (
+          <Button variant="ghost" size="sm" onClick={reset} className="h-auto p-0 text-xs text-muted-foreground hover:text-foreground">
+            <RefreshCcw className="mr-1 h-3 w-3" /> Reset
+          </Button>
+        )}
+      </div>
+
+      <div className="grid gap-5">
+        <div className="grid grid-cols-2 gap-4">
+          <div className="space-y-2">
+            <Label htmlFor="chest" className="flex items-center gap-2">
+              <Shirt className="h-3.5 w-3.5 text-muted-foreground" /> Chest
+            </Label>
+            <div className="relative">
+              <Input 
+                id="chest" 
+                placeholder="40" 
+                value={chest} 
+                onChange={(e) => setChest(e.target.value)}
+                className="pl-9" 
+              />
+              <span className="absolute left-3 top-2.5 text-xs text-muted-foreground">in</span>
+            </div>
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="waist" className="flex items-center gap-2">
+              <Ruler className="h-3.5 w-3.5 text-muted-foreground" /> Waist
+            </Label>
+            <div className="relative">
+              <Input 
+                id="waist" 
+                placeholder="32" 
+                value={waist} 
+                onChange={(e) => setWaist(e.target.value)}
+                className="pl-9"
+              />
+              <span className="absolute left-3 top-2.5 text-xs text-muted-foreground">in</span>
+            </div>
+          </div>
         </div>
-        <div className="space-y-2">
-          <Label htmlFor="waist">Waist (in)</Label>
-          <Input id="waist" placeholder="e.g. 32" value={waist} onChange={(e) => setWaist(e.target.value)} />
+
+        <div className="space-y-3">
+          <Label>Fit Preference</Label>
+          <div className="grid grid-cols-3 gap-2">
+            {(["slim", "regular", "loose"] as const).map((fit) => (
+              <button
+                key={fit}
+                type="button"
+                onClick={() => setFitPreference(fit)}
+                className={`
+                  rounded-lg border px-3 py-2 text-xs font-medium capitalize transition-all
+                  ${fitPreference === fit 
+                    ? "border-primary bg-primary/5 text-primary ring-1 ring-primary" 
+                    : "border-border bg-background text-muted-foreground hover:border-primary/50 hover:text-foreground"}
+                `}
+              >
+                {fit}
+              </button>
+            ))}
+          </div>
         </div>
       </div>
-      <Button onClick={calculate} className="w-full">Calculate My Size</Button>
+
+      <Button onClick={calculate} className="w-full h-11 text-base shadow-lg shadow-primary/20">
+        Calculate My Size
+      </Button>
+
       {result && (
-        <div className="rounded-lg bg-secondary p-4 text-center text-sm font-medium animate-in fade-in slide-in-from-top-2">
-          {result}
+        <div className="animate-in fade-in zoom-in-95 duration-300">
+          <div className="rounded-xl border bg-secondary/50 p-4 text-center">
+            <p className="text-sm font-medium text-foreground">{result}</p>
+          </div>
+        </div>
+      )}
+
+      {history.length > 0 && (
+        <div className="mt-2 border-t pt-4 animate-in slide-in-from-top-2">
+          <div className="flex items-center gap-2 mb-3 text-xs font-medium text-muted-foreground">
+            <History className="h-3.5 w-3.5" /> Recent Calculations
+          </div>
+          <div className="space-y-2">
+            {history.map((h, i) => (
+              <div key={i} className="flex justify-between text-xs">
+                <span className="font-medium text-foreground">Size {h.size}</span>
+                <span className="text-muted-foreground">{h.date}</span>
+              </div>
+            ))}
+          </div>
         </div>
       )}
     </div>
