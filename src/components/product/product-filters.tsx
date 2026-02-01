@@ -22,9 +22,10 @@ type ProductFiltersProps = {
   filters: ProductsQuery;
   onFilterChange: (filters: ProductsQuery) => void;
   className?: string;
+  hideHeader?: boolean;
 };
 
-export function ProductFilters({ filters, onFilterChange, className }: ProductFiltersProps) {
+export function ProductFilters({ filters, onFilterChange, className, hideHeader }: ProductFiltersProps) {
   const { data: categories } = useQuery({
     queryKey: ["categories"],
     queryFn: () => getCategories(),
@@ -67,30 +68,23 @@ export function ProductFilters({ filters, onFilterChange, className }: ProductFi
 
   return (
     <div className={cn("space-y-6", className)}>
-      <div className="flex items-center justify-between">
-        <h3 className="font-semibold text-foreground">Filters</h3>
-        {activeCount > 0 && (
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={clearAll}
-            className="h-auto px-2 text-xs text-muted-foreground hover:text-foreground"
-          >
-            Clear all ({activeCount})
-          </Button>
-        )}
-      </div>
+      {!hideHeader && (
+        <div className="flex items-center justify-between">
+          <h3 className="font-semibold text-foreground">Filters</h3>
+          {activeCount > 0 && (
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={clearAll}
+              className="h-auto px-2 text-xs text-muted-foreground hover:text-foreground"
+            >
+              Clear all ({activeCount})
+            </Button>
+          )}
+        </div>
+      )}
 
       <div className="space-y-4">
-        <div className="space-y-2">
-          <Label>Search</Label>
-          <Input
-            placeholder="Search products..."
-            value={filters.q ?? ""}
-            onChange={(e) => onFilterChange({ ...filters, q: e.target.value || undefined })}
-          />
-        </div>
-
         <Accordion type="multiple" defaultValue={["category", "price", "color", "size"]} className="w-full">
           <AccordionItem value="category">
             <AccordionTrigger className="text-sm font-medium">Category</AccordionTrigger>
