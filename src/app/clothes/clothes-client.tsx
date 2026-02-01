@@ -75,6 +75,7 @@ function FilterSidebar({
   onPriceCommit,
   onClear,
   mode,
+  hideHeader,
 }: {
   facets: Record<ClothType, number>;
   selectedTypes: Set<ClothType>;
@@ -88,6 +89,7 @@ function FilterSidebar({
   onPriceCommit: (next: [number, number]) => void;
   onClear: () => void;
   mode: "desktop" | "mobile";
+  hideHeader?: boolean;
 }) {
   const wrapperClassName =
     mode === "desktop"
@@ -100,18 +102,20 @@ function FilterSidebar({
   return (
     <aside className={wrapperClassName}>
       <div className={contentClassName}>
-        <div className="mb-6 flex items-center justify-between">
-          <h3 className="font-semibold text-foreground">Filters</h3>
-          <Button
-            type="button"
-            variant="ghost"
-            size="sm"
-            className="h-auto p-0 text-xs font-medium text-muted-foreground hover:text-primary"
-            onClick={onClear}
-          >
-            Clear all
-          </Button>
-        </div>
+        {!hideHeader && (
+          <div className="mb-6 flex items-center justify-between">
+            <h3 className="font-semibold text-foreground">Filters</h3>
+            <Button
+              type="button"
+              variant="ghost"
+              size="sm"
+              className="h-auto p-0 text-xs font-medium text-muted-foreground hover:text-primary"
+              onClick={onClear}
+            >
+              Clear all
+            </Button>
+          </div>
+        )}
 
         <div className="border-b pb-6 pt-2">
           <h4 className="mb-4 text-sm font-semibold text-foreground">Categories</h4>
@@ -351,23 +355,83 @@ export function ClothesClient() {
         <span className="font-medium text-foreground">Clothes</span>
       </nav>
 
-      <div className="mb-10 flex flex-col gap-6">
-        <div className="flex items-end justify-between gap-4">
-          <div>
-            <h1 className="text-4xl font-bold tracking-tight text-foreground">Clothes</h1>
-            <p className="mt-2 text-muted-foreground">
-              Showing {products?.total ?? 0} products
-            </p>
+      <div className="mb-8 space-y-6">
+        <div className="text-center mb-12">
+          <h1 className="text-6xl font-bold tracking-tight text-foreground">Search Clothes</h1>
+          <p className="mt-2 text-muted-foreground">
+            Showing {products?.total ?? 0} products
+          </p>
+        </div>
+
+        <div className="flex items-center gap-4 lg:gap-12">
+          {/* Filters Component (Left) */}
+          <div className="shrink-0 lg:w-64">
+            <div className="lg:hidden">
+              <Sheet>
+                <SheetTrigger asChild>
+                  <Button type="button" variant="outline" size="default" className="gap-2">
+                    <Filter className="h-4 w-4" />
+                    Filters
+                  </Button>
+                </SheetTrigger>
+                <SheetContent side="left" className="w-full sm:w-[360px]">
+                  <SheetHeader>
+                    <SheetTitle>Filters</SheetTitle>
+                  </SheetHeader>
+                  <div className="mt-6">
+                    <FilterSidebar
+                      facets={facets}
+                      selectedTypes={selectedTypes}
+                      setSelectedTypes={(next) => updateParams({ types: formatCsv(next) || undefined })}
+                      selectedSizes={selectedSizes}
+                      setSelectedSizes={(next) => updateParams({ sizes: formatCsv(next) || undefined })}
+                      selectedColors={selectedColors}
+                      setSelectedColors={(next) => updateParams({ colors: formatCsv(next) || undefined })}
+                      priceRange={priceRange}
+                      setPriceRange={setPriceRange}
+                      onPriceCommit={onPriceCommit}
+                      onClear={clearAll}
+                      mode="mobile"
+                    />
+                  </div>
+                </SheetContent>
+              </Sheet>
+            </div>
+
+            {/* Desktop Header */}
+            <div className="hidden items-center justify-between lg:flex">
+              <h3 className="font-semibold text-foreground">Filters</h3>
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                className="h-auto py-1 text-xs font-medium text-muted-foreground hover:text-primary"
+                onClick={clearAll}
+              >
+                Clear all
+              </Button>
+            </div>
           </div>
 
-          <div className="flex items-center gap-3">
-            <div className="hidden items-center gap-2 text-sm font-medium text-muted-foreground sm:flex">
-              <span>Sort by:</span>
+          {/* Search Input (Right) */}
+          <div className="flex flex-1 items-center gap-4">
+            <div className="relative flex-1">
+              <Input
+                id="q"
+                value={q}
+                onChange={(e) => updateParams({ q: e.target.value })}
+                placeholder="Search clothing..."
+                className="h-10 rounded-lg border-border bg-background pl-4 shadow-sm focus-visible:ring-primary"
+              />
+            </div>
+
+            <div className="hidden items-center gap-2 sm:flex">
+              <span className="text-sm font-medium text-muted-foreground">Sort by:</span>
               <Select
                 value={sort ?? "relevance"}
                 onValueChange={(value) => updateParams({ sort: value === "relevance" ? undefined : value })}
               >
-                <SelectTrigger className="h-10 w-[180px] rounded-lg border-border bg-background px-3 text-foreground hover:bg-accent/50 focus:ring-primary">
+                <SelectTrigger className="h-12 w-[180px] rounded-lg border-border bg-background px-3 text-foreground hover:bg-accent/50 focus:ring-primary">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
@@ -379,47 +443,7 @@ export function ClothesClient() {
                 </SelectContent>
               </Select>
             </div>
-
-            <Sheet>
-              <SheetTrigger asChild>
-                <Button type="button" variant="outline" size="icon" className="h-10 w-10 lg:hidden">
-                  <Filter className="h-4 w-4" />
-                  <span className="sr-only">Filters</span>
-                </Button>
-              </SheetTrigger>
-              <SheetContent side="left" className="w-full sm:w-[360px]">
-                <SheetHeader>
-                  <SheetTitle>Filters</SheetTitle>
-                </SheetHeader>
-                <div className="mt-6">
-                  <FilterSidebar
-                    facets={facets}
-                    selectedTypes={selectedTypes}
-                    setSelectedTypes={(next) => updateParams({ types: formatCsv(next) || undefined })}
-                    selectedSizes={selectedSizes}
-                    setSelectedSizes={(next) => updateParams({ sizes: formatCsv(next) || undefined })}
-                    selectedColors={selectedColors}
-                    setSelectedColors={(next) => updateParams({ colors: formatCsv(next) || undefined })}
-                    priceRange={priceRange}
-                    setPriceRange={setPriceRange}
-                    onPriceCommit={onPriceCommit}
-                    onClear={clearAll}
-                    mode="mobile"
-                  />
-                </div>
-              </SheetContent>
-            </Sheet>
           </div>
-        </div>
-
-        <div className="relative">
-          <Input
-            id="q"
-            value={q}
-            onChange={(e) => updateParams({ q: e.target.value })}
-            placeholder="Search clothing..."
-            className="h-12 rounded-lg border-border bg-background pl-4 shadow-sm focus-visible:ring-primary"
-          />
         </div>
       </div>
 
@@ -437,6 +461,7 @@ export function ClothesClient() {
           onPriceCommit={onPriceCommit}
           onClear={clearAll}
           mode="desktop"
+          hideHeader={true}
         />
 
         <div className="min-w-0 flex-1">
