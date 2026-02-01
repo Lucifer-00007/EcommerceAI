@@ -58,7 +58,7 @@ export function ProductCard({ product, hrefBase }: { product: Product; hrefBase?
         <div className="mt-4 h-10">
            <AddToCartButton
             productId={product.id}
-            className="h-full w-full rounded-full border-primary bg-background font-semibold text-primary transition-all hover:bg-primary hover:text-primary-foreground opacity-0 group-hover:opacity-100 duration-300"
+            className="h-full w-full rounded-full border-primary bg-background font-semibold text-primary transition-all hover:bg-primary hover:text-primary-foreground"
             variant="outline"
           />
         </div>
