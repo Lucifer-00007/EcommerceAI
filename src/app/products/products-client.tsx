@@ -239,7 +239,7 @@ export function ProductsClient() {
       <div className="flex items-start gap-12">
         {/* --- Render: Sidebar --- */}
         <aside className="hidden w-64 shrink-0 lg:block">
-          <div className="sticky top-24 max-h-[calc(100vh-8rem)] overflow-y-auto pb-10 bg-card p-6 rounded-xl border shadow-sm">
+          <div className="sticky top-24 max-h-[calc(100vh-8rem)] overflow-y-auto pb-10 bg-card px-5 rounded-xl border shadow-sm">
             <ProductFilters
               filters={productsQuery}
               // eslint-disable-next-line @typescript-eslint/no-explicit-any
