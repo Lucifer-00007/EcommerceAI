@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { ArrowLeft, Cookie, Lock, Shield } from "lucide-react";
+import { Cookie, Lock, Shield } from "lucide-react";
 import Link from "next/link";
 
 import { Container } from "@/components/layout/container";
@@ -18,23 +18,6 @@ export default function PrivacyPolicyPage() {
       <section className="bg-secondary/20 py-16">
         <Container>
           <div className="mx-auto max-w-3xl text-center relative">
-            <div className="absolute left-0 top-0 hidden sm:block">
-              <Button asChild variant="ghost" className="hover:bg-background/60 hover:text-primary">
-                <Link href={routes.home} className="flex items-center gap-2">
-                  <ArrowLeft className="h-4 w-4" /> Back to Home
-                </Link>
-              </Button>
-            </div>
-            
-            {/* Mobile Back Button */}
-            <div className="sm:hidden mb-8 flex justify-center">
-               <Button asChild variant="ghost" className="hover:bg-background/60 hover:text-primary">
-                <Link href={routes.home} className="flex items-center gap-2">
-                  <ArrowLeft className="h-4 w-4" /> Back to Home
-                </Link>
-              </Button>
-            </div>
-
             <Reveal>
               <h1 className="text-4xl font-bold tracking-tight sm:text-5xl">Privacy Policy</h1>
               <p className="mt-4 text-lg text-muted-foreground">
