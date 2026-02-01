@@ -21,8 +21,10 @@
 ### Bugs
 
 #### Priority Lv: P0
-- []
-- []
+- [] The AddToCartButton (./src/components/cart/add-to-cart-button.tsx) is not visible until we hover over the product card.
+
+- [] Add a shadow/dim-outline matching the current theme, to the clearly identify the borders of the ProductCard (./src/components/product/product-card.tsx). Follow best practices 
+
 - []
 - []
 - []

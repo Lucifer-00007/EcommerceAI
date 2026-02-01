@@ -97,7 +97,7 @@ function FilterSidebar({
       : "block w-full pr-0";
   const contentClassName =
     mode === "desktop"
-      ? "sticky top-24 max-h-[calc(100vh-8rem)] overflow-y-auto pb-10"
+      ? "sticky top-24 max-h-[calc(100vh-8rem)] overflow-y-auto pb-10 bg-card p-3 rounded-xl border shadow-sm"
       : "pb-10";
   return (
     <aside className={wrapperClassName}>
@@ -199,9 +199,8 @@ function FilterSidebar({
                   key={size}
                   type="button"
                   variant={active ? "default" : "outline"}
-                  className={`h-9 w-full rounded-md text-sm font-medium transition-all ${
-                    active ? "bg-primary text-primary-foreground shadow-md" : "border-border text-muted-foreground hover:border-primary hover:text-foreground"
-                  }`}
+                  className={`h-9 w-full rounded-md text-sm font-medium transition-all ${active ? "bg-primary text-primary-foreground shadow-md" : "border-border text-muted-foreground hover:border-primary hover:text-foreground"
+                    }`}
                   onClick={() => {
                     const next = new Set(selectedSizes);
                     if (next.has(size)) next.delete(size);
@@ -225,9 +224,8 @@ function FilterSidebar({
                 <button
                   key={c.key}
                   type="button"
-                  className={`relative flex h-8 w-8 items-center justify-center rounded-full border transition-all hover:scale-110 ${
-                    active ? "ring-2 ring-primary ring-offset-2" : "border-transparent ring-1 ring-border"
-                  }`}
+                  className={`relative flex h-8 w-8 items-center justify-center rounded-full border transition-all hover:scale-110 ${active ? "ring-2 ring-primary ring-offset-2" : "border-transparent ring-1 ring-border"
+                    }`}
                   style={{ backgroundColor: c.value }}
                   onClick={() => {
                     const next = new Set(selectedColors);
@@ -355,10 +353,13 @@ export function ClothesClient() {
         <span className="font-medium text-foreground">Clothes</span>
       </nav>
 
-      <div className="mb-8 space-y-6">
-        <div className="text-center mb-12">
-          <h1 className="text-6xl font-bold tracking-tight text-foreground">Search Clothes</h1>
-          <p className="mt-2 text-muted-foreground">
+      <div className="">
+        <div className="text-center mb-12 mb-8">
+          <div className="inline-flex w-fit items-center rounded-full bg-primary/10 px-3 py-1 text-xs font-medium text-primary ring-1 ring-inset ring-primary/15">
+            Find your desire
+          </div>
+          <h1 className="pt-2 text-6xl font-bold tracking-tight text-foreground">Search Clothes</h1>
+          <p className="pt-2 text-muted-foreground">
             Showing {products?.total ?? 0} products
           </p>
         </div>
@@ -414,14 +415,14 @@ export function ClothesClient() {
           </div>
 
           {/* Search Input (Right) */}
-          <div className="flex flex-1 items-center gap-4">
+          <div className="flex flex-1 items-center gap-4 mb-6">
             <div className="relative flex-1">
               <Input
                 id="q"
                 value={q}
                 onChange={(e) => updateParams({ q: e.target.value })}
                 placeholder="Search clothing..."
-                className="h-10 rounded-lg border-border bg-background pl-4 shadow-sm focus-visible:ring-primary"
+                className="h-12 w-full max-w-lg rounded-2xl border-border bg-background pl-6 shadow-sm focus-visible:ring-primary"
               />
             </div>
 
