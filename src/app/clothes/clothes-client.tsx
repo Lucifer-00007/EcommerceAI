@@ -423,7 +423,6 @@ export function ClothesClient() {
         <div className="min-w-0 flex-1">
           <div className="mb-6 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
             <div className="space-y-2 sm:col-span-2">
-              <Label htmlFor="q">Search</Label>
               <Input
                 id="q"
                 value={q}
