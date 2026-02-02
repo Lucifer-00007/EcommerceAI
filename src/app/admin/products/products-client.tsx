@@ -343,24 +343,24 @@ export function AdminProductsClient() {
                 <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
                 <Input
                   placeholder="Search products..."
-                  className="h-9 w-[250px] pl-9"
+                  className="h-9 w-[250px] pl-9 rounded-lg"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                 />
               </div>
-              <Button variant="outline" size="sm" className="h-9 border-dashed">
+              <Button variant="outline" size="sm" className="h-9 border-dashed rounded-lg">
                 <Filter className="mr-2 h-4 w-4" />
                 Filter
               </Button>
             </div>
             {selectedProducts.size > 0 && (
-              <div className="flex items-center gap-2">
-                <span className="text-sm text-muted-foreground">
+              <div className="flex items-center gap-4">
+                <span className="text-sm font-bold text-muted-foreground">
                   {selectedProducts.size} selected
                 </span>
-                <Button variant="destructive" size="sm" className="h-9">
-                  <Trash2 className="mr-2 h-4 w-4" />
-                  Delete Selected
+                <Button variant="destructive" size="sm" className="h-9 rounded-lg">
+                  <Trash2 className="h-4 w-4" />
+                  Delete
                 </Button>
               </div>
             )}
