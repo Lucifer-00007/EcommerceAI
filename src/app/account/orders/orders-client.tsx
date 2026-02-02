@@ -57,7 +57,7 @@ export function OrdersClient() {
     return map;
   }, [productsData]);
 
-  const { data, isLoading, isError, error } = useQuery({
+  const { data, isLoading, isError, error, refetch } = useQuery({
     queryKey: ["account", "orders"],
     queryFn: () => getOrders(),
     enabled: Boolean(user),
@@ -89,11 +89,25 @@ export function OrdersClient() {
 
   if (isLoading) {
     return (
-      <Card>
-        <CardContent className="p-6">
-          <p className="text-sm text-muted-foreground">Loading orders...</p>
-        </CardContent>
-      </Card>
+      <div className="space-y-6">
+        <div className="h-8 w-48 animate-pulse rounded-md bg-muted" />
+        <Card>
+          <CardHeader className="border-b px-6 py-4">
+            <div className="h-6 w-32 animate-pulse rounded-md bg-muted" />
+          </CardHeader>
+          <CardContent className="p-0">
+            <div className="space-y-4 p-6">
+              {[1, 2, 3].map((i) => (
+                <div key={i} className="flex items-center justify-between">
+                  <div className="h-4 w-24 animate-pulse rounded-md bg-muted" />
+                  <div className="h-4 w-32 animate-pulse rounded-md bg-muted" />
+                  <div className="h-4 w-16 animate-pulse rounded-md bg-muted" />
+                </div>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+      </div>
     );
   }
 
@@ -101,11 +115,14 @@ export function OrdersClient() {
     return (
       <EmptyState
         title="Failed to load orders"
-        description={String((error as Error)?.message ?? "")}
+        description={String((error as Error)?.message ?? "Something went wrong. Please try again.")}
         action={
-          <Button asChild variant="secondary">
-            <Link href={routes.products}>Shop products</Link>
-          </Button>
+          <div className="flex gap-2">
+             <Button variant="outline" onClick={() => refetch()}>Retry</Button>
+             <Button asChild variant="default">
+               <Link href={routes.products}>Shop products</Link>
+             </Button>
+          </div>
         }
       />
     );
