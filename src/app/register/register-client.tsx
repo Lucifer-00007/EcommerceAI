@@ -1,12 +1,13 @@
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
-import { Mail, Github, ArrowRight, Loader2, AlertCircle, Check, X } from "lucide-react";
+import { Mail, Github, ArrowRight, Loader2, AlertCircle, Check, Eye, EyeOff } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -20,6 +21,10 @@ const registerSchema = z.object({
   password: z.string().min(8, "Password must be at least 8 characters")
     .regex(/[A-Z]/, "Must contain at least one uppercase letter")
     .regex(/[0-9]/, "Must contain at least one number"),
+  confirmPassword: z.string()
+}).refine((data) => data.password === data.confirmPassword, {
+  message: "Passwords don't match",
+  path: ["confirmPassword"],
 });
 
 type RegisterValues = z.infer<typeof registerSchema>;
@@ -56,10 +61,12 @@ export function RegisterClient() {
   const router = useRouter();
   const register = useAuthStore((s) => s.register);
   const loading = useAuthStore((s) => s.loading);
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   const form = useForm<RegisterValues>({
     resolver: zodResolver(registerSchema),
-    defaultValues: { name: "", email: "", password: "" },
+    defaultValues: { name: "", email: "", password: "", confirmPassword: "" },
     mode: "onChange",
   });
 
@@ -127,7 +134,7 @@ export function RegisterClient() {
               <Input 
                 id="email" 
                 type="email" 
-                placeholder="Email Address"
+                placeholder="Email"
                 className="transition-all focus-visible:ring-primary"
                 {...form.register("email")} 
               />
@@ -139,13 +146,29 @@ export function RegisterClient() {
               )}
             </div>
             <div className="space-y-2">
-              <Input 
-                id="password" 
-                type="password" 
-                placeholder="Password"
-                className="transition-all focus-visible:ring-primary"
-                {...form.register("password")} 
-              />
+              <div className="relative">
+                <Input 
+                  id="password" 
+                  type={showPassword ? "text" : "password"} 
+                  placeholder="Password"
+                  className="transition-all focus-visible:ring-primary pr-10"
+                  {...form.register("password")} 
+                />
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="sm"
+                  className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
+                  onClick={() => setShowPassword(!showPassword)}
+                  aria-label={showPassword ? "Hide password" : "Show password"}
+                >
+                  {showPassword ? (
+                    <EyeOff className="h-4 w-4 text-muted-foreground" />
+                  ) : (
+                    <Eye className="h-4 w-4 text-muted-foreground" />
+                  )}
+                </Button>
+              </div>
               {password && <PasswordStrength password={password} />}
               {form.formState.errors.password && (
                 <p className="flex items-center text-xs text-destructive animate-in slide-in-from-left-1">
@@ -156,18 +179,33 @@ export function RegisterClient() {
             </div>
 
             <div className="space-y-2">
-              <Input 
-                id="password" 
-                type="password" 
-                placeholder="Confirm Password"
-                className="transition-all focus-visible:ring-primary"
-                {...form.register("password")} 
-              />
-              {password && <PasswordStrength password={password} />}
-              {form.formState.errors.password && (
+              <div className="relative">
+                <Input 
+                  id="confirmPassword" 
+                  type={showConfirmPassword ? "text" : "password"} 
+                  placeholder="Confirm Password"
+                  className="transition-all focus-visible:ring-primary pr-10"
+                  {...form.register("confirmPassword")} 
+                />
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="sm"
+                  className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
+                  onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                  aria-label={showConfirmPassword ? "Hide confirm password" : "Show confirm password"}
+                >
+                  {showConfirmPassword ? (
+                    <EyeOff className="h-4 w-4 text-muted-foreground" />
+                  ) : (
+                    <Eye className="h-4 w-4 text-muted-foreground" />
+                  )}
+                </Button>
+              </div>
+              {form.formState.errors.confirmPassword && (
                 <p className="flex items-center text-xs text-destructive animate-in slide-in-from-left-1">
                   <AlertCircle className="mr-1 h-3 w-3" />
-                  {form.formState.errors.password.message}
+                  {form.formState.errors.confirmPassword.message}
                 </p>
               )}
             </div>
@@ -214,4 +252,3 @@ export function RegisterClient() {
     </div>
   );
 }
-
