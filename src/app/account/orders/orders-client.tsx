@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useMemo, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Eye, Package, ArrowRight, Search, Filter, ChevronLeft, ChevronRight } from "lucide-react";
@@ -40,6 +41,7 @@ function statusVariant(status: OrderStatus): "default" | "secondary" | "destruct
 }
 
 export function OrdersClient() {
+  const router = useRouter();
   const hydrated = useAuthStore((s) => s.hydrated);
   const user = useAuthStore((s) => s.user);
   const [searchQuery, setSearchQuery] = useState("");
@@ -223,7 +225,16 @@ export function OrdersClient() {
                   filteredOrders.map((order) => (
                     <tr
                       key={order.id}
-                      className="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted"
+                      className="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted cursor-pointer focus:bg-muted/50 focus:outline-none"
+                      onClick={() => router.push(`${routes.accountOrders}/${order.id}`)}
+                      role="row"
+                      tabIndex={0}
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter" || e.key === " ") {
+                          e.preventDefault();
+                          router.push(`${routes.accountOrders}/${order.id}`);
+                        }
+                      }}
                     >
                       <td className="p-6 align-middle font-medium">#{order.id}</td>
                       <td className="p-6 align-middle text-muted-foreground">
@@ -244,7 +255,14 @@ export function OrdersClient() {
                             const product = productsById.get(item.productId);
                             return (
                               <div key={item.productId} className="truncate">
-                                {item.quantity}x {product?.name ?? item.productId}
+                                <span className="mr-1">{item.quantity}x</span>
+                                <Link
+                                  href={`${routes.products}/${product?.slug ?? item.productId}`}
+                                  className="hover:underline hover:text-primary"
+                                  onClick={(e) => e.stopPropagation()}
+                                >
+                                  {product?.name ?? item.productId}
+                                </Link>
                               </div>
                             );
                           })}
