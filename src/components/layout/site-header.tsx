@@ -8,7 +8,6 @@ import { toast } from "sonner";
 import { ThemeToggle } from "@/components/theme/theme-toggle";
 import { Button } from "@/components/ui/button";
 import { Container } from "@/components/layout/container";
-import { HeaderSearch } from "@/components/layout/header-search";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -45,10 +44,8 @@ export function SiteHeader() {
           </Link>
         </div>
 
-        <HeaderSearch className="hidden max-w-md flex-1 md:flex md:px-8" />
-
-        <div className="flex items-center gap-1 sm:gap-2">
-          <nav className="hidden items-center gap-6 text-sm font-medium text-muted-foreground lg:flex">
+        <div className="flex items-center gap-1">
+          <nav className="hidden items-center gap-6 text-sm font-medium text-muted-foreground pr-6 lg:flex">
             <Link href={routes.home} className="hover:text-primary">
               Home
             </Link>
@@ -148,10 +145,6 @@ export function SiteHeader() {
             <Menu className="h-5 w-5" />
           </Button>
         </div>
-      </Container>
-
-      <Container className="pb-3 md:hidden">
-        <HeaderSearch />
       </Container>
     </header>
   );
