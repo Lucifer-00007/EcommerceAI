@@ -31,16 +31,9 @@ export default function ContactPage() {
 
       <section className="py-8">
         <Container>
-          <div className="grid gap-12 lg:grid-cols-2 lg:gap-24 pb-18">
+          <div className="grid gap-10 lg:grid-cols-2 pb-18">
             <Reveal>
               <div className="space-y-8">
-                <div>
-                  <h2 className="text-2xl font-bold">Contact Information</h2>
-                  <p className="mt-2 text-muted-foreground">
-                    Our friendly team is always here to chat.
-                  </p>
-                </div>
-
                 <div className="grid gap-6">
                   <Card className="transition-all hover:shadow-md">
                     <CardContent className="flex items-start gap-4 p-6">
