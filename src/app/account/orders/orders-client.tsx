@@ -3,13 +3,20 @@
 import Link from "next/link";
 import { useMemo, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { Eye, Package, ArrowRight, Search } from "lucide-react";
+import { Eye, Package, ArrowRight, Search, Filter, ChevronLeft, ChevronRight } from "lucide-react";
 
 import { EmptyState } from "@/components/common/empty-state";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { getOrders } from "@/features/account/api";
 import { useAuthStore } from "@/features/auth/store";
 import { getProducts } from "@/features/products/api";
@@ -36,6 +43,7 @@ export function OrdersClient() {
   const hydrated = useAuthStore((s) => s.hydrated);
   const user = useAuthStore((s) => s.user);
   const [searchQuery, setSearchQuery] = useState("");
+  const [statusFilter, setStatusFilter] = useState<string>("all");
 
   const { data: productsData } = useQuery({
     queryKey: ["products", "orders-summary"],
@@ -104,9 +112,11 @@ export function OrdersClient() {
   }
 
   const orders = data?.orders ?? [];
-  const filteredOrders = orders.filter((order) =>
-    order.id.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  const filteredOrders = orders.filter((order) => {
+    const matchesSearch = order.id.toLowerCase().includes(searchQuery.toLowerCase());
+    const matchesStatus = statusFilter === "all" || order.status === statusFilter;
+    return matchesSearch && matchesStatus;
+  });
 
   if (!orders.length) {
     return (
@@ -141,19 +151,34 @@ export function OrdersClient() {
             View and track your order history.
           </p>
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex flex-wrap items-center gap-2">
           <div className="relative">
             <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
             <Input
               placeholder="Search orders..."
-              className="h-9 w-[250px] pl-9"
+              className="h-9 w-[200px] lg:w-[250px] pl-9"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
             />
           </div>
-          <Button asChild variant="outline" size="sm" className="h-9">
+          <Select value={statusFilter} onValueChange={setStatusFilter}>
+            <SelectTrigger className="h-9 w-[130px]">
+              <div className="flex items-center gap-2 text-muted-foreground">
+                <Filter className="h-3.5 w-3.5" />
+                <SelectValue placeholder="Status" />
+              </div>
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All Status</SelectItem>
+              <SelectItem value="fulfilled">Fulfilled</SelectItem>
+              <SelectItem value="paid">Paid</SelectItem>
+              <SelectItem value="pending">Pending</SelectItem>
+              <SelectItem value="cancelled">Cancelled</SelectItem>
+            </SelectContent>
+          </Select>
+          <Button asChild variant="outline" size="sm" className="h-9 hidden sm:flex">
             <Link href={routes.products}>
-              Continue Shopping <ArrowRight className="ml-2 h-4 w-4" />
+              Shop <ArrowRight className="ml-2 h-4 w-4" />
             </Link>
           </Button>
         </div>
@@ -227,12 +252,23 @@ export function OrdersClient() {
                 ) : (
                   <tr>
                     <td colSpan={6} className="p-6 text-center text-muted-foreground">
-                      No orders found matching &quot;{searchQuery}&quot;
+                      No orders found matching your filters.
                     </td>
                   </tr>
                 )}
               </tbody>
             </table>
+          </div>
+          <div className="flex items-center justify-end space-x-2 p-4 border-t">
+            <div className="flex-1 text-sm text-muted-foreground">
+              Showing {filteredOrders.length} of {orders.length} orders
+            </div>
+            <Button variant="outline" size="sm" disabled>
+              <ChevronLeft className="h-4 w-4" />
+            </Button>
+            <Button variant="outline" size="sm" disabled>
+              <ChevronRight className="h-4 w-4" />
+            </Button>
           </div>
         </CardContent>
       </Card>
