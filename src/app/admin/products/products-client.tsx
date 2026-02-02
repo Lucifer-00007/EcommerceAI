@@ -7,7 +7,18 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm, useWatch } from "react-hook-form";
 import { toast } from "sonner";
 
-import { Edit, Trash2 } from "lucide-react";
+import {
+  Edit,
+  Trash2,
+  Plus,
+  MoreHorizontal,
+  Search,
+  Filter,
+  ArrowUpDown,
+  Copy,
+  CheckCircle2,
+  XCircle,
+} from "lucide-react";
 import { ImageWithFallback } from "@/components/ui/image-with-fallback";
 import { EmptyState } from "@/components/common/empty-state";
 import { Button } from "@/components/ui/button";
@@ -19,6 +30,7 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
+  DialogFooter,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -30,19 +42,29 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Badge } from "@/components/ui/badge";
 import { createAdminProduct, deleteAdminProduct, getAdminProducts, updateAdminProduct } from "@/features/admin/api";
 import { getCategories } from "@/features/products/api";
 import type { Product } from "@/types/ecommerce";
 import { formatPrice } from "@/utils/format";
+import { cn } from "@/lib/utils";
 
 const productFormSchema = z.object({
-  name: z.string().min(1),
+  name: z.string().min(1, "Name is required"),
   slug: z.string().optional(),
-  description: z.string().min(1),
-  categoryId: z.string().min(1),
-  priceAmount: z.coerce.number().nonnegative(),
+  description: z.string().min(1, "Description is required"),
+  categoryId: z.string().min(1, "Category is required"),
+  priceAmount: z.coerce.number().min(0, "Price must be positive"),
   currency: z.string().min(1).default("USD"),
-  imageSrc: z.string().min(1),
+  imageSrc: z.string().min(1, "Image URL is required"),
   featured: z.boolean().default(false),
 });
 
@@ -65,6 +87,8 @@ export function AdminProductsClient() {
   const queryClient = useQueryClient();
   const [open, setOpen] = useState(false);
   const [editing, setEditing] = useState<Product | null>(null);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [selectedProducts, setSelectedProducts] = useState<Set<string>>(new Set());
 
   const { data: categoriesData } = useQuery({
     queryKey: ["categories"],
@@ -82,6 +106,13 @@ export function AdminProductsClient() {
     return map;
   }, [categoriesData]);
 
+  const items = useMemo(() => {
+    if (!data?.items) return [];
+    return data.items.filter((item) =>
+      item.name.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+  }, [data, searchQuery]);
+
   const form = useForm<ProductFormValues>({
     resolver: zodResolver(productFormSchema),
     defaultValues: {
@@ -95,12 +126,11 @@ export function AdminProductsClient() {
       featured: false,
     },
     values: editing ? toFormValues(editing) : undefined,
-    mode: "onBlur",
+    mode: "onChange",
   });
 
   const categoryId = useWatch({ control: form.control, name: "categoryId" });
   const imageSrc = useWatch({ control: form.control, name: "imageSrc" });
-  const name = useWatch({ control: form.control, name: "name" });
   const featured = useWatch({ control: form.control, name: "featured" });
 
   const saveMutation = useMutation({
@@ -137,7 +167,7 @@ export function AdminProductsClient() {
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: ["admin", "products"] });
       await queryClient.invalidateQueries({ queryKey: ["products"] });
-      toast.success(editing ? "Product updated" : "Product created");
+      toast.success(editing ? "Product updated successfully" : "Product created successfully");
       setOpen(false);
       setEditing(null);
       form.reset();
@@ -155,168 +185,233 @@ export function AdminProductsClient() {
     onError: (e) => toast.error((e as Error)?.message ?? "Delete failed"),
   });
 
-  const items = data?.items ?? [];
+  const toggleSelection = (id: string) => {
+    const newSelected = new Set(selectedProducts);
+    if (newSelected.has(id)) {
+      newSelected.delete(id);
+    } else {
+      newSelected.add(id);
+    }
+    setSelectedProducts(newSelected);
+  };
+
+  const toggleAll = () => {
+    if (selectedProducts.size === items.length) {
+      setSelectedProducts(new Set());
+    } else {
+      setSelectedProducts(new Set(items.map((p) => p.id)));
+    }
+  };
 
   return (
-    <div className="space-y-4">
-      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-        <div className="space-y-1">
-          <h2 className="text-xl font-semibold tracking-tight">Products</h2>
-          <p className="text-sm text-muted-foreground">Create, edit, and delete catalog items.</p>
+    <div className="space-y-6">
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+        <div>
+          <h2 className="text-2xl font-bold tracking-tight">Products</h2>
+          <p className="text-sm text-muted-foreground">
+            Manage your product catalog, inventory, and pricing.
+          </p>
         </div>
+        <div className="flex items-center gap-2">
+          <Button variant="outline" size="sm" className="h-9">
+            <Copy className="mr-2 h-4 w-4" />
+            Export
+          </Button>
+          <Dialog open={open} onOpenChange={setOpen}>
+            <DialogTrigger asChild>
+              <Button size="sm" className="h-9" onClick={() => setEditing(null)}>
+                <Plus className="mr-2 h-4 w-4" />
+                Add Product
+              </Button>
+            </DialogTrigger>
+            <DialogContent className="sm:max-w-[600px]">
+              <DialogHeader>
+                <DialogTitle>{editing ? "Edit Product" : "Add New Product"}</DialogTitle>
+              </DialogHeader>
+              <form
+                onSubmit={form.handleSubmit((v) => saveMutation.mutate(v))}
+                className="space-y-6 py-4"
+              >
+                <div className="grid gap-4 sm:grid-cols-2">
+                  <div className="space-y-2 sm:col-span-2">
+                    <Label htmlFor="name">Product Name</Label>
+                    <Input id="name" {...form.register("name")} placeholder="e.g. Classic T-Shirt" />
+                    {form.formState.errors.name && (
+                      <p className="text-xs text-destructive">{form.formState.errors.name.message}</p>
+                    )}
+                  </div>
 
-        <Dialog
-          open={open}
-          onOpenChange={(next) => {
-            setOpen(next);
-            if (!next) setEditing(null);
-          }}
-        >
-          <DialogTrigger asChild>
-            <Button
-              type="button"
-              onClick={() => {
-                setEditing(null);
-                form.reset();
-                setOpen(true);
-              }}
-            >
-              New product
-            </Button>
-          </DialogTrigger>
-          <DialogContent className="max-w-2xl">
-            <DialogHeader>
-              <DialogTitle>{editing ? "Edit product" : "New product"}</DialogTitle>
-            </DialogHeader>
+                  <div className="space-y-2 sm:col-span-2">
+                    <Label htmlFor="slug">Slug (Optional)</Label>
+                    <Input id="slug" {...form.register("slug")} placeholder="e.g. classic-t-shirt" />
+                  </div>
 
-            <form
-              className="space-y-4"
-              onSubmit={form.handleSubmit(async (values) => saveMutation.mutateAsync(values))}
-            >
-              <div className="grid gap-4 sm:grid-cols-2">
-                <div className="space-y-2">
-                  <Label htmlFor="name">Name</Label>
-                  <Input id="name" {...form.register("name")} />
-                  {form.formState.errors.name ? (
-                    <p className="text-xs text-destructive">{form.formState.errors.name.message}</p>
-                  ) : null}
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="slug">Slug</Label>
-                  <Input id="slug" {...form.register("slug")} placeholder="auto-generated if empty" />
-                </div>
-              </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="categoryId">Category</Label>
+                    <Select
+                      value={categoryId}
+                      onValueChange={(v) => form.setValue("categoryId", v)}
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select category" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {categoriesData?.map((c) => (
+                          <SelectItem key={c.id} value={c.id}>
+                            {c.name}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
 
-              <div className="space-y-2">
-                <Label htmlFor="description">Description</Label>
-                <Textarea id="description" rows={4} {...form.register("description")} />
-                {form.formState.errors.description ? (
-                  <p className="text-xs text-destructive">{form.formState.errors.description.message}</p>
-                ) : null}
-              </div>
-
-              <div className="grid gap-4 sm:grid-cols-2">
-                <div className="space-y-2">
-                  <Label>Category</Label>
-                  <Select
-                    value={categoryId}
-                    onValueChange={(value) => form.setValue("categoryId", value, { shouldValidate: true })}
-                  >
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select category" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {(categoriesData ?? []).map((c) => (
-                        <SelectItem key={c.id} value={c.id}>
-                          {c.name}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                  {form.formState.errors.categoryId ? (
-                    <p className="text-xs text-destructive">{form.formState.errors.categoryId.message}</p>
-                  ) : null}
-                </div>
-
-                <div className="grid grid-cols-2 gap-3">
                   <div className="space-y-2">
                     <Label htmlFor="priceAmount">Price</Label>
-                    <Input id="priceAmount" type="number" inputMode="decimal" {...form.register("priceAmount")} />
-                    {form.formState.errors.priceAmount ? (
-                      <p className="text-xs text-destructive">{form.formState.errors.priceAmount.message}</p>
-                    ) : null}
+                    <div className="relative">
+                      <span className="absolute left-3 top-2.5 text-muted-foreground">$</span>
+                      <Input
+                        id="priceAmount"
+                        type="number"
+                        step="0.01"
+                        className="pl-7"
+                        {...form.register("priceAmount")}
+                      />
+                    </div>
                   </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="currency">Currency</Label>
-                    <Input id="currency" {...form.register("currency")} />
-                  </div>
-                </div>
-              </div>
 
-              <div className="grid gap-4 sm:grid-cols-2">
-                <div className="space-y-2">
-                  <Label htmlFor="imageSrc">Image URL</Label>
-                  <Input id="imageSrc" {...form.register("imageSrc")} />
-                  {form.formState.errors.imageSrc ? (
-                    <p className="text-xs text-destructive">{form.formState.errors.imageSrc.message}</p>
-                  ) : null}
-                </div>
-                <div className="space-y-2">
-                  <Label>Preview</Label>
-                  <div className="relative h-20 w-20 overflow-hidden rounded-lg bg-muted">
-                    <ImageWithFallback
-                      src={imageSrc || "/products/everyday-tee.svg"}
-                      alt={name || "Preview"}
-                      fill
-                      className="object-cover"
-                      sizes="80px"
+                  <div className="space-y-2 sm:col-span-2">
+                    <Label htmlFor="description">Description</Label>
+                    <Textarea
+                      id="description"
+                      {...form.register("description")}
+                      placeholder="Product description..."
+                      className="min-h-[100px]"
                     />
                   </div>
+
+                  <div className="space-y-2 sm:col-span-2">
+                    <Label htmlFor="imageSrc">Image URL</Label>
+                    <div className="flex gap-4">
+                      <Input
+                        id="imageSrc"
+                        {...form.register("imageSrc")}
+                        placeholder="/products/..."
+                      />
+                      {imageSrc && (
+                        <div className="relative h-10 w-10 shrink-0 overflow-hidden rounded-md border">
+                          <ImageWithFallback src={imageSrc} alt="Preview" fill className="object-cover" />
+                        </div>
+                      )}
+                    </div>
+                  </div>
+
+                  <div className="flex items-center space-x-2 sm:col-span-2">
+                    <Checkbox
+                      id="featured"
+                      checked={featured}
+                      onCheckedChange={(c) => form.setValue("featured", Boolean(c))}
+                    />
+                    <Label htmlFor="featured" className="font-normal">
+                      Feature this product on the homepage
+                    </Label>
+                  </div>
                 </div>
-              </div>
 
-              <div className="flex items-center gap-2">
-                <Checkbox
-                  checked={featured}
-                  onCheckedChange={(v) => form.setValue("featured", Boolean(v))}
-                  id="featured"
-                />
-                <Label htmlFor="featured">Featured</Label>
-              </div>
-
-              <div className="flex items-center justify-end gap-2">
-                <Button type="button" variant="secondary" onClick={() => setOpen(false)}>
-                  Cancel
-                </Button>
-                <Button type="submit" disabled={saveMutation.isPending}>
-                  Save
-                </Button>
-              </div>
-            </form>
-          </DialogContent>
-        </Dialog>
+                <DialogFooter>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={() => setOpen(false)}
+                    disabled={saveMutation.isPending}
+                  >
+                    Cancel
+                  </Button>
+                  <Button type="submit" disabled={saveMutation.isPending}>
+                    {saveMutation.isPending ? "Saving..." : editing ? "Update Product" : "Create Product"}
+                  </Button>
+                </DialogFooter>
+              </form>
+            </DialogContent>
+          </Dialog>
+        </div>
       </div>
 
-      {isLoading ? (
-        <Card>
-          <CardContent className="p-6">
-            <p className="text-sm text-muted-foreground">Loading products…</p>
-          </CardContent>
-        </Card>
-      ) : isError ? (
-        <EmptyState title="Failed to load admin products" description={String((error as Error)?.message ?? "")} />
-      ) : items.length ? (
-        <Card>
-          <CardHeader className="px-6 py-4 border-b">
-            <CardTitle className="text-base font-medium">Inventory</CardTitle>
-          </CardHeader>
-          <CardContent className="p-0">
+      <Card>
+        <CardHeader className="space-y-4 border-b px-6 py-4">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <div className="relative">
+                <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+                <Input
+                  placeholder="Search products..."
+                  className="h-9 w-[250px] pl-9"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                />
+              </div>
+              <Button variant="outline" size="sm" className="h-9 border-dashed">
+                <Filter className="mr-2 h-4 w-4" />
+                Filter
+              </Button>
+            </div>
+            {selectedProducts.size > 0 && (
+              <div className="flex items-center gap-2">
+                <span className="text-sm text-muted-foreground">
+                  {selectedProducts.size} selected
+                </span>
+                <Button variant="destructive" size="sm" className="h-9">
+                  <Trash2 className="mr-2 h-4 w-4" />
+                  Delete Selected
+                </Button>
+              </div>
+            )}
+          </div>
+        </CardHeader>
+        <CardContent className="p-0">
+          {isLoading ? (
+            <div className="p-8 text-center text-sm text-muted-foreground">
+              Loading inventory...
+            </div>
+          ) : isError ? (
+            <EmptyState
+              title="Failed to load products"
+              description={String((error as Error)?.message ?? "Please try again later.")}
+              action={
+                <Button variant="outline" onClick={() => queryClient.invalidateQueries({ queryKey: ["admin", "products"] })}>
+                  Retry
+                </Button>
+              }
+            />
+          ) : items.length === 0 ? (
+            <div className="flex flex-col items-center justify-center py-16 text-center">
+              <div className="mb-4 rounded-full bg-muted p-3">
+                <Search className="h-6 w-6 text-muted-foreground" />
+              </div>
+              <h3 className="text-lg font-semibold">No products found</h3>
+              <p className="text-muted-foreground">
+                Try adjusting your search terms or filters.
+              </p>
+            </div>
+          ) : (
             <div className="relative w-full overflow-auto">
               <table className="w-full caption-bottom text-sm">
                 <thead className="[&_tr]:border-b">
                   <tr className="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted">
+                    <th className="h-12 px-6 text-left align-middle font-medium text-muted-foreground w-[40px]">
+                      <Checkbox
+                        checked={selectedProducts.size === items.length && items.length > 0}
+                        onCheckedChange={toggleAll}
+                        aria-label="Select all"
+                      />
+                    </th>
                     <th className="h-12 px-6 text-left align-middle font-medium text-muted-foreground w-[80px]">Image</th>
-                    <th className="h-12 px-6 text-left align-middle font-medium text-muted-foreground">Name</th>
+                    <th className="h-12 px-6 text-left align-middle font-medium text-muted-foreground">
+                      <Button variant="ghost" size="sm" className="-ml-3 h-8 data-[state=open]:bg-accent">
+                        Name
+                        <ArrowUpDown className="ml-2 h-4 w-4" />
+                      </Button>
+                    </th>
+                    <th className="h-12 px-6 text-left align-middle font-medium text-muted-foreground">Status</th>
                     <th className="h-12 px-6 text-left align-middle font-medium text-muted-foreground">Category</th>
                     <th className="h-12 px-6 text-left align-middle font-medium text-muted-foreground">Price</th>
                     <th className="h-12 px-6 text-right align-middle font-medium text-muted-foreground">Actions</th>
@@ -326,65 +421,91 @@ export function AdminProductsClient() {
                   {items.map((p) => (
                     <tr
                       key={p.id}
-                      className="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted"
+                      className={cn(
+                        "border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted",
+                        selectedProducts.has(p.id) && "bg-muted/50"
+                      )}
                     >
                       <td className="p-6 align-middle">
-                        <div className="relative h-10 w-10 overflow-hidden rounded-md bg-muted">
+                        <Checkbox
+                          checked={selectedProducts.has(p.id)}
+                          onCheckedChange={() => toggleSelection(p.id)}
+                          aria-label={`Select ${p.name}`}
+                        />
+                      </td>
+                      <td className="p-6 align-middle">
+                        <div className="relative h-10 w-10 overflow-hidden rounded-md border bg-muted">
                           <ImageWithFallback src={p.images[0].src} alt={p.images[0].alt} fill className="object-cover" sizes="40px" />
                         </div>
                       </td>
                       <td className="p-6 align-middle font-medium">
-                        {p.name}
-                        {p.featured && (
-                          <span className="ml-2 inline-flex items-center rounded-full border border-transparent bg-secondary px-2 py-0.5 text-xs font-semibold text-secondary-foreground">
-                            Featured
+                        <div className="flex flex-col">
+                          <span>{p.name}</span>
+                          <span className="text-xs text-muted-foreground hidden sm:inline-block">
+                            {p.slug}
                           </span>
+                        </div>
+                      </td>
+                      <td className="p-6 align-middle">
+                        {p.featured ? (
+                          <Badge variant="default" className="bg-green-500/15 text-green-700 hover:bg-green-500/25 border-green-500/20">
+                            <CheckCircle2 className="mr-1 h-3 w-3" />
+                            Active
+                          </Badge>
+                        ) : (
+                          <Badge variant="secondary">Draft</Badge>
                         )}
                       </td>
                       <td className="p-6 align-middle text-muted-foreground">
-                        {categoriesById.get(p.categoryId) ?? p.categoryId}
+                        <Badge variant="outline" className="font-normal">
+                          {categoriesById.get(p.categoryId) ?? p.categoryId}
+                        </Badge>
                       </td>
-                      <td className="p-6 align-middle">
+                      <td className="p-6 align-middle font-medium">
                         {formatPrice(p.price.amount, p.price.currency)}
                       </td>
                       <td className="p-6 align-middle text-right">
-                        <div className="flex items-center justify-end gap-2">
-                          <Button
-                            type="button"
-                            variant="ghost"
-                            size="sm"
-                            className="h-8 w-8 p-0"
-                            onClick={() => {
-                              setEditing(p);
-                              setOpen(true);
-                            }}
-                          >
-                            <span className="sr-only">Edit</span>
-                            <Edit className="h-4 w-4" />
-                          </Button>
-                          <Button
-                            type="button"
-                            variant="ghost"
-                            size="sm"
-                            className="h-8 w-8 p-0 text-destructive hover:text-destructive"
-                            onClick={() => deleteMutation.mutate(p.id)}
-                            disabled={deleteMutation.isPending}
-                          >
-                            <span className="sr-only">Delete</span>
-                            <Trash2 className="h-4 w-4" />
-                          </Button>
-                        </div>
+                        <DropdownMenu>
+                          <DropdownMenuTrigger asChild>
+                            <Button variant="ghost" className="h-8 w-8 p-0">
+                              <span className="sr-only">Open menu</span>
+                              <MoreHorizontal className="h-4 w-4" />
+                            </Button>
+                          </DropdownMenuTrigger>
+                          <DropdownMenuContent align="end">
+                            <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                            <DropdownMenuItem
+                              onClick={() => {
+                                setEditing(p);
+                                setOpen(true);
+                              }}
+                            >
+                              <Edit className="mr-2 h-4 w-4" />
+                              Edit
+                            </DropdownMenuItem>
+                            <DropdownMenuItem onClick={() => navigator.clipboard.writeText(p.id)}>
+                              <Copy className="mr-2 h-4 w-4" />
+                              Copy ID
+                            </DropdownMenuItem>
+                            <DropdownMenuSeparator />
+                            <DropdownMenuItem
+                              className="text-destructive focus:text-destructive"
+                              onClick={() => deleteMutation.mutate(p.id)}
+                            >
+                              <Trash2 className="mr-2 h-4 w-4" />
+                              Delete
+                            </DropdownMenuItem>
+                          </DropdownMenuContent>
+                        </DropdownMenu>
                       </td>
                     </tr>
                   ))}
                 </tbody>
               </table>
             </div>
-          </CardContent>
-        </Card>
-      ) : (
-        <EmptyState title="No products" description="Create your first product to populate the catalog." />
-      )}
+          )}
+        </CardContent>
+      </Card>
     </div>
   );
 }
