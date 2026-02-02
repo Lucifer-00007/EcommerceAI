@@ -17,11 +17,14 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { routes } from "@/lib/routes";
 import { useCartStore } from "@/features/cart/store";
+import { useFavoritesStore } from "@/features/favorites/store";
 import { useAuthStore } from "@/features/auth/store";
 import { isAdminUser } from "@/features/auth/is-admin";
 
 export function SiteHeader() {
   const items = useCartStore((s) => s.items);
+  const favoritesItems = useFavoritesStore((s) => s.items);
+  const favoritesHydrated = useFavoritesStore((s) => s.hydrated);
   const user = useAuthStore((s) => s.user);
   const logout = useAuthStore((s) => s.logout);
 
@@ -111,14 +114,21 @@ export function SiteHeader() {
           </DropdownMenu>
 
           <Button
-            type="button"
+            asChild
             variant="ghost"
             size="icon"
             aria-label="Favorites"
             className="rounded-full text-muted-foreground hover:text-primary"
-            onClick={() => toast("Favorites are not implemented in this demo.")}
           >
-            <Heart className="h-5 w-5" />
+            <Link href={routes.favorites} className="relative">
+              <Heart className="h-5 w-5" />
+              {favoritesHydrated && favoritesItems.length > 0 ? (
+                <span className="absolute right-0.5 top-0.5 inline-flex h-2 w-2">
+                  <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-red-500 opacity-75" />
+                  <span className="relative inline-flex h-2 w-2 rounded-full bg-red-500" />
+                </span>
+              ) : null}
+            </Link>
           </Button>
 
           <Button asChild variant="ghost" size="icon" aria-label="Open cart" className="rounded-full">

@@ -1,48 +1,44 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Heart, Search } from "lucide-react";
 
-import { EmptyState } from "@/components/common/empty-state";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { ProductCard } from "@/components/product/product-card";
 import { getProducts } from "@/features/products/api";
 import { routes } from "@/lib/routes";
+import { useFavoritesStore } from "@/features/favorites/store";
 
 export function SavedItemsClient() {
-  const [favorites, setFavorites] = useState<Set<string>>(new Set());
+  const favorites = useFavoritesStore((s) => s.items);
+  const hydrated = useFavoritesStore((s) => s.hydrated);
   const [searchQuery, setSearchQuery] = useState("");
-
-  useEffect(() => {
-    try {
-      const raw = localStorage.getItem("ecommerceai:favorites");
-      if (raw) {
-        const parsed = JSON.parse(raw);
-        if (Array.isArray(parsed)) {
-          // eslint-disable-next-line react-hooks/set-state-in-effect
-          setFavorites(new Set(parsed));
-        }
-      }
-    } catch (e) {
-      console.error("Failed to read favorites", e);
-    }
-  }, []);
 
   const { data, isLoading } = useQuery({
     queryKey: ["products", "all"],
     queryFn: () => getProducts({ pageSize: 100 }),
   });
 
-  const savedProducts = (data?.items ?? []).filter((p) => favorites.has(p.id));
+  const savedProducts = (data?.items ?? []).filter((p) => favorites.includes(p.id));
   const filteredProducts = savedProducts.filter((p) =>
     p.name.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
-  if (favorites.size === 0) {
+  if (!hydrated) {
+    return (
+       <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+          {Array.from({ length: 4 }).map((_, i) => (
+            <Card key={i} className="h-[300px] animate-pulse bg-muted" />
+          ))}
+        </div>
+    );
+  }
+
+  if (favorites.length === 0) {
     return (
       <div className="space-y-6">
         <div className="flex items-center justify-between">
@@ -98,17 +94,12 @@ export function SavedItemsClient() {
             <Card key={i} className="h-[300px] animate-pulse bg-muted" />
           ))}
         </div>
-      ) : filteredProducts.length > 0 ? (
+      ) : (
         <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
           {filteredProducts.map((product) => (
-            <ProductCard key={product.id} product={product} hrefBase={routes.products} />
+            <ProductCard key={product.id} product={product} />
           ))}
         </div>
-      ) : (
-        <EmptyState
-          title="No items found"
-          description="Try adjusting your search query."
-        />
       )}
     </div>
   );
