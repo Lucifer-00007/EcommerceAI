@@ -2,37 +2,43 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { User, Package, Heart, MapPin, LogOut } from "lucide-react";
 
-import { Button } from "@/components/ui/button";
-import { routes } from "@/lib/routes";
 import { cn } from "@/lib/utils";
+import { routes } from "@/lib/routes";
 
-export function AccountNav() {
+const links = [
+  { href: routes.accountProfile, label: "Profile", icon: User },
+  { href: routes.accountOrders, label: "Orders", icon: Package },
+  { href: "/account/saved-items", label: "Saved Items", icon: Heart },
+  { href: "/account/addresses", label: "Addresses", icon: MapPin },
+];
+
+export function AccountNav({ className }: { className?: string }) {
   const pathname = usePathname();
 
-  const items = [
-    { href: routes.accountProfile, label: "Profile" },
-    { href: routes.accountOrders, label: "Orders" },
-    { href: "/account/saved-items", label: "Saved Items" },
-    { href: "/account/addresses", label: "Address Book" },
-  ];
-
   return (
-    <div className="flex flex-wrap gap-2">
-      {items.map((item) => {
-        const active = pathname === item.href;
+    <nav className={cn("flex flex-col space-y-1", className)}>
+      {links.map((link) => {
+        const active = pathname === link.href;
+        const Icon = link.icon;
         return (
-          <Button
-            key={item.href}
-            asChild
-            variant={active ? "default" : "secondary"}
-            className={cn(active ? "" : "text-muted-foreground")}
+          <Link
+            key={link.href}
+            href={link.href}
+            className={cn(
+              "flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium transition-colors",
+              active
+                ? "bg-primary/10 text-primary"
+                : "text-muted-foreground hover:bg-muted hover:text-foreground",
+            )}
           >
-            <Link href={item.href}>{item.label}</Link>
-          </Button>
+            <Icon className="h-4 w-4" />
+            {link.label}
+          </Link>
         );
       })}
-    </div>
+    </nav>
   );
 }
 
