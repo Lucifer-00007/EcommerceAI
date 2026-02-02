@@ -1,6 +1,5 @@
 "use client";
 
-import { useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { 
@@ -12,7 +11,6 @@ import {
   BarChart2, 
   Users, 
   TrendingUp,
-  ExternalLink
 } from "lucide-react";
 
 import { EmptyState } from "@/components/common/empty-state";

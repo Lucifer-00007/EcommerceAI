@@ -14,7 +14,6 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
   DialogFooter,
   DialogDescription,
 } from "@/components/ui/dialog";
@@ -97,7 +96,7 @@ export function AddressesClient() {
       );
       toast.success("Address updated");
     } else {
-      const newId = `addr_${Date.now()}`;
+      const newId = `addr_${crypto.randomUUID()}`;
       if (safeValues.isDefault) {
          setAddresses(prev => prev.map(a => ({ ...a, isDefault: false })));
       }

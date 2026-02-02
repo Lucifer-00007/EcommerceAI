@@ -3,11 +3,11 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { Heart, Search, ShoppingBag } from "lucide-react";
+import { Heart, Search } from "lucide-react";
 
 import { EmptyState } from "@/components/common/empty-state";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { ProductCard } from "@/components/product/product-card";
 import { getProducts } from "@/features/products/api";
@@ -23,6 +23,7 @@ export function SavedItemsClient() {
       if (raw) {
         const parsed = JSON.parse(raw);
         if (Array.isArray(parsed)) {
+          // eslint-disable-next-line react-hooks/set-state-in-effect
           setFavorites(new Set(parsed));
         }
       }

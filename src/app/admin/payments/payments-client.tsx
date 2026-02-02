@@ -1,6 +1,5 @@
 "use client";
 
-import { useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { 
@@ -34,7 +33,6 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
@@ -53,7 +51,6 @@ const transactions = [
 
 export function AdminPaymentsClient() {
   const queryClient = useQueryClient();
-  const [activeTab, setActiveTab] = useState("dashboard");
 
   const { data, isLoading, isError, error } = useQuery({
     queryKey: ["admin", "settings"],
@@ -108,7 +105,7 @@ export function AdminPaymentsClient() {
         </div>
       </div>
 
-      <Tabs defaultValue="dashboard" className="space-y-6" onValueChange={setActiveTab}>
+      <Tabs defaultValue="dashboard" className="space-y-6">
         <TabsList>
           <TabsTrigger value="dashboard">Dashboard</TabsTrigger>
           <TabsTrigger value="transactions">Transactions</TabsTrigger>

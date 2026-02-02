@@ -21,7 +21,7 @@ export function ProfileClient() {
   const user = useAuthStore((s) => s.user);
   const logout = useAuthStore((s) => s.logout);
 
-  const { data, isLoading, isError } = useQuery({
+  const { data } = useQuery({
     queryKey: ["account", "profile"],
     queryFn: () => getProfile(),
     enabled: Boolean(user),

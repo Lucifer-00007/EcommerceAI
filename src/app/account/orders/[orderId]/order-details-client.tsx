@@ -1,40 +1,31 @@
 "use client";
 
 import Link from "next/link";
-import { useParams, useRouter } from "next/navigation";
+import { useParams } from "next/navigation";
 import { useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { 
   ArrowLeft, 
   Package, 
   MapPin, 
-  CreditCard, 
   Calendar, 
   Truck, 
   AlertCircle,
   RefreshCw,
-  Mail,
   HelpCircle
 } from "lucide-react";
 
 import { EmptyState } from "@/components/common/empty-state";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-import { 
-  Accordion, 
-  AccordionContent, 
-  AccordionItem, 
-  AccordionTrigger 
-} from "@/components/ui/accordion";
 import { getOrder } from "@/features/account/api";
 import { useAuthStore } from "@/features/auth/store";
 import { getProducts } from "@/features/products/api";
 import { routes } from "@/lib/routes";
 import type { OrderStatus, Product } from "@/types/ecommerce";
 import { formatPrice } from "@/utils/format";
-import { cn } from "@/lib/utils";
 import { ImageWithFallback } from "@/components/ui/image-with-fallback";
 
 function statusVariant(status: OrderStatus): "default" | "secondary" | "destructive" | "outline" {
@@ -54,7 +45,6 @@ function statusVariant(status: OrderStatus): "default" | "secondary" | "destruct
 
 export function OrderDetailsClient() {
   const params = useParams();
-  const router = useRouter();
   const orderId = (params?.orderId as string) || "";
   const hydrated = useAuthStore((s) => s.hydrated);
   const user = useAuthStore((s) => s.user);

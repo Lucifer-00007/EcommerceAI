@@ -4,7 +4,6 @@ import { Eye } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { getCatalogProducts } from "@/services/admin/catalog-store";
 import { orders } from "@/services/mock/db";
 import type { OrderStatus } from "@/types/ecommerce";
 import { formatPrice } from "@/utils/format";
@@ -30,8 +29,6 @@ function statusVariant(status: OrderStatus): "default" | "secondary" | "destruct
 }
 
 export default function AdminOrdersPage() {
-  const productsById = new Map(getCatalogProducts().map((p) => [p.id, p]));
-
   return (
     <div className="space-y-6">
       <div className="space-y-1">

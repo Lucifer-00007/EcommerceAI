@@ -14,7 +14,7 @@ export function HeaderSearch({ className }: { className?: string }) {
 
   return (
     <form
-      className={cn("w-full", className)}
+      className={cn("relative w-full", className)}
       onSubmit={(e) => {
         e.preventDefault();
         const q = value.trim();
@@ -23,6 +23,14 @@ export function HeaderSearch({ className }: { className?: string }) {
         router.push(`${routes.products}${params.toString() ? `?${params.toString()}` : ""}`);
       }}
     >
+      <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+      <Input
+        type="search"
+        placeholder="Search products..."
+        className="w-full pl-9 bg-background"
+        value={value}
+        onChange={(e) => setValue(e.target.value)}
+      />
     </form>
   );
 }

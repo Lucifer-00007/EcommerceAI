@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { User, Package, Heart, MapPin, LogOut } from "lucide-react";
+import { User, Package, Heart, MapPin } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 import { routes } from "@/lib/routes";

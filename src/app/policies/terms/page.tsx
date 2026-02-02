@@ -2,11 +2,8 @@ import type { Metadata } from "next";
 import { Book, Scale, ScrollText } from "lucide-react";
 
 import { Container } from "@/components/layout/container";
-import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Reveal } from "@/components/common/reveal";
-import { routes } from "@/lib/routes";
-import Link from "next/link";
 
 export const metadata: Metadata = {
   title: "Terms of Service",

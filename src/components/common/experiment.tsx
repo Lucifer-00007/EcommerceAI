@@ -40,7 +40,7 @@ export function useExperimentVariant(experimentKey: string): ExperimentVariant {
       }
       const next = chooseVariant(`${experimentKey}:${window.location.pathname}`);
       window.localStorage.setItem(storageK, next);
-      // eslint-disable-next-line react-hooks/set-state-in-effect
+       
       setVariant(next);
     } catch {
       // Ignore errors (e.g. storage quota, security)
