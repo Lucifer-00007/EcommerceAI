@@ -13,14 +13,14 @@ export const metadata: Metadata = {
 export default function ContactPage() {
   return (
     <div className="flex flex-col">
-      <section className="bg-secondary/20 py-16 md:py-24">
+      <section className="bg-secondary/20 py-12">
         <Container>
           <div className="mx-auto max-w-2xl text-center">
             <Reveal>
               <h1 className="text-4xl font-bold tracking-tight sm:text-5xl">
                 Get in <span className="text-primary">Touch</span>
               </h1>
-              <p className="mt-4 text-lg text-muted-foreground">
+              <p className="mt-4 text-muted-foreground">
                 We&apos;d love to hear from you. Please fill out this form or reach out using the contact details below.
               </p>
             </Reveal>
@@ -28,9 +28,9 @@ export default function ContactPage() {
         </Container>
       </section>
 
-      <section className="py-16 md:py-24">
+      <section className="py-8">
         <Container>
-          <div className="grid gap-12 lg:grid-cols-2 lg:gap-24">
+          <div className="grid gap-12 lg:grid-cols-2 lg:gap-24 pb-18">
             <Reveal>
               <div className="space-y-10">
                 <div>

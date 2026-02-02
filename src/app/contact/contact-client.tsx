@@ -45,15 +45,13 @@ export function ContactClient() {
         >
           <div className="grid gap-4 sm:grid-cols-2">
             <div className="space-y-2">
-              <Label htmlFor="name">Name</Label>
               <Input id="name" {...form.register("name")} placeholder="Your name" />
               {form.formState.errors.name ? (
                 <p className="text-xs text-destructive">{form.formState.errors.name.message}</p>
               ) : null}
             </div>
             <div className="space-y-2">
-              <Label htmlFor="email">Email</Label>
-              <Input id="email" type="email" {...form.register("email")} placeholder="you@example.com" />
+              <Input id="email" type="email" {...form.register("email")} placeholder="Email" />
               {form.formState.errors.email ? (
                 <p className="text-xs text-destructive">{form.formState.errors.email.message}</p>
               ) : null}
@@ -61,16 +59,18 @@ export function ContactClient() {
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="message">Message</Label>
             <Textarea id="message" rows={6} {...form.register("message")} placeholder="How can we help you?" />
             {form.formState.errors.message ? (
               <p className="text-xs text-destructive">{form.formState.errors.message.message}</p>
             ) : null}
           </div>
 
-          <Button type="submit" size="lg" className="w-full" disabled={form.formState.isSubmitting}>
-            Send Message
-          </Button>
+          <div className="flex justify-center">
+            <Button type="submit" size="lg" className="w-1/3" disabled={form.formState.isSubmitting}>
+              Send Message
+            </Button>
+          </div>
+
         </form>
       </CardContent>
     </Card>
