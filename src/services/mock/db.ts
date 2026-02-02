@@ -492,9 +492,20 @@ export const reviews: Review[] = [
 
 export const users: User[] = [
   { id: "u_1", email: "demo@shop.local", name: "Demo User" },
+  { id: "u_admin", email: "admin@shop.local", name: "Root Admin" },
 ];
 
-export const sessions = new Map<string, { userId: string; createdAt: string }>();
+// Use globalThis to persist sessions across hot reloads in development
+const globalForSessions = globalThis as unknown as {
+  sessions: Map<string, { userId: string; createdAt: string }>;
+};
+
+export const sessions =
+  globalForSessions.sessions || new Map<string, { userId: string; createdAt: string }>();
+
+if (process.env.NODE_ENV !== "production") {
+  globalForSessions.sessions = sessions;
+}
 
 export function createSessionForUser(userId: string) {
   const token = randomUUID();

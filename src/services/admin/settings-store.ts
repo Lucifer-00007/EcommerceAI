@@ -33,6 +33,7 @@ const defaultSettings: SiteSettings = {
   pages: { showAbout: true, showContact: true, showFaq: true, showPolicies: true },
 };
 
+// Use globalThis to persist settings across hot reloads
 function getState() {
   const g = globalThis as unknown as { __ecommerceAiSettings?: SiteSettings };
   if (!g.__ecommerceAiSettings) g.__ecommerceAiSettings = defaultSettings;
