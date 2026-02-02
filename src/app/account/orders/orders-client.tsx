@@ -9,7 +9,7 @@ import { Eye, ArrowRight, Search, Filter, ChevronLeft, ChevronRight } from "luci
 import { EmptyState } from "@/components/common/empty-state";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import {
   Select,
@@ -165,7 +165,7 @@ export function OrdersClient() {
     <div className="space-y-6">
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h2 className="text-2xl font-bold tracking-tight">Orders</h2>
+          <h2 className="text-2xl font-bold tracking-tight">Order History</h2>
           <p className="text-sm text-muted-foreground">
             View and track your order history.
           </p>
@@ -204,9 +204,6 @@ export function OrdersClient() {
       </div>
 
       <Card>
-        <CardHeader className="px-6 py-4 border-b">
-          <CardTitle className="text-base font-medium">Order History</CardTitle>
-        </CardHeader>
         <CardContent className="p-0">
           <div className="relative w-full overflow-auto">
             <table className="w-full caption-bottom text-sm">

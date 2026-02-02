@@ -80,6 +80,7 @@ export function LoginClient() {
             })}
           >
             <div className="space-y-2">
+              <Label htmlFor="email">Email</Label>
               <Input 
                 id="email" 
                 type="email" 
@@ -95,7 +96,7 @@ export function LoginClient() {
               )}
             </div>
             <div className="space-y-2">
-              
+              <Label htmlFor="password">Password</Label>
               <div className="relative">
                 <Input 
                   id="password" 

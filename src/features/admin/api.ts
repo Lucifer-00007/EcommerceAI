@@ -1,7 +1,7 @@
 import { z } from "zod";
 
 import { fetchJson } from "@/lib/api-client";
-import { productSchema } from "@/types/ecommerce";
+import { productSchema, orderSchema } from "@/types/ecommerce";
 
 export const adminProductsResponseSchema = z.object({
   items: z.array(productSchema),
@@ -12,6 +12,16 @@ export const adminProductResponseSchema = z.object({
   product: productSchema,
 });
 export type AdminProductResponse = z.infer<typeof adminProductResponseSchema>;
+
+export const adminOrderResponseSchema = z.object({
+  order: orderSchema,
+});
+export type AdminOrderResponse = z.infer<typeof adminOrderResponseSchema>;
+
+export const adminOrdersResponseSchema = z.object({
+  orders: z.array(orderSchema),
+});
+export type AdminOrdersResponse = z.infer<typeof adminOrdersResponseSchema>;
 
 export const siteSettingsSchema = z.object({
   payments: z.object({
@@ -73,5 +83,13 @@ export async function getAdminSettings() {
 
 export async function updateAdminSettings(patch: Record<string, unknown>) {
   return fetchJson("/api/admin/settings", { method: "PATCH", body: JSON.stringify(patch) }, adminSettingsResponseSchema);
+}
+
+export async function getAdminOrder(orderId: string) {
+  return fetchJson(`/api/admin/orders/${encodeURIComponent(orderId)}`, undefined, adminOrderResponseSchema);
+}
+
+export async function getAdminOrders() {
+  return fetchJson("/api/admin/orders", undefined, adminOrdersResponseSchema);
 }
 
