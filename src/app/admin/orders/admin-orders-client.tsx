@@ -122,14 +122,11 @@ export function AdminOrdersClient() {
   return (
     <div className="space-y-6">
       <div className="space-y-1">
-        <h2 className="text-2xl font-bold tracking-tight">Orders</h2>
+        <h2 className="text-2xl font-bold tracking-tight">Recent Orders</h2>
         <p className="text-sm text-muted-foreground">Manage your recent purchases and track shipments.</p>
       </div>
 
       <Card>
-        <CardHeader className="px-6 py-4 border-b">
-          <CardTitle className="text-base font-medium">Recent Orders</CardTitle>
-        </CardHeader>
         <CardContent className="p-0">
           <div className="relative w-full overflow-auto">
             <table className="w-full caption-bottom text-sm">
