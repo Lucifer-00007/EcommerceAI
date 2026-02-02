@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { ArrowUpRight, DollarSign, Package, ShoppingCart, Users } from "lucide-react";
 
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { routes } from "@/lib/routes";
 
@@ -66,7 +67,7 @@ export default function AdminPage() {
             {/* Simple SVG Chart Placeholder */}
             <div className="h-[350px] w-full flex items-end justify-between px-4 gap-2">
               {[65, 40, 75, 50, 80, 45, 90, 55, 85, 60, 95, 70].map((h, i) => (
-                <div key={i} className="bg-primary/90 w-full rounded-t-md hover:bg-primary transition-all" style={{ height: `${h}%` }}></div>
+                <div key={i} className="bg-primary w-full rounded-t-md hover:opacity-80 transition-all" style={{ height: `${h}%` }}></div>
               ))}
             </div>
           </CardContent>
@@ -88,9 +89,9 @@ export default function AdminPage() {
                 { name: "Sofia Davis", email: "sofia.davis@email.com", amount: "+$39.00" },
               ].map((sale, i) => (
                 <div key={i} className="flex items-center">
-                  <div className="h-9 w-9 rounded-full bg-secondary flex items-center justify-center font-bold text-primary">
-                    {sale.name[0]}
-                  </div>
+                  <Avatar className="h-9 w-9">
+                    <AvatarFallback className="font-bold">{sale.name[0]}</AvatarFallback>
+                  </Avatar>
                   <div className="ml-4 space-y-1">
                     <p className="text-sm font-medium leading-none">{sale.name}</p>
                     <p className="text-sm text-muted-foreground">{sale.email}</p>
