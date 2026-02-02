@@ -1,8 +1,9 @@
 import type { Metadata } from "next";
+import { Eye } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
-import { Card, CardContent } from "@/components/ui/card";
-import { Separator } from "@/components/ui/separator";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { getCatalogProducts } from "@/services/admin/catalog-store";
 import { orders } from "@/services/mock/db";
 import type { OrderStatus } from "@/types/ecommerce";
@@ -13,15 +14,18 @@ export const metadata: Metadata = {
   description: "View orders in the admin console.",
 };
 
-function statusVariant(status: OrderStatus): "default" | "secondary" | "destructive" {
+function statusVariant(status: OrderStatus): "default" | "secondary" | "destructive" | "outline" {
   switch (status) {
     case "fulfilled":
-      return "default";
+      return "default"; // "Shipped" style usually
     case "paid":
-    case "pending":
       return "secondary";
+    case "pending":
+      return "outline"; // "Pending" style
     case "cancelled":
       return "destructive";
+    default:
+      return "secondary";
   }
 }
 
@@ -29,61 +33,67 @@ export default function AdminOrdersPage() {
   const productsById = new Map(getCatalogProducts().map((p) => [p.id, p]));
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-6">
       <div className="space-y-1">
-        <h2 className="text-xl font-semibold tracking-tight">Orders</h2>
-        <p className="text-sm text-muted-foreground">Read-only view of mocked orders.</p>
+        <h2 className="text-2xl font-bold tracking-tight">Orders</h2>
+        <p className="text-sm text-muted-foreground">Manage your recent purchases and track shipments.</p>
       </div>
 
-      <div className="space-y-3">
-        {orders.map((order) => (
-          <Card key={order.id}>
-            <CardContent className="space-y-3 p-6">
-              <div className="flex flex-wrap items-center justify-between gap-3">
-                <div className="space-y-1">
-                  <p className="font-medium">Order {order.id}</p>
-                  <p className="text-sm text-muted-foreground">
-                    {new Date(order.createdAt).toLocaleString()}
-                  </p>
-                </div>
-                <Badge variant={statusVariant(order.status)}>{order.status}</Badge>
-              </div>
-
-              <Separator />
-
-              <div className="space-y-2 text-sm">
-                {order.items.map((item) => {
-                  const product = productsById.get(item.productId);
-                  return (
-                    <div key={item.productId} className="flex items-center justify-between gap-3">
-                      <span className="line-clamp-1">
-                        {product?.name ?? item.productId} × {item.quantity}
-                      </span>
-                      <span>
-                        {formatPrice(item.unitPrice.amount * item.quantity, item.unitPrice.currency)}
-                      </span>
-                    </div>
-                  );
-                })}
-              </div>
-
-              <Separator />
-
-              <div className="grid gap-2 text-sm md:grid-cols-2">
-                <div>
-                  <p className="text-muted-foreground">Customer</p>
-                  <p>{order.shippingAddress.fullName}</p>
-                  <p className="text-muted-foreground">{order.shippingAddress.email}</p>
-                </div>
-                <div className="md:text-right">
-                  <p className="text-muted-foreground">Total</p>
-                  <p className="font-medium">{formatPrice(order.total.amount, order.total.currency)}</p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        ))}
-      </div>
+      <Card>
+        <CardHeader className="px-6 py-4 border-b">
+          <CardTitle className="text-base font-medium">Recent Orders</CardTitle>
+        </CardHeader>
+        <CardContent className="p-0">
+          <div className="relative w-full overflow-auto">
+            <table className="w-full caption-bottom text-sm">
+              <thead className="[&_tr]:border-b">
+                <tr className="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted">
+                  <th className="h-12 px-6 text-left align-middle font-medium text-muted-foreground">Order ID</th>
+                  <th className="h-12 px-6 text-left align-middle font-medium text-muted-foreground">Date</th>
+                  <th className="h-12 px-6 text-left align-middle font-medium text-muted-foreground">Status</th>
+                  <th className="h-12 px-6 text-left align-middle font-medium text-muted-foreground">Total</th>
+                  <th className="h-12 px-6 text-left align-middle font-medium text-muted-foreground">Customer</th>
+                  <th className="h-12 px-6 text-right align-middle font-medium text-muted-foreground">Actions</th>
+                </tr>
+              </thead>
+              <tbody className="[&_tr:last-child]:border-0">
+                {orders.map((order) => (
+                  <tr
+                    key={order.id}
+                    className="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted"
+                  >
+                    <td className="p-6 align-middle font-medium">#{order.id}</td>
+                    <td className="p-6 align-middle text-muted-foreground">
+                      {new Date(order.createdAt).toLocaleDateString("en-US", {
+                        month: "short",
+                        day: "numeric",
+                        year: "numeric",
+                      })}
+                    </td>
+                    <td className="p-6 align-middle">
+                      <Badge variant={statusVariant(order.status)} className="capitalize">
+                        {order.status}
+                      </Badge>
+                    </td>
+                    <td className="p-6 align-middle font-medium">
+                      {formatPrice(order.total.amount, order.total.currency)}
+                    </td>
+                    <td className="p-6 align-middle text-muted-foreground">
+                      {order.shippingAddress.email}
+                    </td>
+                    <td className="p-6 align-middle text-right">
+                      <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
+                        <span className="sr-only">View details</span>
+                        <Eye className="h-4 w-4" />
+                      </Button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </CardContent>
+      </Card>
     </div>
   );
 }

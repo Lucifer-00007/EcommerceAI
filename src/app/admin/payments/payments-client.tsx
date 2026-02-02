@@ -56,16 +56,16 @@ export function AdminPaymentsClient() {
   if (!payments) return <EmptyState title="No settings" description="Try refreshing." />;
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-6">
       <div className="space-y-1">
-        <h2 className="text-xl font-semibold tracking-tight">Payments</h2>
+        <h2 className="text-2xl font-bold tracking-tight">Payments</h2>
         <p className="text-sm text-muted-foreground">
           Demo settings for wiring a payment gateway. Do not store secrets in the browser.
         </p>
       </div>
 
       <Card>
-        <CardContent className="space-y-4 p-6">
+        <CardContent className="space-y-6 p-6">
           <div className="space-y-2">
             <Label>Provider</Label>
             <Select

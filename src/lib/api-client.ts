@@ -18,6 +18,7 @@ export async function fetchJson<T>(
   schema: z.ZodType<T>,
 ): Promise<T> {
   const response = await fetch(input, {
+    credentials: "include",
     ...init,
     headers: {
       "Content-Type": "application/json",

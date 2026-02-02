@@ -72,14 +72,14 @@ export function AdminSocialClient() {
   }
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-6">
       <div className="space-y-1">
-        <h2 className="text-xl font-semibold tracking-tight">Social</h2>
+        <h2 className="text-2xl font-bold tracking-tight">Social</h2>
         <p className="text-sm text-muted-foreground">Set social profile URLs for the footer.</p>
       </div>
 
       <Card>
-        <CardContent className="space-y-4 p-6">
+        <CardContent className="space-y-6 p-6">
           {renderRow("instagram", "Instagram", "https://instagram.com/your-brand")}
           {renderRow("facebook", "Facebook", "https://facebook.com/your-brand")}
           {renderRow("x", "X (Twitter)", "https://x.com/your-brand")}

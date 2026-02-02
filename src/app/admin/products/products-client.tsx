@@ -7,10 +7,11 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm, useWatch } from "react-hook-form";
 import { toast } from "sonner";
 
+import { Edit, Trash2 } from "lucide-react";
 import { ImageWithFallback } from "@/components/ui/image-with-fallback";
 import { EmptyState } from "@/components/common/empty-state";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
   Dialog,
@@ -305,47 +306,82 @@ export function AdminProductsClient() {
       ) : isError ? (
         <EmptyState title="Failed to load admin products" description={String((error as Error)?.message ?? "")} />
       ) : items.length ? (
-        <div className="space-y-3">
-          {items.map((p) => (
-            <Card key={p.id}>
-              <CardContent className="flex flex-col gap-4 p-4 sm:flex-row sm:items-center sm:justify-between">
-                <div className="flex items-center gap-4">
-                  <div className="relative h-16 w-16 overflow-hidden rounded-lg bg-muted">
-                    <ImageWithFallback src={p.images[0].src} alt={p.images[0].alt} fill className="object-cover" sizes="64px" />
-                  </div>
-                  <div>
-                    <p className="font-medium">{p.name}</p>
-                    <p className="text-sm text-muted-foreground">
-                      {categoriesById.get(p.categoryId) ?? p.categoryId} • {formatPrice(p.price.amount, p.price.currency)}
-                      {p.featured ? " • Featured" : ""}
-                    </p>
-                  </div>
-                </div>
-
-                <div className="flex items-center gap-2">
-                  <Button
-                    type="button"
-                    variant="secondary"
-                    onClick={() => {
-                      setEditing(p);
-                      setOpen(true);
-                    }}
-                  >
-                    Edit
-                  </Button>
-                  <Button
-                    type="button"
-                    variant="destructive"
-                    onClick={() => deleteMutation.mutate(p.id)}
-                    disabled={deleteMutation.isPending}
-                  >
-                    Delete
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
+        <Card>
+          <CardHeader className="px-6 py-4 border-b">
+            <CardTitle className="text-base font-medium">Inventory</CardTitle>
+          </CardHeader>
+          <CardContent className="p-0">
+            <div className="relative w-full overflow-auto">
+              <table className="w-full caption-bottom text-sm">
+                <thead className="[&_tr]:border-b">
+                  <tr className="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted">
+                    <th className="h-12 px-6 text-left align-middle font-medium text-muted-foreground w-[80px]">Image</th>
+                    <th className="h-12 px-6 text-left align-middle font-medium text-muted-foreground">Name</th>
+                    <th className="h-12 px-6 text-left align-middle font-medium text-muted-foreground">Category</th>
+                    <th className="h-12 px-6 text-left align-middle font-medium text-muted-foreground">Price</th>
+                    <th className="h-12 px-6 text-right align-middle font-medium text-muted-foreground">Actions</th>
+                  </tr>
+                </thead>
+                <tbody className="[&_tr:last-child]:border-0">
+                  {items.map((p) => (
+                    <tr
+                      key={p.id}
+                      className="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted"
+                    >
+                      <td className="p-6 align-middle">
+                        <div className="relative h-10 w-10 overflow-hidden rounded-md bg-muted">
+                          <ImageWithFallback src={p.images[0].src} alt={p.images[0].alt} fill className="object-cover" sizes="40px" />
+                        </div>
+                      </td>
+                      <td className="p-6 align-middle font-medium">
+                        {p.name}
+                        {p.featured && (
+                          <span className="ml-2 inline-flex items-center rounded-full border border-transparent bg-secondary px-2 py-0.5 text-xs font-semibold text-secondary-foreground">
+                            Featured
+                          </span>
+                        )}
+                      </td>
+                      <td className="p-6 align-middle text-muted-foreground">
+                        {categoriesById.get(p.categoryId) ?? p.categoryId}
+                      </td>
+                      <td className="p-6 align-middle">
+                        {formatPrice(p.price.amount, p.price.currency)}
+                      </td>
+                      <td className="p-6 align-middle text-right">
+                        <div className="flex items-center justify-end gap-2">
+                          <Button
+                            type="button"
+                            variant="ghost"
+                            size="sm"
+                            className="h-8 w-8 p-0"
+                            onClick={() => {
+                              setEditing(p);
+                              setOpen(true);
+                            }}
+                          >
+                            <span className="sr-only">Edit</span>
+                            <Edit className="h-4 w-4" />
+                          </Button>
+                          <Button
+                            type="button"
+                            variant="ghost"
+                            size="sm"
+                            className="h-8 w-8 p-0 text-destructive hover:text-destructive"
+                            onClick={() => deleteMutation.mutate(p.id)}
+                            disabled={deleteMutation.isPending}
+                          >
+                            <span className="sr-only">Delete</span>
+                            <Trash2 className="h-4 w-4" />
+                          </Button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </CardContent>
+        </Card>
       ) : (
         <EmptyState title="No products" description="Create your first product to populate the catalog." />
       )}

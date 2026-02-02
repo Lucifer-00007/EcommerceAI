@@ -49,16 +49,19 @@ export function AdminPagesClient() {
   if (!pages) return <EmptyState title="No settings" description="Try refreshing." />;
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-6">
       <div className="space-y-1">
-        <h2 className="text-xl font-semibold tracking-tight">Pages</h2>
+        <h2 className="text-2xl font-bold tracking-tight">Pages</h2>
         <p className="text-sm text-muted-foreground">Toggle visibility of footer/company links.</p>
       </div>
 
       <Card>
-        <CardContent className="space-y-4 p-6">
+        <CardContent className="space-y-6 p-6">
           <div className="flex items-center justify-between gap-4">
-            <Label htmlFor="showAbout">Show About</Label>
+            <div className="space-y-0.5">
+              <Label htmlFor="showAbout" className="text-base">About Page</Label>
+              <p className="text-sm text-muted-foreground">Show the About Us link in the footer.</p>
+            </div>
             <Checkbox
               id="showAbout"
               checked={pages.showAbout}
@@ -67,7 +70,10 @@ export function AdminPagesClient() {
             />
           </div>
           <div className="flex items-center justify-between gap-4">
-            <Label htmlFor="showContact">Show Contact</Label>
+            <div className="space-y-0.5">
+              <Label htmlFor="showContact" className="text-base">Contact Page</Label>
+              <p className="text-sm text-muted-foreground">Show the Contact link in the footer.</p>
+            </div>
             <Checkbox
               id="showContact"
               checked={pages.showContact}
@@ -76,7 +82,10 @@ export function AdminPagesClient() {
             />
           </div>
           <div className="flex items-center justify-between gap-4">
-            <Label htmlFor="showFaq">Show FAQ</Label>
+            <div className="space-y-0.5">
+              <Label htmlFor="showFaq" className="text-base">FAQ Page</Label>
+              <p className="text-sm text-muted-foreground">Show the FAQ link in the footer.</p>
+            </div>
             <Checkbox
               id="showFaq"
               checked={pages.showFaq}
@@ -85,7 +94,10 @@ export function AdminPagesClient() {
             />
           </div>
           <div className="flex items-center justify-between gap-4">
-            <Label htmlFor="showPolicies">Show Policies</Label>
+            <div className="space-y-0.5">
+              <Label htmlFor="showPolicies" className="text-base">Policy Pages</Label>
+              <p className="text-sm text-muted-foreground">Show Privacy, Terms, and Shipping links.</p>
+            </div>
             <Checkbox
               id="showPolicies"
               checked={pages.showPolicies}
