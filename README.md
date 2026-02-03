@@ -42,6 +42,7 @@ Open http://localhost:3000
 
 - dev: Run local development server
 - build: Build production bundle
+- build:static: Build static export to `.out/` for Firebase Hosting
 - start: Run production server
 - lint: Run ESLint
 

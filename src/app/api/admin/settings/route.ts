@@ -4,6 +4,8 @@ import { z } from "zod";
 import { getAdminUserFromRequest } from "@/app/api/_lib/require-admin";
 import { getSiteSettings, updateSiteSettings } from "@/services/admin/settings-store";
 
+export const dynamic = "force-static";
+
 const settingsPatchSchema = z.object({
   payments: z
     .object({
@@ -50,4 +52,3 @@ export async function PATCH(request: NextRequest) {
   const settings = updateSiteSettings(parsed.data);
   return NextResponse.json({ settings });
 }
-

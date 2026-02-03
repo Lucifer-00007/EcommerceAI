@@ -4,6 +4,10 @@ import { categories } from "@/services/mock/db";
 import { getCatalogProducts } from "@/services/admin/catalog-store";
 import { getAvailableColors, getAvailableSizes } from "@/features/clothes/utils";
 
+const isStaticExport = process.env.NEXT_PUBLIC_STATIC_EXPORT === "true";
+
+export const dynamic = "force-static";
+
 function toNumber(value: string | null) {
   if (!value) return undefined;
   const n = Number(value);
@@ -29,6 +33,25 @@ function toSortKey(value: string | null): SortKey {
 }
 
 export async function GET(request: NextRequest) {
+  if (isStaticExport) {
+    const products = getCatalogProducts();
+    const total = products.length;
+    const pageSize = 12;
+    const totalPages = Math.max(1, Math.ceil(total / pageSize));
+    const items = products
+      .slice()
+      .sort((a, b) => b.createdAt.localeCompare(a.createdAt))
+      .slice(0, pageSize);
+
+    return NextResponse.json({
+      items,
+      page: 1,
+      pageSize,
+      total,
+      totalPages,
+    });
+  }
+
   const url = new URL(request.url);
   const q = (url.searchParams.get("q") ?? "").trim();
 

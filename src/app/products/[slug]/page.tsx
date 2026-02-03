@@ -4,6 +4,12 @@ import { Container } from "@/components/layout/container";
 import { ProductDetailClient } from "./product-detail-client";
 import { products } from "@/services/mock/db";
 
+export const dynamicParams = false;
+
+export async function generateStaticParams() {
+  return products.map((product) => ({ slug: product.slug }));
+}
+
 export async function generateMetadata({
   params,
 }: {

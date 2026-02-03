@@ -1,6 +1,8 @@
-import { randomUUID } from "crypto";
-
 import type { Category, Order, Product, Review, User } from "@/types/ecommerce";
+
+const randomUUID = () =>
+  globalThis.crypto?.randomUUID?.() ??
+  `uuid_${Math.random().toString(16).slice(2)}`;
 
 export const categories: Category[] = [
   {
@@ -514,6 +516,10 @@ export function createSessionForUser(userId: string) {
 }
 
 export function getUserBySessionToken(token: string | undefined) {
+  if (process.env.NEXT_PUBLIC_STATIC_EXPORT === "true") {
+    return users.find((u) => u.email === "demo@shop.local") ?? null;
+  }
+
   if (!token) return null;
   const session = sessions.get(token);
   if (!session) return null;
@@ -551,4 +557,3 @@ export const orders: Order[] = [
     createdAt: nowIso,
   },
 ];
-

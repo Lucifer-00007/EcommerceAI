@@ -3,6 +3,8 @@ import { z } from "zod";
 
 import { createSessionForUser, users } from "@/services/mock/db";
 
+export const dynamic = "force-static";
+
 const registerSchema = z.object({
   email: z.string().email(),
   name: z.string().min(1),
@@ -43,4 +45,3 @@ export async function POST(request: NextRequest) {
   });
   return response;
 }
-

@@ -3,6 +3,8 @@ import { NextResponse, type NextRequest } from "next/server";
 import { getSessionTokenFromRequest } from "@/app/api/_lib/auth";
 import { getUserBySessionToken, orders, users } from "@/services/mock/db";
 
+export const dynamic = "force-static";
+
 export async function GET(request: NextRequest) {
   const token = getSessionTokenFromRequest(request);
   let user = getUserBySessionToken(token);
@@ -19,4 +21,3 @@ export async function GET(request: NextRequest) {
   const userOrders = orders.filter((o) => o.userId === user.id);
   return NextResponse.json({ orders: userOrders });
 }
-

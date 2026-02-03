@@ -1,6 +1,10 @@
 import type { NextRequest } from "next/server";
 
+const isStaticExport = process.env.NEXT_PUBLIC_STATIC_EXPORT === "true";
+
 export function getSessionTokenFromRequest(request: NextRequest) {
+  if (isStaticExport) return undefined;
+
   const cookieToken = request.cookies.get("session")?.value;
   if (cookieToken) return cookieToken;
 
@@ -11,4 +15,3 @@ export function getSessionTokenFromRequest(request: NextRequest) {
   if (scheme?.toLowerCase() !== "bearer") return undefined;
   return token || undefined;
 }
-

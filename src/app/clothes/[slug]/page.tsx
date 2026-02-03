@@ -5,6 +5,14 @@ import { Container } from "@/components/layout/container";
 import { getCatalogProducts } from "@/services/admin/catalog-store";
 import { ClothDetailClient } from "./cloth-detail-client";
 
+export const dynamicParams = false;
+
+export async function generateStaticParams() {
+  return getCatalogProducts()
+    .filter((product) => product.categoryId === "cat_apparel")
+    .map((product) => ({ slug: product.slug }));
+}
+
 export async function generateMetadata({
   params,
 }: {

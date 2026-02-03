@@ -1,7 +1,9 @@
-import { randomUUID } from "crypto";
-
 import type { Product } from "@/types/ecommerce";
 import { products as baseProducts } from "@/services/mock/db";
+
+const randomUUID = () =>
+  globalThis.crypto?.randomUUID?.() ??
+  `uuid_${Math.random().toString(16).slice(2)}`;
 
 type CatalogState = {
   overridesById: Record<string, Product>;
@@ -91,4 +93,3 @@ export function deleteAdminProduct(id: string) {
   state.deletedIds.add(id);
   delete state.overridesById[id];
 }
-

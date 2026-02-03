@@ -5,9 +5,10 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
+    "build:static": "NEXT_PUBLIC_STATIC_EXPORT=true next build --webpack && node ./scripts/static-export.mjs",
     "start": "next start",
     "lint": "eslint",
-    "deploy": "next build && firebase deploy --only hosting",
+    "deploy": "npm run build:static && firebase deploy --only hosting",
     "test": "vitest run"
   },
   "dependencies": {

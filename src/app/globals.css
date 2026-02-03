@@ -47,6 +47,8 @@
 }
 
 :root {
+  --font-inter: ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-geist-mono: ui-monospace, "SFMono-Regular", "SF Mono", "Menlo", "Monaco", "Consolas", monospace;
   --radius: 0.25rem;
   --background: #f6f7f8;
   --foreground: #0f172a;

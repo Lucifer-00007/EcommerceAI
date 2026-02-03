@@ -21,6 +21,10 @@ export async function getOrders() {
 }
 
 export async function getOrder(orderId: string) {
-  return fetchJson(`/api/account/orders/${orderId}`, undefined, orderResponseSchema);
+  const { orders } = await getOrders();
+  const order = orders.find((item) => item.id === orderId);
+  if (!order) {
+    throw new Error("Order not found");
+  }
+  return orderResponseSchema.parse({ order });
 }
-
