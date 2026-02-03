@@ -29,7 +29,7 @@
 
 - [x] Add a shadow/dim-outline matching the current theme, to the clearly identify the borders of the ProductCard (./src/components/product/product-card.tsx). Follow best practices 
 
-- []  
+- [] Refer `https://demo.workdo.io/storego-saas/dashboard` for project upgrade.
 
 - []
 - []
