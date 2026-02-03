@@ -9,8 +9,12 @@
 - lsof -i :<port>
 
 - Stitch: https://stitch.withgoogle.com/projects/3023014311095086662 (e-commerce templates)
-- 
-- 
+ 
+- Reference:
+	- https://codecanyon.net/item/storego-saas-online-store-builder/31116337
+	- https://demo.workdo.io/storego-saas/dashboard
+
+-
 -
 -
 
